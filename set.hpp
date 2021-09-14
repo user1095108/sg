@@ -23,6 +23,7 @@ class set
 {
 public:
   using key_type = Key;
+  using value_type = Key;
 
   using size_type = std::size_t;
 
@@ -349,6 +350,49 @@ public:
   auto find(Key const& k) const noexcept
   {
     return const_iterator(root_.get(), sg::find(root_.get(), k));
+  }
+
+  //
+  auto insert(value_type const& v)
+  {
+    auto const [n, s](
+      node::emplace(root_, v)
+    );
+
+    return std::tuple(setiterator<node>(root_.get(), n), s);
+  }
+
+  auto insert(value_type&& v)
+  {
+    auto const [n, s](
+      node::emplace(root_, std::move(v))
+    );
+
+    return std::tuple(setiterator<node>(root_.get(), n), s);
+  }
+
+  template <class Iterator>
+  void insert(Iterator i, Iterator const j)
+  {
+    std::for_each(i, j,
+      [](auto&& v)
+      {
+        emplace(std::forward<decltype(v)>(v));
+      }
+    );
+  }
+
+  void insert(std::initializer_list<value_type> il)
+  {
+    std::for_each(
+      std::execution::unseq,
+      il.begin(),
+      il.end(),
+      [&](auto&& v)
+      {
+        emplace(v);
+      }
+    );
   }
 };
 

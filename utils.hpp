@@ -222,7 +222,7 @@ inline auto erase(auto& r, auto&& k)
         {
           q.release(); // order important
 
-          move(r, n->l_, n->r_);
+          sg::move(r, n->l_, n->r_);
 
           delete n;
         }
