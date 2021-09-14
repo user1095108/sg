@@ -25,8 +25,8 @@ public:
   using difference_type = std::ptrdiff_t;
   using value_type = std::conditional_t<
       std::is_const_v<T>,
-      typename T::key_type const,
-      typename T::key_type
+      typename T::value_type const,
+      typename T::value_type
     >;
 
   using pointer = value_type*;
