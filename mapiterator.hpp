@@ -7,12 +7,12 @@
 #include <type_traits>
 
 template <typename T>
-class sgmapiterator
+class mapiterator
 {
   using inverse_const_t = std::conditional_t<
     std::is_const_v<T>,
-    sgmapiterator<std::remove_const_t<T>>,
-    sgmapiterator<T const>
+    mapiterator<std::remove_const_t<T>>,
+    mapiterator<T const>
   >;
 
   friend inverse_const_t;
@@ -33,30 +33,30 @@ public:
   using reference = value_type&;
 
 public:
-  sgmapiterator() = default;
+  mapiterator() = default;
 
-  sgmapiterator(T* const r, T* const n) noexcept:
+  mapiterator(T* const r, T* const n) noexcept:
     r_(r),
     n_(n)
   {
   }
 
-  sgmapiterator(sgmapiterator const&) = default;
-  sgmapiterator(sgmapiterator&&) = default;
+  mapiterator(mapiterator const&) = default;
+  mapiterator(mapiterator&&) = default;
 
-  sgmapiterator(inverse_const_t const& o) requires(std::is_const_v<T>):
+  mapiterator(inverse_const_t const& o) requires(std::is_const_v<T>):
     r_(o.r_),
     n_(o.n_)
   {
   }
 
   //
-  sgmapiterator& operator=(sgmapiterator const&) = default;
-  sgmapiterator& operator=(sgmapiterator&&) = default;
+  mapiterator& operator=(mapiterator const&) = default;
+  mapiterator& operator=(mapiterator&&) = default;
 
   bool operator==(auto const& o) const noexcept
     requires(
-      std::is_same_v<std::remove_cvref_t<decltype(o)>, sgmapiterator> ||
+      std::is_same_v<std::remove_cvref_t<decltype(o)>, mapiterator> ||
       std::is_same_v<std::remove_cvref_t<decltype(o)>, inverse_const_t>
     )
   {
@@ -69,17 +69,17 @@ public:
   }
 
   // increment, decrement
-  auto& operator++() noexcept { return n_ = ds::next(r_, n_), *this; }
-  auto& operator--() noexcept { return n_ = ds::prev(r_, n_), *this; }
+  auto& operator++() noexcept { return n_ = sg::next(r_, n_), *this; }
+  auto& operator--() noexcept { return n_ = sg::prev(r_, n_), *this; }
 
   auto operator++(int) const noexcept
   {
-    return sgmapiterator(r_, ds::next(r_, n_));
+    return mapiterator(r_, sg::next(r_, n_));
   }
 
   auto operator--(int) const noexcept
   {
-    return sgmapiterator(r_, ds::prev(r_, n_));
+    return mapiterator(r_, sg::prev(r_, n_));
   }
 
   // member access

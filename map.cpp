@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "sgmap.hpp"
+#include "map.hpp"
 
 using namespace std::literals::string_literals;
 
@@ -39,7 +39,7 @@ void dump(auto n)
 //////////////////////////////////////////////////////////////////////////////
 int main()
 {
-  ds::sgmap<std::string, int> st{
+  sg::map<std::string, int> st{
     {"a"s, -1},
     {"b"s, 0},
     {"c"s, 1}
@@ -58,7 +58,7 @@ int main()
 
   dump(st.root());
 
-  std::cout << "height: " << ds::height(st.root()) << std::endl;
+  std::cout << "height: " << sg::height(st.root()) << std::endl;
   std::cout << "size: " << st.size() << std::endl;
 
   std::for_each(

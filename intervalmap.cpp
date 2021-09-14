@@ -37,7 +37,7 @@ void dump(auto n)
 //////////////////////////////////////////////////////////////////////////////
 int main()
 {
-  ds::sgitree<std::pair<int, int>, int> st;
+  sg::intervalmap<std::pair<int, int>, int> st;
 
   st.emplace(std::pair(-1, 0), -1);
   st.emplace(std::pair(0, 1), 0);

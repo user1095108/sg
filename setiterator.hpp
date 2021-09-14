@@ -7,12 +7,12 @@
 #include <type_traits>
 
 template <typename T>
-class sgsetiterator
+class setiterator
 {
   using inverse_const_t = std::conditional_t<
     std::is_const_v<T>,
-    sgsetiterator<std::remove_const_t<T>>,
-    sgsetiterator<T const>
+    setiterator<std::remove_const_t<T>>,
+    setiterator<T const>
   >;
 
   friend inverse_const_t;
@@ -33,30 +33,30 @@ public:
   using reference = value_type&;
 
 public:
-  sgsetiterator() = default;
+  setiterator() = default;
 
-  sgsetiterator(T* const r, T* const n) noexcept:
+  setiterator(T* const r, T* const n) noexcept:
     r_(r),
     n_(n)
   {
   }
 
-  sgsetiterator(sgsetiterator const&) = default;
-  sgsetiterator(sgsetiterator&&) = default;
+  setiterator(setiterator const&) = default;
+  setiterator(setiterator&&) = default;
 
-  sgsetiterator(inverse_const_t const& o) requires(std::is_const_v<T>):
+  setiterator(inverse_const_t const& o) requires(std::is_const_v<T>):
     r_(o.r_),
     n_(o.n_)
   {
   }
 
   //
-  sgsetiterator& operator=(sgsetiterator const&) = default;
-  sgsetiterator& operator=(sgsetiterator&&) = default;
+  setiterator& operator=(setiterator const&) = default;
+  setiterator& operator=(setiterator&&) = default;
 
   bool operator==(auto const& o) const noexcept
     requires(
-      std::is_same_v<std::remove_cvref_t<decltype(o)>, sgsetiterator> ||
+      std::is_same_v<std::remove_cvref_t<decltype(o)>, setiterator> ||
       std::is_same_v<std::remove_cvref_t<decltype(o)>, inverse_const_t>
     )
   {
@@ -74,12 +74,12 @@ public:
 
   auto operator++(int) const noexcept
   {
-    return sgsetiterator(r_, r_->next(n_));
+    return setiterator(r_, r_->next(n_));
   }
 
   auto operator--(int) const noexcept
   {
-    return sgsetiterator(r_, r_->prev(n_));
+    return setiterator(r_, r_->prev(n_));
   }
 
   // member access

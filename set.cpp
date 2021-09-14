@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include "sgset.hpp"
+#include "set.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 int main()
 {
-  ds::sgset<int> s{4, 3, 2, 1};
+  sg::set<int> s{4, 3, 2, 1};
 
   std::cout << s.contains(3) << std::endl;
   std::cout << s.contains(100) << std::endl;

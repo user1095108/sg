@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-namespace ds
+namespace sg
 {
 
 //
@@ -156,7 +156,7 @@ inline void move(auto& n, auto& ...d)
           return 0;
         }
 
-        sr = ds::size(n->r_);
+        sr = size(n->r_);
       }
       else if (c > 0)
       {
@@ -165,7 +165,7 @@ inline void move(auto& n, auto& ...d)
           return 0;
         }
 
-        sl = ds::size(n->l_);
+        sl = size(n->l_);
       }
       else
       {
@@ -208,7 +208,7 @@ inline auto erase(auto& r, auto&& k)
       {
         auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
-        auto const next(ds::next(r.get(), n));
+        auto const nxt(next(r.get(), n));
 
         if (!n->l_ && !n->r_)
         {
@@ -222,12 +222,12 @@ inline auto erase(auto& r, auto&& k)
         {
           q.release(); // order important
 
-          ds::move(r, n->l_, n->r_);
+          move(r, n->l_, n->r_);
 
           delete n;
         }
 
-        return std::tuple(next, 1);
+        return std::tuple(nxt, 1);
       }
     }
   }

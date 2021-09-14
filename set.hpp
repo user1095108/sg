@@ -11,15 +11,15 @@
 
 #include <vector>
 
-#include "sgutils.hpp"
+#include "utils.hpp"
 
-#include "sgsetiterator.hpp"
+#include "setiterator.hpp"
 
-namespace ds
+namespace sg
 {
 
 template <typename Key, class Comp = std::compare_three_way>
-class sgset
+class set
 {
 public:
   using key_type = Key;
@@ -70,7 +70,7 @@ public:
               return 0;
             }
 
-            sr = ds::size(n->r_);
+            sr = sg::size(n->r_);
           }
           else if (c > 0)
           {
@@ -79,7 +79,7 @@ public:
               return 0;
             }
 
-            sl = ds::size(n->l_);
+            sl = sg::size(n->l_);
           }
           else
           {
@@ -168,8 +168,8 @@ public:
     }
   };
 
-  using const_iterator = sgsetiterator<node const>;
-  using iterator = sgsetiterator<node>;
+  using const_iterator = setiterator<node const>;
+  using iterator = setiterator<node>;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -177,19 +177,19 @@ private:
   std::unique_ptr<node> root_;
 
 public:
-  sgset() = default;
+  set() = default;
 
-  sgset(std::initializer_list<Key> i) { *this = i; }
+  set(std::initializer_list<Key> i) { *this = i; }
 
-  sgset(sgset const& o) { *this = o; }
+  set(set const& o) { *this = o; }
 
-  sgset(sgset&&) = default;
+  set(set&&) = default;
 
   //
   auto& operator=(auto&& o) requires(
-    std::is_same_v<decltype(o), sgset&> ||
-    std::is_same_v<decltype(o), sgset const&> ||
-    std::is_same_v<decltype(o), sgset const&&> ||
+    std::is_same_v<decltype(o), set&> ||
+    std::is_same_v<decltype(o), set const&> ||
+    std::is_same_v<decltype(o), set const&&> ||
     std::is_same_v<
       std::remove_cvref_t<decltype(o)>,
       std::initializer_list<Key>
@@ -211,7 +211,7 @@ public:
     return *this;
   }
 
-  auto& operator=(sgset&& o) noexcept
+  auto& operator=(set&& o) noexcept
   {
     return root_ = std::move(o.root_), *this;
   }
@@ -223,13 +223,13 @@ public:
   void clear() { root_.reset(); }
   bool empty() const noexcept { return !size(); }
   size_type max_size() const noexcept { return ~size_type{} / 3; }
-  size_type size() const noexcept { return ds::size(root_); }
+  size_type size() const noexcept { return sg::size(root_); }
 
   // iterators
   iterator begin() noexcept
   {
     return root_ ?
-      iterator(root_.get(), ds::first_node(root_.get())) :
+      iterator(root_.get(), sg::first_node(root_.get())) :
       iterator();
   }
 
@@ -239,7 +239,7 @@ public:
   const_iterator begin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), ds::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -248,7 +248,7 @@ public:
   const_iterator cbegin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), ds::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -265,7 +265,7 @@ public:
   reverse_iterator rend() noexcept
   {
     return root_ ?
-      reverse_iterator(iterator{root_.get(), ds::first_node(root_.get())}) :
+      reverse_iterator(iterator{root_.get(), sg::first_node(root_.get())}) :
       reverse_iterator();
   }
 
@@ -281,7 +281,7 @@ public:
   {
     return root_ ?
       const_reverse_iterator(
-        const_iterator{root_.get(), ds::first_node(root_.get())}
+        const_iterator{root_.get(), sg::first_node(root_.get())}
       ) :
       const_reverse_iterator();
   }
@@ -289,17 +289,17 @@ public:
   //
   bool contains(Key const& k) const
   {
-    return bool(ds::find(root_.get(), k));
+    return bool(sg::find(root_.get(), k));
   }
 
   bool contains(auto&& k) const
   {
-    return bool(ds::find(root_.get(), std::forward<decltype(k)>(k)));
+    return bool(sg::find(root_.get(), std::forward<decltype(k)>(k)));
   }
 
   size_type count(Key const& k) const noexcept
   {
-    return bool(ds::find(root_.get(), k));
+    return bool(sg::find(root_.get(), k));
   }
 
   //
@@ -309,18 +309,18 @@ public:
       node::emplace(root_, std::forward<decltype(k)>(k))
     );
 
-    return std::tuple(sgsetiterator<node>(root_.get(), n), s);
+    return std::tuple(setiterator<node>(root_.get(), n), s);
   }
 
   //
   size_type erase(Key const& k)
   {
-    return std::get<1>(ds::erase(root_, k));
+    return std::get<1>(sg::erase(root_, k));
   }
 
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(), std::get<0>(ds::erase(root_, *i)));
+    return iterator(root_.get(), std::get<0>(sg::erase(root_, *i)));
   }
 
   auto erase(const_iterator a, const_iterator const b)
@@ -343,12 +343,12 @@ public:
   //
   auto find(Key const& k) noexcept
   {
-    return iterator(root_.get(), ds::find(root_.get(), k));
+    return iterator(root_.get(), sg::find(root_.get(), k));
   }
 
   auto find(Key const& k) const noexcept
   {
-    return const_iterator(root_.get(), ds::find(root_.get(), k));
+    return const_iterator(root_.get(), sg::find(root_.get(), k));
   }
 };
 

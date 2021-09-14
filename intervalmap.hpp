@@ -14,7 +14,7 @@
 
 #include "sgutils.hpp"
 
-namespace ds
+namespace sg
 {
 
 template <typename Key, typename Value, class Comp = std::compare_three_way>
@@ -73,7 +73,7 @@ public:
             n->m_ = std::max(n->m_, std::get<1>(k));
             n->v_.emplace_back(std::get<1>(k), std::forward<decltype(v)>(v));
 
-            return ds::size(n.get());
+            return sg::size(n.get());
           }
 
           //
@@ -89,7 +89,7 @@ public:
               return 0;
             }
 
-            sr = ds::size(n->r_);
+            sr = sg::size(n->r_);
           }
           else
           {
@@ -98,7 +98,7 @@ public:
               return 0;
             }
 
-            sl = ds::size(n->l_);
+            sl = sg::size(n->l_);
           }
 
           //
