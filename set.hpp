@@ -375,7 +375,7 @@ public:
   void insert(Iterator i, Iterator const j)
   {
     std::for_each(i, j,
-      [](auto&& v)
+      [&](auto&& v)
       {
         emplace(std::forward<decltype(v)>(v));
       }

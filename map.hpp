@@ -390,14 +390,14 @@ public:
       node::emplace(root_, std::move(v.first), std::move(v.second))
     );
 
-    return std::tuple(setiterator<node>(root_.get(), n), s);
+    return std::tuple(mapiterator<node>(root_.get(), n), s);
   }
 
   template <class Iterator>
   void insert(Iterator i, Iterator const j)
   {
     std::for_each(i, j,
-      [](auto&& v)
+      [&](auto&& v)
       {
         if constexpr(std::is_rvalue_reference_v<decltype(v)>)
         {
@@ -423,7 +423,6 @@ public:
       }
     );
   }
-
 };
 
 }

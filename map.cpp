@@ -46,7 +46,7 @@ int main()
   };
 
   st.emplace("d"s, 2);
-  st["e"s] = 3;
+  st.insert({"e"s, 3});
   st["f"s] = 4;
 
   /*
