@@ -1,5 +1,5 @@
-#ifndef DS_SGTREE_HPP
-# define DS_SGTREE_HPP
+#ifndef SG_MAP_HPP
+# define SG_MAP_HPP
 # pragma once
 
 #include <algorithm>
@@ -427,4 +427,4 @@ public:
 
 }
 
-#endif // DS_SGTREE_HPP
+#endif // SG_MAP_HPP

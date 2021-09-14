@@ -1,5 +1,5 @@
-#ifndef DS_SGSET_HPP
-# define DS_SGSET_HPP
+#ifndef SG_SET_HPP
+# define SG_SET_HPP
 # pragma once
 
 #include <algorithm>
@@ -398,4 +398,4 @@ public:
 
 }
 
-#endif // DS_SGSET_HPP
+#endif // SG_SET_HPP

@@ -1,5 +1,5 @@
-#ifndef DS_SGTREE_ITERATOR_HPP
-# define DS_SGTREE_ITERATOR_HPP
+#ifndef SG_MAP_ITERATOR_HPP
+# define SG_MAP_ITERATOR_HPP
 # pragma once
 
 #include <iterator>
@@ -87,4 +87,4 @@ public:
   auto& operator*() const noexcept { return n_->kv_; }
 };
 
-#endif // DS_SGTREE_ITERATOR_HPP
+#endif // SG_MAP_ITERATOR_HPP

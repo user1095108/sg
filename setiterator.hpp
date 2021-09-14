@@ -1,5 +1,5 @@
-#ifndef DS_SGSET_ITERATOR_HPP
-# define DS_SGSET_ITERATOR_HPP
+#ifndef SG_SET_ITERATOR_HPP
+# define SG_SET_ITERATOR_HPP
 # pragma once
 
 #include <iterator>
@@ -87,4 +87,4 @@ public:
   auto& operator*() const noexcept { return n_->k_; }
 };
 
-#endif // DS_SGSET_ITERATOR_HPP
+#endif // SG_SET_ITERATOR_HPP
