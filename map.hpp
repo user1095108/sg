@@ -334,6 +334,43 @@ public:
   }
 
   //
+  auto equal_range(Key const& k) noexcept
+  {
+    auto const [e, g](sg::equal_range(root_.get(), k));
+    return std::pair(
+      iterator(root_.get(), e ? e : g),
+      iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(Key const& k) const noexcept
+  {
+    auto const [e, g](sg::equal_range(root_.get(), k));
+    return std::pair(
+      const_iterator(root_.get(), e ? e : g),
+      const_iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(auto const& k) noexcept
+  {
+    auto const [e, g](sg::equal_range(root_.get(), k));
+    return std::pair(
+      iterator(root_.get(), e ? e : g),
+      iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(auto const& k) const noexcept
+  {
+    auto const [e, g](sg::equal_range(root_.get(), k));
+    return std::pair(
+      const_iterator(root_.get(), e ? e : g),
+      const_iterator(root_.get(), g)
+    );
+  }
+
+  //
   iterator erase(const_iterator const i)
   {
     return iterator(root_.get(), sg::erase(root_, std::get<0>(*i)));

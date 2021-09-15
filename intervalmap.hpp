@@ -663,9 +663,8 @@ public:
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const& [e, g](node::equal_range(root_.get(), k));
-
-    return std::tuple(
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
     );
@@ -673,9 +672,8 @@ public:
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const& [e, g](node::equal_range(root_.get(), k));
-
-    return std::tuple(
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
     );
@@ -683,9 +681,8 @@ public:
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const& [e, g](node::equal_range(root_.get(), k));
-
-    return std::tuple(
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
     );
@@ -693,9 +690,8 @@ public:
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const& [e, g](node::equal_range(root_.get(), k));
-
-    return std::tuple(
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
     );
@@ -749,6 +745,52 @@ public:
         emplace(std::get<0>(v), std::get<1>(v));
       }
     );
+  }
+
+  //
+  iterator lower_bound(Key const& k) const noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+    return {root_.get(), e ? e : g};
+  }
+
+  const_iterator lower_bound(Key const& k) const noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+    return {root_.get(), e ? e : g};
+  }
+
+  iterator lower_bound(auto const& k) const noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+    return {root_.get(), e ? e : g};
+  }
+
+  const_iterator lower_bound(auto const& k) const noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+    return {root_.get(), e ? e : g};
+  }
+
+  //
+  iterator upper_bound(Key const& k) const noexcept
+  {
+    return std::get<1>(node::equal_range(root_.get(), k));
+  }
+
+  const_iterator upper_bound(Key const& k) const noexcept
+  {
+    return std::get<1>(node::equal_range(root_.get(), k));
+  }
+
+  iterator upper_bound(auto const& k) const noexcept
+  {
+    return std::get<1>(node::equal_range(root_.get(), k));
+  }
+
+  const_iterator upper_bound(auto const& k) const noexcept
+  {
+    return std::get<1>(node::equal_range(root_.get(), k));
   }
 
   //

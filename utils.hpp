@@ -115,11 +115,12 @@ inline auto equal_range(auto n, auto&& k) noexcept
 
   decltype(n) g{};
 
-  if (auto const& mink(k); n)
+  if (n)
   {
     do
     {
-      if (auto const c(node::cmp(mink, n->key())); c < 0)
+      if (auto const c(node::cmp(std::forward<decltype(k)>(k), n->key()));
+        c < 0)
       {
         g = n;
         n = n->l_.get();
