@@ -45,6 +45,8 @@ int main()
   st.emplace(std::pair(2, 3), 2);
   st.emplace(std::pair(3, 5), 3);
 
+  st.erase(std::pair(2, 3));
+
   //st.root().reset(st.root().release()->rebuild());
   dump(st.root());
 

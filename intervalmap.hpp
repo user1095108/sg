@@ -176,28 +176,37 @@ public:
               auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
               auto const nxt(next(r.get(), n));
-              bool rebuilt{};
 
               if (!n->l_ && !n->r_)
               {
                 q.reset();
+
+                if (p)
+                {
+                  node::reset_max(r.get(), p);
+                }
               }
               else if (!n->l_ || !n->r_)
               {
                 q = std::move(n->l_ ? n->l_ : n->r_);
+
+                if (p)
+                {
+                  node::reset_max(r.get(), q.get());
+                }
               }
               else
               {
                 q.release(); // order important
 
-                rebuilt = node::move(r, n->l_, n->r_);
+                if (p)
+                {
+                  node::reset_max(r.get(), p);
+                }
+
+                node::move(r, n->l_, n->r_);
 
                 delete n;
-              }
-
-              if (p && !rebuilt)
-              {
-                node::reset_max(r.get());
               }
 
               return std::tuple(nxt, s0);
@@ -206,13 +215,14 @@ public:
         }
       }
 
-      return std::tuple(pointer{}, 0);
+      return std::tuple(pointer{}, size_type{});
     }
 
-    static bool move(auto& n, auto& ...d)
+    static void move(auto& n, auto& ...d)
     {
       auto const f([&](auto&& f, auto& n, auto& d) noexcept -> std::size_t
         {
+          assert(d);
           if (!n)
           {
             n = std::move(d);
@@ -224,7 +234,7 @@ public:
           n->m_ = std::max(n->m_, d->m_);
 
           //
-          std::size_t sl, sr;
+          size_type sl, sr;
 
           if (auto const c(cmp(d->k_, n->key())); c < 0)
           {
@@ -233,22 +243,16 @@ public:
               return 0;
             }
 
-            sr = node::size(n->r_);
+            sr = sg::size(n->r_);
           }
-          else if (c > 0)
+          else
           {
             if (sr = f(f, n->r_, d); !sr)
             {
               return 0;
             }
 
-            sl = node::size(n->l_);
-          }
-          else
-          {
-            std::move(d->v_.begin(), d->v_.end(), std::back_inserter(n->v_));
-
-            return 0;
+            sl = sg::size(n->l_);
           }
 
           //
@@ -260,7 +264,7 @@ public:
         }
       );
 
-      return (!f(f, n, d) || ...);
+      (f(f, n, d), ...);
     }
 
     static decltype(node::m_) reset_max(auto const n) noexcept
@@ -287,6 +291,67 @@ public:
         return {};
       }
     }
+
+    static decltype(node::m_) reset_max(auto const n, auto const p) noexcept
+    {
+      assert(n);
+      assert(p);
+
+      auto&& key(p->key());
+
+      auto const f([&](auto&& f, auto const n) noexcept -> decltype(node::m_)
+        {
+          decltype(node::m_) m(n->k_);
+
+          std::for_each(
+            n->v_.cbegin(),
+            n->v_.cend(),
+            [&](auto&& p) noexcept
+            {
+              m = std::max(m, std::get<1>(std::get<0>(p)));
+            }
+          );
+
+          auto const l(n->l_.get()), r(n->r_.get());
+
+          if (auto const c(cmp(key, n->key())); c < 0)
+          {
+            if (r)
+            {
+              m = std::max(m, r->m_);
+            }
+
+            m = std::max(m, f(f, l)); // visit left
+          }
+          else if (c > 0)
+          {
+            if (l)
+            {
+              m = std::max(m, l->m_);
+            }
+
+            m = std::max(m, f(f, r)); // visit right
+          }
+          else // we are there
+          {
+            if (l)
+            {
+              m = std::max(m, l->m_);
+            }
+
+            if (r)
+            {
+              m = std::max(m, r->m_);
+            }
+          }
+
+          return n->m_ = m;
+        }
+      );
+
+      return f(f, n);
+    }
+
 
     auto rebuild()
     {
@@ -539,7 +604,7 @@ public:
   iterator erase(const_iterator const i)
   {
     return iterator(root_.get(),
-      std::get<0>(sg::erase(root_, std::get<0>(*i))));
+      std::get<0>(node::erase(root_, std::get<0>(*i))));
   }
 
   auto erase(const_iterator a, const_iterator const b)
@@ -564,7 +629,7 @@ public:
 
   size_type erase(Key const& k)
   {
-    return std::get<1>(sg::erase(root_, k));
+    return std::get<1>(node::erase(root_, k));
   }
 
   //
