@@ -562,41 +562,35 @@ public:
     auto const [mink, maxk](k);
     auto const eq(node::cmp(mink, maxk) == 0);
 
-    for (auto n(root_.get());;)
+    for (auto n(root_.get()); n;)
     {
-      if (n)
+      if (auto const c(node::cmp(maxk, n->key()));
+        (c > 0) || (eq && (c == 0)))
       {
-        auto&& key(n->key());
-
-        if (auto const c(node::cmp(maxk, key)); (c > 0) || (eq && (c == 0)))
+        if (auto const i(std::find_if(
+              std::execution::unseq,
+              n->v_.cbegin(),
+              n->v_.cend(),
+              [&](auto&& p) noexcept
+              {
+                // mink < key_maximum
+                return node::cmp(mink, std::get<1>(std::get<0>(p))) < 0;
+              }
+            )
+          );
+          n->v_.cend() != i
+        )
         {
-          if (auto const i(std::find_if(
-                std::execution::unseq,
-                n->v_.cbegin(),
-                n->v_.cend(),
-                [&](auto&& p) noexcept
-                {
-                  // mink < key_maximum
-                  return node::cmp(mink, std::get<1>(std::get<0>(p))) < 0;
-                }
-              )
-            );
-            n->v_.cend() != i
-          )
-          {
-            return true;
-          }
+          return true;
         }
+      }
 
-        //
-        auto const l(n->l_.get());
-        n = l && (node::cmp(mink, l->m_) < 0) ? l : n->r_.get();
-      }
-      else
-      {
-        return false;
-      }
+      //
+      auto const l(n->l_.get());
+      n = l && (node::cmp(mink, l->m_) < 0) ? l : n->r_.get();
     }
+
+    return false;
   }
 };
 
