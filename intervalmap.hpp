@@ -324,7 +324,7 @@ public:
       return f(f, n);
     }
 
-    static decltype(node::m_) reset_subtree_max(auto const n,
+    static decltype(node::m_) reset_nodes_max(auto const n,
       auto const ...c) noexcept
     {
       decltype(node::m_) m(n->k_);
@@ -340,7 +340,7 @@ public:
 
       [&]<auto ...I>(std::index_sequence<I...>) noexcept
       {
-        ((m = c ? std::max(m, reset_subtree_max(c)) : m), ...);
+        ((m = c ? std::max(m, reset_nodes_max(c)) : m), ...);
       }(std::index_sequence_for<decltype(c)...>());
 
       return n->m_ = m;
@@ -374,7 +374,7 @@ public:
               n->l_.release();
               n->r_.release();
 
-              reset_subtree_max(n);
+              reset_nodes_max(n);
 
               break;
 
@@ -390,7 +390,7 @@ public:
 
                 n->r_.reset(p);
 
-                reset_subtree_max(n, n->r_.get());
+                reset_nodes_max(n, n->r_.get());
 
                 break;
               }
@@ -401,7 +401,7 @@ public:
                 n->l_.release();
                 n->r_.release();
 
-                auto m(reset_subtree_max(n));
+                auto m(reset_nodes_max(n));
 
                 if (auto const p(f(f, a, i - 1)); p)
                 {
