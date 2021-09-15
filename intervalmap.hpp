@@ -525,17 +525,14 @@ public:
   void all(Key const& k, auto g) const
   {
     auto const [mink, maxk](k);
+    auto const eq(node::cmp(mink, maxk) == 0);
 
-    if (root_ && (node::cmp(mink, root_->m_) < 0))
-    {
-      auto const eq(node::cmp(mink, maxk) == 0);
-
-      auto const f([&](auto&& f, auto const n) -> void
+    auto const f([&](auto&& f, auto const n) -> void
+      {
+        if (n && (node::cmp(mink, n->m_) < 0))
         {
-          assert(n);
-          auto&& key(n->key());
-
-          if (auto const c(node::cmp(maxk, key)); (c > 0) || (eq && (c == 0)))
+          if (auto const c(node::cmp(maxk, n->key()));
+            (c > 0) || (eq && (c == 0)))
           {
             std::for_each(
               std::execution::unseq,
@@ -551,22 +548,13 @@ public:
             );
           }
 
-          invoke_all(
-            [&](auto const n)
-            {
-              if (n && (node::cmp(mink, n->m_) < 0))
-              {
-                f(f, n);
-              }
-            },
-            n->l_.get(),
-            n->r_.get()
-          );
+          f(f, n->l_.get());
+          f(f, n->r_.get());
         }
-      );
+      }
+    );
 
-      f(f, root_.get());
-    }
+    f(f, root_.get());
   }
 
   bool any(Key const& k) const noexcept
