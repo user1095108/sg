@@ -141,7 +141,7 @@ public:
 
       if (auto n(r.get()); n)
       {
-        auto const [mink, maxk](k);
+        auto const& [mink, maxk](k);
 
         for (pointer p{};;)
         {
@@ -544,7 +544,7 @@ public:
   {
     if (auto n(root_.get()); n)
     {
-      for (auto const [mink, maxk](k);;)
+      for (auto const& [mink, maxk](k);;)
       {
         if (node::cmp(mink, n->m_) < 0)
         {
@@ -681,7 +681,7 @@ public:
   //
   void all(Key const& k, auto g) const
   {
-    auto const [mink, maxk](k);
+    auto const& [mink, maxk](k);
     auto const eq(node::cmp(mink, maxk) == 0);
 
     auto const f([&](auto&& f, auto const n) -> void
@@ -721,7 +721,7 @@ public:
 
   bool any(Key const& k) const noexcept
   {
-    auto const [mink, maxk](k);
+    auto const& [mink, maxk](k);
     auto const eq(node::cmp(mink, maxk) == 0);
 
     if (auto n(root_.get()); n && (node::cmp(mink, n->m_) < 0))
