@@ -1,5 +1,5 @@
-#ifndef SG_MAP_ITERATOR_HPP
-# define SG_MAP_ITERATOR_HPP
+#ifndef SG_MAPITERATOR_HPP
+# define SG_MAPITERATOR_HPP
 # pragma once
 
 #include <iterator>
@@ -72,14 +72,16 @@ public:
   auto& operator++() noexcept { return n_ = sg::next(r_, n_), *this; }
   auto& operator--() noexcept { return n_ = sg::prev(r_, n_), *this; }
 
-  auto operator++(int) const noexcept
+  auto operator++(int) noexcept
   {
-    return mapiterator(r_, sg::next(r_, n_));
+    auto r(*this);
+    return ++*this, r;
   }
 
-  auto operator--(int) const noexcept
+  auto operator--(int) noexcept
   {
-    return mapiterator(r_, sg::prev(r_, n_));
+    auto r(*this);
+    return --*this, r;
   }
 
   // member access
@@ -87,4 +89,4 @@ public:
   auto& operator*() const noexcept { return n_->kv_; }
 };
 
-#endif // SG_MAP_ITERATOR_HPP
+#endif // SG_MAPITERATOR_HPP

@@ -14,6 +14,8 @@
 
 #include "utils.hpp"
 
+#include "intervalmapiterator.hpp"
+
 namespace sg
 {
 
@@ -118,7 +120,7 @@ public:
                 n->v_.cend(),
                 [&](auto&& p) noexcept
                 {
-                  return cmp(std::get<1>(std::get<0>(p)), maxk) == 0;
+                  return cmp(maxk, std::get<1>(std::get<0>(p))) == 0;
                 }
               )
             ); n->v_.cend() == i)
@@ -177,7 +179,7 @@ public:
               n->v_,
               [&](auto&& p) noexcept
               {
-                return maxk == std::get<1>(std::get<0>(p));
+                return cmp(maxk, std::get<1>(std::get<0>(p))) == 0;
               }
             );
 
@@ -375,6 +377,11 @@ public:
     }
   };
 
+  using const_iterator = intervalmapiterator<node const>;
+  using iterator = intervalmapiterator<node>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
 private:
   std::unique_ptr<node> root_;
 
@@ -407,6 +414,65 @@ public:
   }
 
   // iterators
+  iterator begin() noexcept
+  {
+    return root_ ?
+      iterator(root_.get(), sg::first_node(root_.get())) :
+      iterator();
+  }
+
+  iterator end() noexcept { return {}; }
+
+  // const iterators
+  const_iterator begin() const noexcept
+  {
+    return root_ ?
+      const_iterator(root_.get(), node::first_node(root_.get())) :
+      const_iterator();
+  }
+
+  const_iterator end() const noexcept { return {}; }
+
+  const_iterator cbegin() const noexcept
+  {
+    return root_ ?
+      const_iterator(root_.get(), sg::first_node(root_.get())) :
+      const_iterator();
+  }
+
+  const_iterator cend() const noexcept { return {}; }
+
+  // reverse iterators
+  reverse_iterator rbegin() noexcept
+  {
+    return root_ ?
+      reverse_iterator(iterator(root_.get(), nullptr)) :
+      reverse_iterator();
+  }
+
+  reverse_iterator rend() noexcept
+  {
+    return root_ ?
+      reverse_iterator(iterator{root_.get(), sg::first_node(root_.get())}) :
+      reverse_iterator();
+  }
+
+  // const reverse iterators
+  const_reverse_iterator crbegin() const noexcept
+  {
+    return root_ ?
+      const_reverse_iterator(const_iterator(root_.get(), nullptr)) :
+      const_reverse_iterator();
+  }
+
+  const_reverse_iterator crend() const noexcept
+  {
+    return root_ ?
+      const_reverse_iterator(
+        const_iterator{root_.get(), sg::first_node(root_.get())}
+      ) :
+      const_reverse_iterator();
+  }
 
   //
   auto emplace(auto&& k, auto&& v)
@@ -418,7 +484,7 @@ public:
       )
     );
 
-    //return std::tuple(intervalmapiterator<node>(root_.get(), n), s);
+    return std::tuple(intervalmapiterator<node>(root_.get(), n), s);
   }
 
   //

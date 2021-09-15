@@ -52,6 +52,15 @@ int main()
   std::cout << "size: " << st.size() << std::endl;
   std::cout << "any: " << st.any(std::pair(0, 1)) << std::endl;
 
+  std::for_each(
+    st.crbegin(),
+    st.crend(),
+    [](auto&& p) noexcept
+    {
+      std::cout << '(' << p.first.first << ',' << p.first.second << ')' << std::endl;
+    }
+  );
+
   for (auto&& p: st.all(std::pair(1, 3)))
   {
     std::cout << '(' << p.first.first << ',' << p.first.second << ") " <<
