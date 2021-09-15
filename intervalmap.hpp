@@ -627,8 +627,10 @@ public:
       {
         if (n && (node::cmp(mink, n->m_) < 0))
         {
-          if (auto const c(node::cmp(maxk, n->key()));
-            (c > 0) || (eq && (c == 0)))
+          auto const c(node::cmp(maxk, n->key()));
+          auto const cg0(c > 0);
+
+          if (cg0 || (eq && (c == 0)))
           {
             std::for_each(
               std::execution::unseq,
@@ -643,7 +645,7 @@ public:
               }
             );
 
-            if (c > 0)
+            if (cg0)
             {
               f(f, n->r_.get());
             }
