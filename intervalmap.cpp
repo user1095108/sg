@@ -61,7 +61,7 @@ int main()
     }
   );
 
-  st.all(std::pair(1, 3),
+  st.all(std::pair(2, 4),
     [](auto&& p)
     {
       std::cout << '(' << p.first.first << ',' << p.first.second << ") " <<
