@@ -134,6 +134,41 @@ public:
       return q;
     }
 
+    static auto equal_range(auto n, auto&& k) noexcept
+    {
+      using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
+
+      decltype(n) g{};
+
+      if (auto const& mink(std::get<0>(k)); n)
+      {
+        do
+        {
+          if (auto const c(node::cmp(mink, n->key())); c < 0)
+          {
+            g = n;
+            n = n->l_.get();
+          }
+          else if (c > 0)
+          {
+            n = n->r_.get();
+          }
+          else
+          {
+            if (auto const r(n->r_.get()); !g && r)
+            {
+              g = sg::first_node(r);
+            }
+
+            break;
+          }
+        }
+        while (n);
+      }
+
+      return std::tuple(n, g);
+    }
+
     static auto erase(auto& r, auto&& k)
     {
       using pointer = typename std::remove_cvref_t<decltype(r)>::pointer;
@@ -479,7 +514,7 @@ public:
   const_iterator begin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), node::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -623,6 +658,47 @@ public:
   size_type erase(Key const& k)
   {
     return std::get<1>(node::erase(root_, k));
+  }
+
+  //
+  auto equal_range(Key const& k) noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+
+    return std::tuple(
+      iterator(root_.get(), e ? e : g),
+      iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(Key const& k) const noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+
+    return std::tuple(
+      const_iterator(root_.get(), e ? e : g),
+      const_iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(auto const& k) noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+
+    return std::tuple(
+      iterator(root_.get(), e ? e : g),
+      iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(auto const& k) const noexcept
+  {
+    auto const& [e, g](node::equal_range(root_.get(), k));
+
+    return std::tuple(
+      const_iterator(root_.get(), e ? e : g),
+      const_iterator(root_.get(), g)
+    );
   }
 
   //

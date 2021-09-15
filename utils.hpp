@@ -109,6 +109,41 @@ inline auto prev(auto r, auto n) noexcept
 }
 
 //
+inline auto equal_range(auto n, auto&& k) noexcept
+{
+  using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
+
+  decltype(n) g{};
+
+  if (auto const& mink(k); n)
+  {
+    do
+    {
+      if (auto const c(node::cmp(mink, n->key())); c < 0)
+      {
+        g = n;
+        n = n->l_.get();
+      }
+      else if (c > 0)
+      {
+        n = n->r_.get();
+      }
+      else
+      {
+        if (auto const r(n->r_.get()); !g && r)
+        {
+          g = sg::first_node(r);
+        }
+
+        break;
+      }
+    }
+    while (n);
+  }
+
+  return std::tuple(n, g);
+}
+
 inline auto find(auto n, auto&& k) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
