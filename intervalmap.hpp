@@ -590,7 +590,10 @@ public:
   template <class Iterator>
   void insert(Iterator i, Iterator const j)
   {
-    std::for_each(i, j,
+    std::for_each(
+      std::execution::unseq,
+      i,
+      j,
       [&](auto&& v)
       {
         if constexpr(std::is_rvalue_reference_v<decltype(v)>)

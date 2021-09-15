@@ -371,7 +371,10 @@ public:
   template <class Iterator>
   void insert(Iterator i, Iterator const j)
   {
-    std::for_each(i, j,
+    std::for_each(
+      std::execution::unseq,
+      i,
+      j,
       [&](auto&& v)
       {
         emplace(std::forward<decltype(v)>(v));
