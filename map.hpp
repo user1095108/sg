@@ -457,7 +457,7 @@ public:
   }
 
   //
-  iterator lower_bound(Key const& k) const noexcept
+  iterator lower_bound(Key const& k) noexcept
   {
     auto const& [e, g](sg::equal_range(root_.get(), k));
     return {root_.get(), e ? e : g};
@@ -469,7 +469,7 @@ public:
     return {root_.get(), e ? e : g};
   }
 
-  iterator lower_bound(auto const& k) const noexcept
+  iterator lower_bound(auto const& k) noexcept
   {
     auto const& [e, g](sg::equal_range(root_.get(), k));
     return {root_.get(), e ? e : g};
@@ -482,7 +482,7 @@ public:
   }
 
   //
-  iterator upper_bound(Key const& k) const noexcept
+  iterator upper_bound(Key const& k) noexcept
   {
     return std::get<1>(sg::equal_range(root_.get(), k));
   }
@@ -492,7 +492,7 @@ public:
     return std::get<1>(sg::equal_range(root_.get(), k));
   }
 
-  iterator upper_bound(auto const& k) const noexcept
+  iterator upper_bound(auto const& k) noexcept
   {
     return std::get<1>(sg::equal_range(root_.get(), k));
   }
@@ -501,7 +501,6 @@ public:
   {
     return std::get<1>(sg::equal_range(root_.get(), k));
   }
-
 };
 
 }
