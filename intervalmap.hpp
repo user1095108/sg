@@ -545,6 +545,7 @@ public:
   auto erase(const_iterator a, const_iterator const b)
   {
     for (; a != b; a = erase(a));
+
     return a;
   }
 
@@ -641,10 +642,14 @@ public:
                 }
               }
             );
+
+            if (c > 0)
+            {
+              f(f, n->r_.get());
+            }
           }
 
           f(f, n->l_.get());
-          f(f, n->r_.get());
         }
       }
     );
@@ -657,32 +662,38 @@ public:
     auto const [mink, maxk](k);
     auto const eq(node::cmp(mink, maxk) == 0);
 
-    for (auto n(root_.get()); n;)
+    if (auto n(root_.get()); n && (node::cmp(mink, n->m_) < 0))
     {
-      if (auto const c(node::cmp(maxk, n->key()));
-        (c > 0) || (eq && (c == 0)))
+      for (; n;)
       {
-        if (auto const i(std::find_if(
-              std::execution::unseq,
-              n->v_.cbegin(),
-              n->v_.cend(),
-              [&](auto&& p) noexcept
-              {
-                // mink < key_maximum
-                return node::cmp(mink, std::get<1>(std::get<0>(p))) < 0;
-              }
-            )
-          );
-          n->v_.cend() != i
-        )
+        if (auto const c(node::cmp(maxk, n->key()));
+          (c > 0) || (eq && (c == 0)))
         {
-          return true;
-        }
-      }
+          if (auto const i(std::find_if(
+                std::execution::unseq,
+                n->v_.cbegin(),
+                n->v_.cend(),
+                [&](auto&& p) noexcept
+                {
+                  // mink < key_maximum
+                  return node::cmp(mink, std::get<1>(std::get<0>(p))) < 0;
+                }
+              )
+            );
+            n->v_.cend() != i
+          )
+          {
+            return true;
+          }
 
-      //
-      auto const l(n->l_.get());
-      n = l && (node::cmp(mink, l->m_) < 0) ? l : n->r_.get();
+          if (auto const l(n->l_.get()); c > 0)
+          {
+            n = l && (node::cmp(mink, l->m_) < 0) ? l : n->r_.get();
+          }
+        }
+
+        n = n->l_.get();
+      }
     }
 
     return false;
