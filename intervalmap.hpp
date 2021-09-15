@@ -157,7 +157,7 @@ public:
           }
           else
           {
-            auto s0(n->v_.size());
+            auto const s0(n->v_.size());
 
             std::erase_if(
               n->v_,
@@ -169,7 +169,7 @@ public:
 
             if (auto const s1(n->v_.size()); s1)
             {
-              return std::tuple(n, s1 - s0);
+              return std::tuple(n, s0 - s1);
             }
             else
             {
@@ -532,7 +532,7 @@ public:
       )
     );
 
-    return intervalmapiterator<node>(root_.get(), n);
+    return iterator(root_.get(), n);
   }
 
   //
@@ -590,8 +590,7 @@ public:
       node::emplace(root_, std::move(v.first), std::move(v.second)));
   }
 
-  template <class Iterator>
-  void insert(Iterator i, Iterator const j)
+  void insert(auto const i, decltype(i) j)
   {
     std::for_each(
       std::execution::unseq,

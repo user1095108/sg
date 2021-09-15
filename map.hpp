@@ -330,7 +330,7 @@ public:
       )
     );
 
-    return std::tuple(mapiterator<node>(root_.get(), n), s);
+    return std::tuple(iterator(root_.get(), n), s);
   }
 
   //
@@ -393,8 +393,7 @@ public:
     return std::tuple(iterator(root_.get(), n), s);
   }
 
-  template <class Iterator>
-  void insert(Iterator i, Iterator const j)
+  void insert(auto const i, decltype(i) j)
   {
     std::for_each(
       std::execution::unseq,

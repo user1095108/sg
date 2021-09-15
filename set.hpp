@@ -307,7 +307,7 @@ public:
       node::emplace(root_, std::forward<decltype(k)>(k))
     );
 
-    return std::tuple(setiterator<node>(root_.get(), n), s);
+    return std::tuple(iterator(root_.get(), n), s);
   }
 
   //
@@ -324,6 +324,7 @@ public:
   auto erase(const_iterator a, const_iterator const b)
   {
     for (; a != b; a = erase(a));
+
     return a;
   }
 
@@ -370,8 +371,7 @@ public:
     return std::tuple(iterator(root_.get(), n), s);
   }
 
-  template <class Iterator>
-  void insert(Iterator i, Iterator const j)
+  void insert(auto const i, decltype(i) j)
   {
     std::for_each(
       std::execution::unseq,
