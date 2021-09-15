@@ -596,14 +596,7 @@ public:
       j,
       [&](auto&& v)
       {
-        if constexpr(std::is_rvalue_reference_v<decltype(v)>)
-        {
-          emplace(std::move(v.first), std::move(v.second));
-        }
-        else
-        {
-          emplace(v.first, v.second);
-        }
+        emplace(std::get<0>(v), std::get<1>(v));
       }
     );
   }
@@ -616,7 +609,7 @@ public:
       il.end(),
       [&](auto&& v)
       {
-        emplace(v);
+        emplace(std::get<0>(v), std::get<1>(v));
       }
     );
   }

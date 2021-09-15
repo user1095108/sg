@@ -40,9 +40,8 @@ int main()
   sg::intervalmap<std::pair<int, int>, int> st;
 
   st.emplace(std::pair(-1, 0), -1);
-  st.emplace(std::pair(0, 1), 0);
-  st.emplace(std::pair(1, 2), 1);
-  st.emplace(std::pair(1, 4), 1);
+  st.insert({std::pair(0, 1), 0});
+  st.insert({{std::pair(1, 2), 1}, {std::pair(1, 4), 1}});
   st.emplace(std::pair(2, 3), 2);
   st.emplace(std::pair(3, 5), 3);
 
