@@ -269,27 +269,23 @@ public:
 
     static decltype(node::m_) reset_max(auto const n) noexcept
     {
-      if (n)
-      {
-        decltype(node::m_) m(n->k_);
+      decltype(node::m_) m(n->k_);
 
-        std::for_each(
-          n->v_.cbegin(),
-          n->v_.cend(),
-          [&](auto&& p) noexcept
-          {
-            m = std::max(m, std::get<1>(std::get<0>(p)));
-          }
-        );
+      std::for_each(
+        n->v_.cbegin(),
+        n->v_.cend(),
+        [&](auto&& p) noexcept
+        {
+          m = std::max(m, std::get<1>(std::get<0>(p)));
+        }
+      );
 
-        return n->m_ = std::max(
-          {m, reset_max(n->l_.get()), reset_max(n->r_.get())}
-        );
-      }
-      else
+      if (auto const r(n->r_.get()); r)
       {
-        return {};
+        m = std::max(m, reset_max(r));
       }
+
+      return n->m_ = m;
     }
 
     static decltype(node::m_) reset_max(auto const n, auto const p) noexcept
