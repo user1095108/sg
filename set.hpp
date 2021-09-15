@@ -313,12 +313,12 @@ public:
   //
   size_type erase(Key const& k)
   {
-    return std::get<1>(sg::erase(root_, k));
+    return sg::erase(root_, k) ? 1 : 0;
   }
 
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(), std::get<0>(sg::erase(root_, *i)));
+    return iterator(root_.get(), sg::erase(root_, *i));
   }
 
   auto erase(const_iterator a, const_iterator const b)
@@ -331,7 +331,9 @@ public:
   {
     iterator r;
 
-    std::for_each(il.begin(), il.end(),
+    std::for_each(
+      il.begin(),
+      il.end(),
       [&](auto&& i) { r = erase(i); }
     );
 

@@ -222,12 +222,12 @@ inline auto erase(auto& r, auto&& k)
           delete n;
         }
 
-        return std::tuple(nxt, 1);
+        return nxt;
       }
     }
   }
 
-  return std::tuple(pointer{}, 0);
+  return pointer{};
 }
 
 }

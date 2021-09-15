@@ -525,7 +525,8 @@ public:
   auto emplace(auto&& k, auto&& v)
   {
     auto const n(
-      node::emplace(root_,
+      node::emplace(
+        root_,
         std::forward<decltype(k)>(k),
         std::forward<decltype(v)>(v)
       )
@@ -551,7 +552,9 @@ public:
   {
     iterator r;
 
-    std::for_each(il.begin(), il.end(),
+    std::for_each(
+      il.begin(),
+      il.end(),
       [&](auto&& i) { r = erase(i); }
     );
 
