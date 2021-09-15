@@ -30,6 +30,7 @@ public:
   struct node
   {
     using key_type = Key;
+    using value_type = Key;
 
     static constinit inline auto const cmp{Comp{}};
 
