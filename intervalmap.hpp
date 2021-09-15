@@ -577,20 +577,14 @@ public:
   //
   auto insert(value_type const& v)
   {
-    auto const [n, s](
-      node::emplace(root_, v.first, v.second)
-    );
-
-    return iterator(root_.get(), n);
+    return iterator(root_.get(),
+      node::emplace(root_, v.first, v.second));
   }
 
   auto insert(value_type&& v)
   {
-    auto const [n, s](
-      node::emplace(root_, std::move(v.first), std::move(v.second))
-    );
-
-    return iterator(root_.get(), n);
+    return iterator(root_.get(),
+      node::emplace(root_, std::move(v.first), std::move(v.second)));
   }
 
   template <class Iterator>
