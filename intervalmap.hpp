@@ -688,12 +688,12 @@ public:
           }
         }
 
-        if (auto const l(n->l_.get()), r(n->r_.get());
-          l && (node::cmp(mink, l->m_) < 0))
+        if (auto const l(n->l_.get()); l && (node::cmp(mink, l->m_) < 0))
         {
           n = l;
         }
-        else if (r && (c > 0) && (node::cmp(mink, r->m_) < 0))
+        else if (auto const r(n->r_.get());
+          (c > 0) && r && (node::cmp(mink, r->m_) < 0))
         {
           n = r;
         }
