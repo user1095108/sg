@@ -575,6 +575,56 @@ public:
   }
 
   //
+  auto insert(value_type const& v)
+  {
+    auto const [n, s](
+      node::emplace(root_, v.first, v.second)
+    );
+
+    return iterator(root_.get(), n);
+  }
+
+  auto insert(value_type&& v)
+  {
+    auto const [n, s](
+      node::emplace(root_, std::move(v.first), std::move(v.second))
+    );
+
+    return iterator(root_.get(), n);
+  }
+
+  template <class Iterator>
+  void insert(Iterator i, Iterator const j)
+  {
+    std::for_each(i, j,
+      [&](auto&& v)
+      {
+        if constexpr(std::is_rvalue_reference_v<decltype(v)>)
+        {
+          emplace(std::move(v.first), std::move(v.second));
+        }
+        else
+        {
+          emplace(v.first, v.second);
+        }
+      }
+    );
+  }
+
+  void insert(std::initializer_list<value_type> const il)
+  {
+    std::for_each(
+      std::execution::unseq,
+      il.begin(),
+      il.end(),
+      [&](auto&& v)
+      {
+        emplace(v);
+      }
+    );
+  }
+
+  //
   void all(Key const& k, auto g) const
   {
     auto const [mink, maxk](k);

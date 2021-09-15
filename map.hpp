@@ -379,7 +379,7 @@ public:
       node::emplace(root_, v.first, v.second)
     );
 
-    return std::tuple(setiterator<node>(root_.get(), n), s);
+    return std::tuple(iterator(root_.get(), n), s);
   }
 
   auto insert(value_type&& v)
@@ -388,7 +388,7 @@ public:
       node::emplace(root_, std::move(v.first), std::move(v.second))
     );
 
-    return std::tuple(mapiterator<node>(root_.get(), n), s);
+    return std::tuple(iterator(root_.get(), n), s);
   }
 
   template <class Iterator>
