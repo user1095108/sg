@@ -481,39 +481,44 @@ public:
 
   size_type count(Key const& k) const noexcept
   {
-    size_type c{};
-
-    auto const [mink, maxk](k);
-
-    auto const f([&](auto&& f, auto const n) -> void
+    if (auto n(root_.get()); n)
+    {
+      for (auto const [mink, maxk](k);;)
       {
-        if (n && (node::cmp(mink, n->m_) < 0))
+        if (node::cmp(mink, n->m_) < 0)
         {
-          if (node::cmp(mink, n->key()) == 0)
+          if (auto const c(node::cmp(mink, n->key())); c < 0)
           {
+            n = n->l_.get();
+          }
+          else if (c > 0)
+          {
+            n = n->r_.get();
+          }
+          else
+          {
+            size_type cnt{};
+
             std::for_each(
               std::execution::unseq,
               n->v_.cbegin(),
               n->v_.cend(),
-              [&](auto&& p)
+              [&](auto&& p) noexcept
               {
                 if (node::cmp(maxk, std::get<1>(std::get<0>(p))) == 0)
                 {
-                  ++c;
+                  ++cnt;
                 }
               }
             );
-          }
 
-          f(f, n->l_.get());
-          f(f, n->r_.get());
+            return cnt;
+          }
         }
       }
-    );
+    }
 
-    f(f, root_.get());
-
-    return c;
+    return {};
   }
 
   //
