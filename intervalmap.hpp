@@ -669,8 +669,9 @@ public:
       for (;;)
       {
         auto const c(node::cmp(maxk, n->key()));
+        auto const cg0(c > 0);
 
-        if ((c > 0) || (eq && (c == 0)))
+        if (cg0 || (eq && (c == 0)))
         {
           if (auto const i(std::find_if(
                 std::execution::unseq,
@@ -695,7 +696,7 @@ public:
           n = l;
         }
         else if (auto const r(n->r_.get());
-          (c > 0) && r && (node::cmp(mink, r->m_) < 0))
+          cg0 && r && (node::cmp(mink, r->m_) < 0))
         {
           n = r;
         }
