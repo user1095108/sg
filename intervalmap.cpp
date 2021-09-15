@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "sgitree.hpp"
+#include "intervalmap.hpp"
 
 //////////////////////////////////////////////////////////////////////////////
 void dump(auto n)
@@ -46,21 +46,16 @@ int main()
   st.emplace(std::pair(3, 5), 3);
 
   //st.root().reset(st.root().release()->rebuild());
-  dump(st.root().get());
+  dump(st.root());
 
-  std::cout << "height: " << st.height() << std::endl;
+  std::cout << "height: " << sg::height(st.root()) << std::endl;
   std::cout << "size: " << st.size() << std::endl;
   std::cout << "any: " << st.any(std::pair(0, 1)) << std::endl;
 
-  for (auto&& p: st.all(std::pair(1, 1)))
+  for (auto&& p: st.all(std::pair(1, 3)))
   {
     std::cout << '(' << p.first.first << ',' << p.first.second << ") " <<
       p.second << std::endl;
-  }
-
-  for (std::size_t i{}; i != st.root()->size(); ++i)
-  {
-    std::cout << st.root()->get(i)->k_ << std::endl;
   }
 
   return 0;

@@ -18,7 +18,8 @@
 namespace sg
 {
 
-template <typename Key, typename Value, class Comp = std::compare_three_way>
+template <typename Key, typename Value,
+  class Compare = std::compare_three_way>
 class map
 {
 public:
@@ -34,7 +35,7 @@ public:
 
     struct empty_t{};
 
-    static constinit inline auto const cmp{Comp{}};
+    static constinit inline auto const cmp{Compare{}};
 
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
@@ -200,11 +201,8 @@ private:
 
 public:
   map() = default;
-
   map(std::initializer_list<value_type> i) { *this = i; }
-
   map(map const& o) { *this = o; }
-
   map(map&&) = default;
 
   //
@@ -243,9 +241,9 @@ public:
 
   //
   void clear() { root_.reset(); }
-  bool empty() const noexcept { return !size(); }
-  size_type max_size() const noexcept { return ~size_type{} / 3; }
-  size_type size() const noexcept { return sg::size(root_.get()); }
+  auto empty() const noexcept { return !size(); }
+  auto max_size() const noexcept { return ~size_type{} / 3; }
+  auto size() const noexcept { return sg::size(root_.get()); }
 
   // iterators
   iterator begin() noexcept

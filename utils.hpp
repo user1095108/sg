@@ -158,7 +158,7 @@ inline void move(auto& n, auto& ...d)
 
         sr = size(n->r_);
       }
-      else if (c > 0)
+      else
       {
         if (sr = f(f, n->r_, d); !sr)
         {
@@ -166,11 +166,6 @@ inline void move(auto& n, auto& ...d)
         }
 
         sl = size(n->l_);
-      }
-      else
-      {
-        assert(0);
-        return 0;
       }
 
       //

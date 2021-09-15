@@ -18,7 +18,7 @@
 namespace sg
 {
 
-template <typename Key, class Comp = std::compare_three_way>
+template <typename Key, class Compare = std::compare_three_way>
 class set
 {
 public:
@@ -29,10 +29,9 @@ public:
 
   struct node
   {
-    using key_type = Key;
     using value_type = Key;
 
-    static constinit inline auto const cmp{Comp{}};
+    static constinit inline auto const cmp{Compare{}};
 
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
@@ -180,11 +179,8 @@ private:
 
 public:
   set() = default;
-
   set(std::initializer_list<Key> i) { *this = i; }
-
   set(set const& o) { *this = o; }
-
   set(set&&) = default;
 
   //
@@ -223,9 +219,9 @@ public:
 
   //
   void clear() { root_.reset(); }
-  bool empty() const noexcept { return !size(); }
-  size_type max_size() const noexcept { return ~size_type{} / 3; }
-  size_type size() const noexcept { return sg::size(root_); }
+  auto empty() const noexcept { return !size(); }
+  auto max_size() const noexcept { return ~size_type{} / 3; }
+  auto size() const noexcept { return sg::size(root_); }
 
   // iterators
   iterator begin() noexcept
