@@ -333,11 +333,6 @@ public:
   }
 
   //
-  size_type erase(Key const& k)
-  {
-    return std::get<1>(sg::erase(root_, k));
-  }
-
   iterator erase(const_iterator const i)
   {
     return iterator(root_.get(),
@@ -359,6 +354,11 @@ public:
     );
 
     return r;
+  }
+
+  size_type erase(Key const& k)
+  {
+    return std::get<1>(sg::erase(root_, k));
   }
 
   //

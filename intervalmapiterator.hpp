@@ -85,14 +85,8 @@ public:
   {
     if (n_->v_.end() == i_)
     {
-      if ((n_ = sg::next(r_, n_)); n_)
-      {
-        i_ = n_->v_.begin();
-      }
-      else
-      {
-        i_ = {};
-      }
+      n_ = sg::next(r_, n_);
+      i_ = n_ ? n_->v_.begin() : decltype(i_){};
     }
     else
     {
@@ -106,14 +100,8 @@ public:
   {
     if (!n_ || (n_->v_.begin() == i_))
     {
-      if ((n_ = sg::prev(r_, n_)); n_)
-      {
-        i_ = std::prev(n_->v_.end());
-      }
-      else
-      {
-        i_ = {};
-      }
+      n_ = sg::prev(r_, n_);
+      i_ = n_ ? std::prev(n_->v_.end()) : decltype(i_){};
     }
     else
     {

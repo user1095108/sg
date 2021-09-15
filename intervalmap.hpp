@@ -67,7 +67,6 @@ public:
     //
     static auto emplace(auto&& r, auto&& k, auto&& v)
     {
-      bool s{true};
       node* q{};
 
       auto const& [mink, maxk](k);
@@ -113,27 +112,10 @@ public:
           else
           {
             q = n.get();
-
-            if (auto const i(std::find_if(
-                std::execution::unseq,
-                n->v_.cbegin(),
-                n->v_.cend(),
-                [&](auto&& p) noexcept
-                {
-                  return cmp(maxk, std::get<1>(std::get<0>(p))) == 0;
-                }
-              )
-            ); n->v_.cend() == i)
-            {
-              n->v_.emplace_back(
-                std::forward<decltype(k)>(k),
-                std::forward<decltype(v)>(v)
-              );
-            }
-            else
-            {
-              s = false;
-            }
+            n->v_.emplace_back(
+              std::forward<decltype(k)>(k),
+              std::forward<decltype(v)>(v)
+            );
 
             return 0;
           }
@@ -149,7 +131,7 @@ public:
 
       f(f, r);
 
-      return std::tuple(q, s);
+      return q;
     }
 
     static auto erase(auto& r, auto&& k)
@@ -175,6 +157,8 @@ public:
           }
           else
           {
+            auto s0(n->v_.size());
+
             std::erase_if(
               n->v_,
               [&](auto&& p) noexcept
@@ -183,15 +167,14 @@ public:
               }
             );
 
-            if (n->v_.size())
+            if (auto const s1(n->v_.size()); s1)
             {
-              return std::tuple(n, 1);
+              return std::tuple(n, s1 - s0);
             }
             else
             {
               auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
-              auto const s(n->v_.size());
               auto const nxt(next(r.get(), n));
               bool rebuilt{};
 
@@ -217,7 +200,7 @@ public:
                 node::reset_max(r.get());
               }
 
-              return std::tuple(nxt, s);
+              return std::tuple(nxt, s0);
             }
           }
         }
@@ -280,32 +263,29 @@ public:
       return (!f(f, n, d) || ...);
     }
 
-    static decltype(m_) reset_max(auto const n) noexcept
+    static decltype(node::m_) reset_max(auto const n) noexcept
     {
-      auto m(n->k_);
+      if (n)
+      {
+        decltype(node::m_) m(n->k_);
 
-      std::for_each(
-        n->v_.cbegin(),
-        n->v_.cend(),
-        [&](auto&& p) noexcept
-        {
-          m = std::max(m, std::get<1>(std::get<0>(p)));
-        }
-      );
-
-      invoke_all(
-        [&](auto const n) noexcept
-        {
-          if (n)
+        std::for_each(
+          n->v_.cbegin(),
+          n->v_.cend(),
+          [&](auto&& p) noexcept
           {
-            m = std::max(m, reset_max(n));
+            m = std::max(m, std::get<1>(std::get<0>(p)));
           }
-        },
-        n->l_.get(),
-        n->r_.get()
-      );
+        );
 
-      return n->m_ = m;
+        return n->m_ = std::max(
+          {m, reset_max(n->l_.get()), reset_max(n->r_.get())}
+        );
+      }
+      else
+      {
+        return {};
+      }
     }
 
     auto rebuild()
@@ -336,6 +316,8 @@ public:
               n->l_.release();
               n->r_.release();
 
+              reset_max(n);
+
               break;
 
             case 1:
@@ -350,30 +332,42 @@ public:
 
                 n->r_.reset(p);
 
+                reset_max(n);
+
                 break;
               }
 
             default:
-              assert(i);
-              n->l_.release();
-              n->l_.reset(f(f, a, i - 1));
+              {
+                assert(i);
+                n->l_.release();
+                n->r_.release();
 
-              n->r_.release();
-              n->r_.reset(f(f, i + 1, b));
+                auto m(reset_max(n));
 
-              break;
+                if (auto const p(f(f, a, i - 1)); p)
+                {
+                  m = std::max(m, p->m_);
+                  n->l_.reset(p);
+                }
+
+                if (auto const p(f(f, i + 1, b)); p)
+                {
+                  m = std::max(m, p->m_);
+                  n->r_.reset(p);
+                }
+
+                n->m_ = m;
+
+                break;
+              }
           }
 
           return n;
         }
       );
 
-      //
-      auto const p(f(f, 0, l.size() - 1));
-
-      reset_max(p);
-
-      return p;
+      return f(f, 0, l.size() - 1);
     }
   };
 
@@ -477,69 +471,102 @@ public:
   //
   auto emplace(auto&& k, auto&& v)
   {
-    auto const [n, s](
+    auto const n(
       node::emplace(root_,
         std::forward<decltype(k)>(k),
         std::forward<decltype(v)>(v)
       )
     );
 
-    return std::tuple(intervalmapiterator<node>(root_.get(), n), s);
+    return intervalmapiterator<node>(root_.get(), n);
   }
 
   //
-  auto all(Key const& k) const
+  iterator erase(const_iterator const i)
   {
-    std::vector<std::pair<Key, std::reference_wrapper<Value const>>> r;
+    return iterator(root_.get(),
+      std::get<0>(sg::erase(root_, std::get<0>(*i))));
+  }
 
-    auto const [mink, maxk](k);
-    auto const eq(node::cmp(mink, maxk) == 0);
+  auto erase(const_iterator a, const_iterator const b)
+  {
+    for (; a != b; a = erase(a));
+    return a;
+  }
 
-    auto const f([&](auto&& f, auto const n) -> void
-      {
-        assert(n);
-        auto&& key(n->key());
+  auto erase(std::initializer_list<const_iterator> il)
+  {
+    iterator r;
 
-        if (auto const c(node::cmp(maxk, key)); (c > 0) || (eq && (c == 0)))
-        {
-          std::for_each(
-            std::execution::unseq,
-            n->v_.cbegin(),
-            n->v_.cend(),
-            [&](auto&& p)
-            {
-              if (auto const pkey(std::get<0>(p));
-                node::cmp(mink, std::get<1>(pkey)) < 0)
-              {
-                r.emplace_back(
-                  pkey,
-                  std::cref(std::get<1>(p))
-                );
-              }
-            }
-          );
-        }
-
-        invoke_all(
-          [&](auto const n)
-          {
-            if (n && (node::cmp(mink, n->m_) < 0))
-            {
-              f(f, n);
-            }
-          },
-          n->l_.get(),
-          n->r_.get()
-        );
-      }
+    std::for_each(il.begin(), il.end(),
+      [&](auto&& i) { r = erase(i); }
     );
+
+    return r;
+  }
+
+  size_type erase(Key const& k)
+  {
+    return std::get<1>(sg::erase(root_, k));
+  }
+
+  //
+  auto find(Key const& k) noexcept
+  {
+    return iterator(root_.get(), sg::find(root_.get(), k));
+  }
+
+  auto find(Key const& k) const noexcept
+  {
+    return const_iterator(root_.get(), sg::find(root_.get(), k));
+  }
+
+  //
+  void all(Key const& k, auto g) const
+  {
+    auto const [mink, maxk](k);
 
     if (root_ && (node::cmp(mink, root_->m_) < 0))
     {
+      auto const eq(node::cmp(mink, maxk) == 0);
+
+      auto const f([&](auto&& f, auto const n) -> void
+        {
+          assert(n);
+          auto&& key(n->key());
+
+          if (auto const c(node::cmp(maxk, key)); (c > 0) || (eq && (c == 0)))
+          {
+            std::for_each(
+              std::execution::unseq,
+              n->v_.cbegin(),
+              n->v_.cend(),
+              [&](auto&& p)
+              {
+                if (node::cmp(mink, std::get<1>(std::get<0>(p))) < 0)
+                {
+                  g(std::forward<decltype(p)>(p));
+                }
+              }
+            );
+          }
+
+          invoke_all(
+            [&](auto const n)
+            {
+              if (n && (node::cmp(mink, n->m_) < 0))
+              {
+                f(f, n);
+              }
+            },
+            n->l_.get(),
+            n->r_.get()
+          );
+        }
+      );
+
       f(f, root_.get());
     }
-
-    return r;
   }
 
   bool any(Key const& k) const noexcept
