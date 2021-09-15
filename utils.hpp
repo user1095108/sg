@@ -130,7 +130,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
       }
       else
       {
-        if (auto const r(n->r_.get()); !g && r)
+        if (auto const r(n->r_.get()); r)
         {
           g = sg::first_node(r);
         }
