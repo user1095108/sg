@@ -267,32 +267,8 @@ public:
       (f(f, n, d), ...);
     }
 
-    static decltype(node::m_) reset_max(auto const n) noexcept
-    {
-      decltype(node::m_) m(n->k_);
-
-      std::for_each(
-        n->v_.cbegin(),
-        n->v_.cend(),
-        [&](auto&& p) noexcept
-        {
-          m = std::max(m, std::get<1>(std::get<0>(p)));
-        }
-      );
-
-      if (auto const r(n->r_.get()); r)
-      {
-        m = std::max(m, reset_max(r));
-      }
-
-      return n->m_ = m;
-    }
-
     static decltype(node::m_) reset_max(auto const n, auto const p) noexcept
     {
-      assert(n);
-      assert(p);
-
       auto&& key(p->key());
 
       auto const f([&](auto&& f, auto const n) noexcept -> decltype(node::m_)
@@ -348,6 +324,27 @@ public:
       return f(f, n);
     }
 
+    static decltype(node::m_) reset_subtree_max(auto const n,
+      auto const ...c) noexcept
+    {
+      decltype(node::m_) m(n->k_);
+
+      std::for_each(
+        n->v_.cbegin(),
+        n->v_.cend(),
+        [&](auto&& p) noexcept
+        {
+          m = std::max(m, std::get<1>(std::get<0>(p)));
+        }
+      );
+
+      [&]<auto ...I>(std::index_sequence<I...>) noexcept
+      {
+        ((m = c ? std::max(m, reset_subtree_max(c)) : m), ...);
+      }(std::make_index_sequence<sizeof...(c)>());
+
+      return n->m_ = m;
+    }
 
     auto rebuild()
     {
@@ -377,7 +374,7 @@ public:
               n->l_.release();
               n->r_.release();
 
-              reset_max(n);
+              reset_subtree_max(n);
 
               break;
 
@@ -393,7 +390,7 @@ public:
 
                 n->r_.reset(p);
 
-                reset_max(n);
+                reset_subtree_max(n, n->r_.get());
 
                 break;
               }
@@ -404,7 +401,7 @@ public:
                 n->l_.release();
                 n->r_.release();
 
-                auto m(reset_max(n));
+                auto m(reset_subtree_max(n));
 
                 if (auto const p(f(f, a, i - 1)); p)
                 {
@@ -739,7 +736,6 @@ public:
                 n->v_.cend(),
                 [&](auto&& p) noexcept
                 {
-                  // mink < key_maximum
                   return node::cmp(mink, std::get<1>(std::get<0>(p))) < 0;
                 }
               )
@@ -751,6 +747,7 @@ public:
           }
         }
 
+        //
         if (auto const l(n->l_.get()); l && (node::cmp(mink, l->m_) < 0))
         {
           n = l;
