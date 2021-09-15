@@ -469,6 +469,54 @@ public:
   }
 
   //
+  bool contains(Key const& k) const
+  {
+    return bool(sg::find(root_.get(), k));
+  }
+
+  bool contains(auto&& k) const
+  {
+    return bool(sg::find(root_.get(), std::forward<decltype(k)>(k)));
+  }
+
+  size_type count(Key const& k) const noexcept
+  {
+    size_type c{};
+
+    auto const [mink, maxk](k);
+
+    auto const f([&](auto&& f, auto const n) -> void
+      {
+        if (n && (node::cmp(mink, n->m_) < 0))
+        {
+          if (node::cmp(mink, n->key()) == 0)
+          {
+            std::for_each(
+              std::execution::unseq,
+              n->v_.cbegin(),
+              n->v_.cend(),
+              [&](auto&& p)
+              {
+                if (node::cmp(maxk, std::get<1>(std::get<0>(p))) == 0)
+                {
+                  ++c;
+                }
+              }
+            );
+          }
+
+          f(f, n->l_.get());
+          f(f, n->r_.get());
+        }
+      }
+    );
+
+    f(f, root_.get());
+
+    return c;
+  }
+
+  //
   auto emplace(auto&& k, auto&& v)
   {
     auto const n(
