@@ -664,7 +664,7 @@ public:
 
     if (auto n(root_.get()); n && (node::cmp(mink, n->m_) < 0))
     {
-      for (; n;)
+      do
       {
         if (auto const c(node::cmp(maxk, n->key()));
           (c > 0) || (eq && (c == 0)))
@@ -694,6 +694,7 @@ public:
 
         n = n->l_.get();
       }
+      while (n);
     }
 
     return false;
