@@ -341,7 +341,7 @@ public:
       [&]<auto ...I>(std::index_sequence<I...>) noexcept
       {
         ((m = c ? std::max(m, reset_subtree_max(c)) : m), ...);
-      }(std::make_index_sequence<sizeof...(c)>());
+      }(std::index_sequence_for<decltype(c)...>());
 
       return n->m_ = m;
     }
