@@ -18,7 +18,7 @@ void dump(auto n)
       {
         q.insert(q.end(), {n->l_.get(), n->r_.get()});
 
-        std::cout << '(' << n->k_ << ',' << n->m_ << ')';
+        std::cout << '(' << n->key() << ',' << n->m_ << ')';
       }
       else
       {
@@ -51,9 +51,6 @@ int main()
   std::cout << "height: " << sg::height(st.root()) << std::endl;
   std::cout << "size: " << st.size() << std::endl;
   std::cout << "any: " << st.any(std::pair(0, 1)) << std::endl;
-  std::cout << "er: " <<
-    std::get<0>(st.equal_range(std::pair(2, 1)))->first.first << " " <<
-    std::get<1>(st.equal_range(std::pair(2, 1)))->first.first << std::endl;
 
   std::for_each(
     st.crbegin(),
