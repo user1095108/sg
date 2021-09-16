@@ -257,6 +257,7 @@ public:
   multimap(std::initializer_list<value_type> i) { *this = i; }
   multimap(multimap const& o) { *this = o; }
   multimap(multimap&&) = default;
+  multimap(auto const i, decltype(i) j) { insert(i, j); }
 
   //
   auto& operator=(auto&& o) requires(
