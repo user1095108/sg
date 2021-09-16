@@ -607,22 +607,7 @@ public:
           }
           else
           {
-            size_type cnt{};
-
-            std::for_each(
-              std::execution::unseq,
-              n->v_.cbegin(),
-              n->v_.cend(),
-              [&](auto&& p) noexcept
-              {
-                if (node::cmp(maxk, std::get<1>(std::get<0>(p))) == 0)
-                {
-                  ++cnt;
-                }
-              }
-            );
-
-            return cnt;
+            return n->v_.size();
           }
         }
       }
