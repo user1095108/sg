@@ -366,15 +366,7 @@ public:
 
   auto erase(std::initializer_list<const_iterator> il)
   {
-    iterator r;
-
-    std::for_each(
-      il.begin(),
-      il.end(),
-      [&](auto&& i) { r = erase(i); }
-    );
-
-    return r;
+    return erase(il.begin(), il.end());
   }
 
   //
@@ -422,15 +414,7 @@ public:
 
   void insert(std::initializer_list<value_type> il)
   {
-    std::for_each(
-      std::execution::unseq,
-      il.begin(),
-      il.end(),
-      [&](auto&& v)
-      {
-        emplace(v);
-      }
-    );
+    insert(il.begin(), il.end());
   }
 
   //

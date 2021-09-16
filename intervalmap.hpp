@@ -633,7 +633,7 @@ public:
   //
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(), std::get<0>(node::erase(root_, i)));
+    return node::erase(root_, i);
   }
 
   auto erase(const_iterator a, const_iterator const b)
@@ -645,15 +645,7 @@ public:
 
   auto erase(std::initializer_list<const_iterator> il)
   {
-    iterator r;
-
-    std::for_each(
-      il.begin(),
-      il.end(),
-      [&](auto&& i) { r = erase(i); }
-    );
-
-    return r;
+    return erase(il.begin(), il.end());
   }
 
   size_type erase(Key const& k)
