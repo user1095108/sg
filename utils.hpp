@@ -1,5 +1,5 @@
-#ifndef DS_BSTUTILS_HPP
-#define DS_BSTUTILS_HPP
+#ifndef SG_UTILS_HPP
+#define SG_UTILS_HPP
 # pragma once
 
 #include <cassert>
@@ -268,4 +268,4 @@ inline auto erase(auto& r, auto&& k)
 
 }
 
-#endif // DS_BSTUTILS_HPP
+#endif // SG_UTILS_HPP
