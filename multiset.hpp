@@ -19,15 +19,21 @@
 namespace sg
 {
 
-template <typename Key, typename Value,
-  class Compare = std::compare_three_way>
+template <typename Key, class Compare = std::compare_three_way>
 class multiset
 {
 public:
+  struct node;
+
   using key_type = Key;
   using value_type = Key;
 
   using size_type = std::size_t;
+
+  using const_iterator = intervalmapiterator<node const>;
+  using iterator = intervalmapiterator<node>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   struct node
   {
@@ -38,20 +44,18 @@ public:
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
 
-    Key const k_;
-    std::list<std::reference_wrapper<value_type const>> v_;
+    std::list<value_type> v_;
 
-    explicit node(auto&& k, auto&& v):
-      k_(std::forward<decltype(k)>(k))
+    explicit node(auto&& k)
     {
-      v_.emplace_back(k_);
+      v_.emplace_back(std::forward<decltype(k)>(k));
     }
 
     //
-    auto&& key() const noexcept { return k_; }
+    auto&& key() const noexcept { return v_.front(); }
 
     //
-    static auto emplace(auto&& r, auto&& k, auto&& v)
+    static auto emplace(auto&& r, auto&& k)
     {
       node* q{};
 
@@ -88,7 +92,7 @@ public:
           else
           {
             q = n.get();
-            q->v_.emplace_back(q->k_);
+            q->v_.emplace_back(std::forward<decltype(k)>(k));
 
             return 0;
           }
@@ -233,11 +237,6 @@ public:
     }
   };
 
-  using const_iterator = intervalmapiterator<node const>;
-  using iterator = intervalmapiterator<node>;
-  using reverse_iterator = std::reverse_iterator<iterator>;
-  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
-
 private:
   std::unique_ptr<node> root_;
 
@@ -381,13 +380,12 @@ public:
   }
 
   //
-  auto emplace(auto&& k, auto&& v)
+  auto emplace(auto&& k)
   {
     auto const n(
       node::emplace(
         root_,
-        std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v)
+        std::forward<decltype(k)>(k)
       )
     );
 
@@ -476,14 +474,12 @@ public:
   //
   auto insert(value_type const& v)
   {
-    return iterator(root_.get(),
-      node::emplace(root_, v.first, v.second));
+    return iterator(root_.get(), node::emplace(root_, v.first));
   }
 
   auto insert(value_type&& v)
   {
-    return iterator(root_.get(),
-      node::emplace(root_, std::move(v.first), std::move(v.second)));
+    return iterator(root_.get(), node::emplace(root_, std::move(v)));
   }
 
   void insert(auto const i, decltype(i) j)
@@ -494,7 +490,7 @@ public:
       j,
       [&](auto&& v)
       {
-        emplace(std::get<0>(v), std::get<1>(v));
+        emplace(v);
       }
     );
   }
@@ -507,7 +503,7 @@ public:
       il.end(),
       [&](auto&& v)
       {
-        emplace(std::get<0>(v), std::get<1>(v));
+        emplace(v);
       }
     );
   }

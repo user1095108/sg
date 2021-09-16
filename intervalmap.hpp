@@ -24,11 +24,18 @@ template <typename Key, typename Value,
 class intervalmap
 {
 public:
+  struct node;
+
   using key_type = Key;
   using mapped_type = Value;
   using value_type = std::pair<Key const, Value>;
 
   using size_type = std::size_t;
+
+  using const_iterator = intervalmapiterator<node const>;
+  using iterator = intervalmapiterator<node>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   struct node
   {
@@ -451,11 +458,6 @@ public:
       return f(f, 0, l.size() - 1);
     }
   };
-
-  using const_iterator = intervalmapiterator<node const>;
-  using iterator = intervalmapiterator<node>;
-  using reverse_iterator = std::reverse_iterator<iterator>;
-  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
   std::unique_ptr<node> root_;
