@@ -23,12 +23,6 @@ template <typename Key, typename Value,
   class Compare = std::compare_three_way>
 class intervalmap
 {
-  static constexpr auto invoke_all(auto f, auto&& ...a) noexcept(noexcept(
-    (f(std::forward<decltype(a)>(a)), ...)))
-  {
-    (f(std::forward<decltype(a)>(a)), ...);
-  }
-
 public:
   using key_type = Key;
   using mapped_type = Value;
@@ -48,7 +42,7 @@ public:
     typename std::tuple_element_t<0, Key> const k_;
     typename std::tuple_element_t<1, Key> m_;
 
-    std::list<std::pair<Key const, Value>> v_;
+    std::list<value_type> v_;
 
     explicit node(auto&& k, auto&& v):
       k_(std::get<0>(k)),

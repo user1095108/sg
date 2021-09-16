@@ -29,7 +29,7 @@ public:
 
   struct node
   {
-    using value_type = Key;
+    using value_type = set::value_type;
 
     static constinit inline auto const cmp{Compare{}};
 

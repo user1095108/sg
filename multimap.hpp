@@ -1,5 +1,5 @@
-#ifndef SG_MAP_HPP
-# define SG_MAP_HPP
+#ifndef SG_MULTIMAP_HPP
+# define SG_MULTIMAP_HPP
 # pragma once
 
 #include <algorithm>
@@ -9,76 +9,66 @@
 
 #include <memory>
 
+#include <list>
 #include <vector>
 
 #include "utils.hpp"
 
-#include "mapiterator.hpp"
+#include "intervalmapiterator.hpp"
 
 namespace sg
 {
 
 template <typename Key, typename Value,
   class Compare = std::compare_three_way>
-class map
+class multimap
 {
 public:
   using key_type = Key;
   using mapped_type = Value;
-  using value_type = std::pair<Key const, Value>;
+  using value_type = std::pair<Key const&, Value>;
 
   using size_type = std::size_t;
 
   struct node
   {
-    using value_type = map::value_type;
-
-    struct empty_t{};
+    using value_type = multimap::value_type;
 
     static constinit inline auto const cmp{Compare{}};
 
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
 
-    value_type kv_;
-
-    explicit node(auto&& k):
-      kv_(std::forward<decltype(k)>(k), Value())
-    {
-    }
+    Key const k_;
+    std::list<value_type> v_;
 
     explicit node(auto&& k, auto&& v):
-      kv_(std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v))
+      k_(std::forward<decltype(k)>(k))
     {
+      v_.emplace_back(
+        k_,
+        std::forward<decltype(v)>(v)
+      );
     }
 
     //
-    auto&& key() const noexcept { return std::get<0>(kv_); }
+    auto&& key() const noexcept { return k_; }
 
     //
     static auto emplace(auto&& r, auto&& k, auto&& v)
     {
-      bool s{true};
       node* q{};
 
-      auto const f([&](auto&& f, auto& n) noexcept -> size_type
+      auto const f([&](auto&& f, auto& n) noexcept -> std::size_t
         {
           if (!n)
           {
-            if constexpr(!std::is_same_v<decltype(v), empty_t&&>)
-            {
-              n.reset(
-                q = new node(
-                  std::forward<decltype(k)>(k),
-                  std::forward<decltype(v)>(v)
-                )
-              );
-            }
-            else
-            {
-              n.reset(q = new node(std::forward<decltype(k)>(k)));
-            }
+            n.reset(
+              q = new node(
+                std::forward<decltype(k)>(k),
+                std::forward<decltype(v)>(v)
+              )
+            );
 
             return 1;
           }
@@ -107,7 +97,10 @@ public:
           else
           {
             q = n.get();
-            s = false;
+            n->v_.emplace_back(
+              std::forward<decltype(k)>(k),
+              std::forward<decltype(v)>(v)
+            );
 
             return 0;
           }
@@ -123,8 +116,76 @@ public:
 
       f(f, r);
 
-      return std::tuple(q, s);
+      return q;
     }
+
+    static auto erase(auto& r, auto&& k)
+    {
+      using pointer = typename std::remove_cvref_t<decltype(r)>::pointer;
+      using node = std::remove_pointer_t<pointer>;
+
+      if (auto n(r.get()); n)
+      {
+        for (pointer p{};;)
+        {
+          if (auto const c(node::cmp(k, n->key())); c < 0)
+          {
+            p = n;
+            n = n->l_.get();
+          }
+          else if (c > 0)
+          {
+            p = n;
+            n = n->r_.get();
+          }
+          else
+          {
+            auto const s0(n->v_.size());
+
+            std::erase_if(
+              n->v_,
+              [&](auto&& p) noexcept
+              {
+                return cmp(k, std::get<0>(p)) == 0;
+              }
+            );
+
+            if (auto const s1(n->v_.size()); s1)
+            {
+              return std::tuple(n, s0 - s1);
+            }
+            else
+            {
+              auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+
+              auto const nxt(next(r.get(), n));
+
+              if (!n->l_ && !n->r_)
+              {
+                q.reset();
+              }
+              else if (!n->l_ || !n->r_)
+              {
+                q = std::move(n->l_ ? n->l_ : n->r_);
+              }
+              else
+              {
+                q.release(); // order important
+
+                sg::move(r, n->l_, n->r_);
+
+                delete n;
+              }
+
+              return std::tuple(nxt, s0);
+            }
+          }
+        }
+      }
+
+      return std::tuple(pointer{}, size_type{});
+    }
+
 
     auto rebuild()
     {
@@ -191,8 +252,8 @@ public:
     }
   };
 
-  using const_iterator = mapiterator<node const>;
-  using iterator = mapiterator<node>;
+  using const_iterator = intervalmapiterator<node const>;
+  using iterator = intervalmapiterator<node>;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -200,38 +261,10 @@ private:
   std::unique_ptr<node> root_;
 
 public:
-  map() = default;
-  map(std::initializer_list<value_type> i) { *this = i; }
-  map(map const& o) { *this = o; }
-  map(map&&) = default;
+  multimap() = default;
+  multimap(multimap&&) = default;
 
-  //
-  auto& operator=(auto&& o) requires(
-    std::is_same_v<decltype(o), map&> ||
-    std::is_same_v<decltype(o), map const&> ||
-    std::is_same_v<decltype(o), map const&&> ||
-    std::is_same_v<
-      std::remove_cvref_t<decltype(o)>,
-      std::initializer_list<value_type>
-    >
-  )
-  {
-    clear();
-
-    std::for_each(
-      std::execution::unseq,
-      o.begin(),
-      o.end(),
-      [&](auto&& p)
-      {
-        emplace(std::get<0>(p), std::get<1>(p));
-      }
-    );
-
-    return *this;
-  }
-
-  auto& operator=(map&& o) noexcept
+  auto& operator=(multimap&& o) noexcept
   {
     return root_ = std::move(o.root_), *this;
   }
@@ -241,9 +274,19 @@ public:
 
   //
   void clear() { root_.reset(); }
-  auto empty() const noexcept { return !size(); }
+  bool empty() const noexcept { return !size(); }
   auto max_size() const noexcept { return ~size_type{} / 3; }
-  auto size() const noexcept { return sg::size(root_.get()); }
+  auto size() const noexcept
+  {
+    static constinit auto const f(
+      [](auto&& f, auto const& n) noexcept -> size_type
+      {
+        return n ? n->v_.size() + f(f, n->l_) + f(f, n->r_) : 0;
+      }
+    );
+
+    return f(f, root_);
+  }
 
   // iterators
   iterator begin() noexcept
@@ -259,7 +302,7 @@ public:
   const_iterator begin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), node::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -307,22 +350,59 @@ public:
   }
 
   //
-  auto& operator[](Key const& k)
-  {
-    return std::get<0>(node::emplace(root_, k,
-      typename node::empty_t()))->kv_.second;
-  }
-
-  //
-  size_type count(Key const& k) const noexcept
+  bool contains(Key const& k) const
   {
     return bool(sg::find(root_.get(), k));
+  }
+
+  bool contains(auto&& k) const
+  {
+    return bool(sg::find(root_.get(), std::forward<decltype(k)>(k)));
+  }
+
+  size_type count(Key const& k) const noexcept
+  {
+    if (auto n(root_.get()); n)
+    {
+      for (;;)
+      {
+        if (auto const c(node::cmp(k, n->key())); c < 0)
+        {
+          n = n->l_.get();
+        }
+        else if (c > 0)
+        {
+          n = n->r_.get();
+        }
+        else
+        {
+          size_type cnt{};
+
+          std::for_each(
+            std::execution::unseq,
+            n->v_.cbegin(),
+            n->v_.cend(),
+            [&](auto&& p) noexcept
+            {
+              if (node::cmp(k, std::get<0>(p)) == 0)
+              {
+                ++cnt;
+              }
+            }
+          );
+
+          return cnt;
+        }
+      }
+    }
+
+    return {};
   }
 
   //
   auto emplace(auto&& k, auto&& v)
   {
-    auto const [n, s](
+    auto const n(
       node::emplace(
         root_,
         std::forward<decltype(k)>(k),
@@ -330,7 +410,39 @@ public:
       )
     );
 
-    return std::tuple(iterator(root_.get(), n), s);
+    return iterator(root_.get(), n);
+  }
+
+  //
+  iterator erase(const_iterator const i)
+  {
+    return iterator(root_.get(),
+      std::get<0>(node::erase(root_, std::get<0>(*i))));
+  }
+
+  auto erase(const_iterator a, const_iterator const b)
+  {
+    for (; a != b; a = erase(a));
+
+    return a;
+  }
+
+  auto erase(std::initializer_list<const_iterator> il)
+  {
+    iterator r;
+
+    std::for_each(
+      il.begin(),
+      il.end(),
+      [&](auto&& i) { r = erase(i); }
+    );
+
+    return r;
+  }
+
+  size_type erase(Key const& k)
+  {
+    return std::get<1>(node::erase(root_, k));
   }
 
   //
@@ -371,36 +483,6 @@ public:
   }
 
   //
-  iterator erase(const_iterator const i)
-  {
-    return iterator(root_.get(), sg::erase(root_, std::get<0>(*i)));
-  }
-
-  auto erase(const_iterator a, const_iterator const b)
-  {
-    for (; a != b; a = erase(a));
-    return a;
-  }
-
-  auto erase(std::initializer_list<const_iterator> il)
-  {
-    iterator r;
-
-    std::for_each(
-      il.begin(),
-      il.end(),
-      [&](auto&& i) { r = erase(i); }
-    );
-
-    return r;
-  }
-
-  size_type erase(Key const& k)
-  {
-    return sg::erase(root_, k) ? 1 : 0;
-  }
-
-  //
   auto find(Key const& k) noexcept
   {
     return iterator(root_.get(), sg::find(root_.get(), k));
@@ -414,20 +496,14 @@ public:
   //
   auto insert(value_type const& v)
   {
-    auto const [n, s](
-      node::emplace(root_, v.first, v.second)
-    );
-
-    return std::tuple(iterator(root_.get(), n), s);
+    return iterator(root_.get(),
+      node::emplace(root_, v.first, v.second));
   }
 
   auto insert(value_type&& v)
   {
-    auto const [n, s](
-      node::emplace(root_, std::move(v.first), std::move(v.second))
-    );
-
-    return std::tuple(iterator(root_.get(), n), s);
+    return iterator(root_.get(),
+      node::emplace(root_, std::move(v.first), std::move(v.second)));
   }
 
   void insert(auto const i, decltype(i) j)
@@ -505,4 +581,4 @@ public:
 
 }
 
-#endif // SG_MAP_HPP
+#endif // SG_MULTIMAP_HPP
