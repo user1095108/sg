@@ -46,20 +46,18 @@ public:
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
 
-    Key const k_;
     std::list<value_type> v_;
 
-    explicit node(auto&& k, auto&& v):
-      k_(std::forward<decltype(k)>(k))
+    explicit node(auto&& k, auto&& v)
     {
       v_.emplace_back(
-        k_,
+        std::forward<decltype(k)>(k),
         std::forward<decltype(v)>(v)
       );
     }
 
     //
-    auto&& key() const noexcept { return k_; }
+    auto&& key() const noexcept { return std::get<0>(v_.front()); }
 
     //
     static auto emplace(auto&& r, auto&& k, auto&& v)
@@ -105,7 +103,7 @@ public:
           {
             q = n.get();
             q->v_.emplace_back(
-              q->k_,
+              std::forward<decltype(k)>(k),
               std::forward<decltype(v)>(v)
             );
 
