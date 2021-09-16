@@ -186,7 +186,6 @@ public:
       return std::tuple(pointer{}, size_type{});
     }
 
-
     auto rebuild()
     {
       std::vector<node*> l;

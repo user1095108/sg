@@ -32,7 +32,7 @@ public:
 
   struct node
   {
-    using value_type = std::pair<Key const, Value>;
+    using value_type = intervalmap::value_type;
 
     static constinit inline auto const cmp{Compare{}};
 
