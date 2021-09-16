@@ -52,6 +52,13 @@ public:
     }
   }
 
+  intervalmapiterator(T* const r, T* const n, decltype(i_) const i) noexcept:
+    r_(r),
+    n_(n),
+    i_(i)
+  {
+  }
+
   intervalmapiterator(intervalmapiterator const&) = default;
   intervalmapiterator(intervalmapiterator&&) = default;
 
@@ -120,8 +127,12 @@ public:
   }
 
   // member access
-  auto operator->() const noexcept { return i_; }
+  auto& operator->() const noexcept { return i_; }
   auto& operator*() const noexcept { return *i_; }
+
+  //
+  auto& iterator() const noexcept { return i_; }
+  auto node() const noexcept { return n_; }
 };
 
 #endif // SG_INTERVALMAPITERATOR_HPP

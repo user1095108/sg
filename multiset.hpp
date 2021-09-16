@@ -39,11 +39,12 @@ public:
     std::unique_ptr<node> r_;
 
     Key const k_;
-    size_type c_(1);
+    std::list<std::reference_wrapper<value_type const>> v_;
 
     explicit node(auto&& k, auto&& v):
       k_(std::forward<decltype(k)>(k))
     {
+      v_.emplace_back(k_);
     }
 
     //
@@ -58,12 +59,7 @@ public:
         {
           if (!n)
           {
-            n.reset(
-              q = new node(
-                std::forward<decltype(k)>(k),
-                std::forward<decltype(v)>(v)
-              )
-            );
+            n.reset(q = new node(std::forward<decltype(k)>(k)));
 
             return 1;
           }
@@ -92,7 +88,7 @@ public:
           else
           {
             q = n.get();
-            ++n->c_;
+            q->v_.emplace_back(q->k_);
 
             return 0;
           }
@@ -109,6 +105,15 @@ public:
       f(f, r);
 
       return q;
+    }
+
+    static auto erase(auto& r, const_iterator const i)
+    {
+      auto const n(const_cast<node*>(i.node()));
+
+      return 1 == n->v_.size() ?
+        iterator{r.get(), std::get<0>(node::erase(r, n->key()))} :
+        iterator{r.get(), n, n->v_.erase(i.iterator())};
     }
 
     static auto erase(auto& r, auto&& k)
@@ -132,37 +137,30 @@ public:
           }
           else
           {
-            --n->c_;
+            auto const s(n->v_.size());
 
-            if (auto const s(n->c_); s)
+            auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+
+            auto const nxt(next(r.get(), n));
+
+            if (!n->l_ && !n->r_)
             {
-              return std::tuple(n, 1);
+              q.reset();
+            }
+            else if (!n->l_ || !n->r_)
+            {
+              q = std::move(n->l_ ? n->l_ : n->r_);
             }
             else
             {
-              auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+              q.release(); // order important
 
-              auto const nxt(next(r.get(), n));
+              sg::move(r, n->l_, n->r_);
 
-              if (!n->l_ && !n->r_)
-              {
-                q.reset();
-              }
-              else if (!n->l_ || !n->r_)
-              {
-                q = std::move(n->l_ ? n->l_ : n->r_);
-              }
-              else
-              {
-                q.release(); // order important
-
-                sg::move(r, n->l_, n->r_);
-
-                delete n;
-              }
-
-              return std::tuple(nxt, 1);
+              delete n;
             }
+
+            return std::tuple(nxt, s);
           }
         }
       }
@@ -399,8 +397,7 @@ public:
   //
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(),
-      std::get<0>(node::erase(root_, std::get<0>(*i))));
+    return iterator(root_.get(), std::get<0>(node::erase(root_, i)));
   }
 
   auto erase(const_iterator a, const_iterator const b)

@@ -24,11 +24,18 @@ template <typename Key, typename Value,
 class multimap
 {
 public:
+  struct node;
+
   using key_type = Key;
   using mapped_type = Value;
   using value_type = std::pair<Key const&, Value>;
 
   using size_type = std::size_t;
+
+  using const_iterator = intervalmapiterator<node const>;
+  using iterator = intervalmapiterator<node>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   struct node
   {
@@ -97,8 +104,8 @@ public:
           else
           {
             q = n.get();
-            n->v_.emplace_back(
-              n->k_,
+            q->v_.emplace_back(
+              q->k_,
               std::forward<decltype(v)>(v)
             );
 
@@ -117,6 +124,15 @@ public:
       f(f, r);
 
       return q;
+    }
+
+    static auto erase(auto& r, const_iterator const i)
+    {
+      auto const n(const_cast<node*>(i.node()));
+
+      return 1 == n->v_.size() ?
+        iterator{r.get(), std::get<0>(node::erase(r, n->key()))} :
+        iterator{r.get(), n, n->v_.erase(i.iterator())};
     }
 
     static auto erase(auto& r, auto&& k)
@@ -140,45 +156,30 @@ public:
           }
           else
           {
-            auto const s0(n->v_.size());
+            auto const s(n->v_.size());
 
-            std::erase_if(
-              n->v_,
-              [&](auto&& p) noexcept
-              {
-                return cmp(k, std::get<0>(p)) == 0;
-              }
-            );
+            auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
-            if (auto const s1(n->v_.size()); s1)
+            auto const nxt(next(r.get(), n));
+
+            if (!n->l_ && !n->r_)
             {
-              return std::tuple(n, s0 - s1);
+              q.reset();
+            }
+            else if (!n->l_ || !n->r_)
+            {
+              q = std::move(n->l_ ? n->l_ : n->r_);
             }
             else
             {
-              auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+              q.release(); // order important
 
-              auto const nxt(next(r.get(), n));
+              sg::move(r, n->l_, n->r_);
 
-              if (!n->l_ && !n->r_)
-              {
-                q.reset();
-              }
-              else if (!n->l_ || !n->r_)
-              {
-                q = std::move(n->l_ ? n->l_ : n->r_);
-              }
-              else
-              {
-                q.release(); // order important
-
-                sg::move(r, n->l_, n->r_);
-
-                delete n;
-              }
-
-              return std::tuple(nxt, s0);
+              delete n;
             }
+
+            return std::tuple(nxt, s);
           }
         }
       }
@@ -250,11 +251,6 @@ public:
       return f(f, 0, l.size() - 1);
     }
   };
-
-  using const_iterator = intervalmapiterator<node const>;
-  using iterator = intervalmapiterator<node>;
-  using reverse_iterator = std::reverse_iterator<iterator>;
-  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
   std::unique_ptr<node> root_;
@@ -415,8 +411,7 @@ public:
   //
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(),
-      std::get<0>(node::erase(root_, std::get<0>(*i))));
+    return node::erase(root_, i);
   }
 
   auto erase(const_iterator a, const_iterator const b)
