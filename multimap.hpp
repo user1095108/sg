@@ -28,7 +28,7 @@ public:
 
   using key_type = Key;
   using mapped_type = Value;
-  using value_type = std::pair<Key const&, Value>;
+  using value_type = std::pair<Key const, Value>;
 
   using size_type = std::size_t;
 
