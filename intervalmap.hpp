@@ -46,13 +46,11 @@ public:
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
 
-    typename std::tuple_element_t<0, Key> const k_;
     typename std::tuple_element_t<1, Key> m_;
 
     std::list<value_type> v_;
 
     explicit node(auto&& k, auto&& v):
-      k_(std::get<0>(k)),
       m_(std::get<1>(k))
     {
       assert(std::get<0>(k) <= std::get<1>(k));
@@ -63,7 +61,10 @@ public:
     }
 
     //
-    auto&& key() const noexcept { return k_; }
+    auto&& key() const noexcept
+    {
+      return std::get<0>(std::get<0>(v_.front()));
+    }
 
     //
     static auto emplace(auto&& r, auto&& k, auto&& v)
@@ -112,8 +113,7 @@ public:
           }
           else
           {
-            q = n.get();
-            q->v_.emplace_back(
+            (q = n.get())->v_.emplace_back(
               std::forward<decltype(k)>(k),
               std::forward<decltype(v)>(v)
             );
@@ -266,7 +266,7 @@ public:
           //
           size_type sl, sr;
 
-          if (auto const c(cmp(d->k_, n->key())); c < 0)
+          if (auto const c(cmp(d->key(), n->key())); c < 0)
           {
             if (sl = f(f, n->l_, d); !sl)
             {
@@ -303,7 +303,7 @@ public:
 
       auto const f([&](auto&& f, auto const n) noexcept -> decltype(node::m_)
         {
-          decltype(node::m_) m(n->k_);
+          decltype(node::m_) m(n->key());
 
           std::for_each(
             n->v_.cbegin(),
@@ -357,7 +357,7 @@ public:
     static decltype(node::m_) reset_nodes_max(auto const n,
       auto const ...c) noexcept
     {
-      decltype(node::m_) m(n->k_);
+      decltype(node::m_) m(n->key());
 
       std::for_each(
         n->v_.cbegin(),
