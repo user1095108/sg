@@ -18,7 +18,7 @@ void dump(auto n)
       {
         q.insert(q.end(), {n->l_.get(), n->r_.get()});
 
-        std::cout << '(' << n->k_ << ')';
+        std::cout << '(' << n->k_ << ',' << n->v_.size() << ')';
       }
       else
       {
@@ -39,11 +39,11 @@ int main()
 {
   sg::multimap<int, int> st;
 
-  st.emplace(-1, -1);
-  st.insert({0, 0});
-  st.insert({{1, 1}, {1, 2}});
-  st.emplace(2, 2);
-  st.emplace(3, 3);
+  st.emplace(-1, 0);
+  st.insert({0, 1});
+  st.insert({{1, 2}, {1, 3}});
+  st.emplace(2, 3);
+  st.emplace(3, 4);
 
   //st.root().reset(st.root().release()->rebuild());
   dump(st.root());
@@ -52,8 +52,8 @@ int main()
   std::cout << "size: " << st.size() << std::endl;
 
   std::for_each(
-    st.crbegin(),
-    st.crend(),
+    st.begin(),
+    st.end(),
     [](auto&& p) noexcept
     {
       std::cout << '(' << p.first << ',' << p.second << ')' << std::endl;

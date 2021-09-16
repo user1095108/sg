@@ -83,14 +83,10 @@ public:
   // increment, decrement
   auto& operator++() noexcept
   {
-    if (n_->v_.end() == i_)
+    if (i_ = std::next(i_); n_->v_.end() == i_)
     {
       n_ = sg::next(r_, n_);
       i_ = n_ ? n_->v_.begin() : decltype(i_){};
-    }
-    else
-    {
-      i_ = std::next(i_);
     }
 
     return *this;

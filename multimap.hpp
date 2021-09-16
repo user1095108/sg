@@ -98,7 +98,7 @@ public:
           {
             q = n.get();
             n->v_.emplace_back(
-              std::forward<decltype(k)>(k),
+              n->k_,
               std::forward<decltype(v)>(v)
             );
 
