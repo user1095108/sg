@@ -73,7 +73,7 @@ public:
 
       auto const& [mink, maxk](k);
 
-      auto const f([&](auto&& f, auto& n) noexcept -> std::size_t
+      auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
           if (!n)
           {
