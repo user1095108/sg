@@ -313,6 +313,12 @@ public:
       typename node::empty_t()))->kv_.second;
   }
 
+  auto& operator[](Key&& k)
+  {
+    return std::get<0>(node::emplace(root_, std::move(k),
+      typename node::empty_t()))->kv_.second;
+  }
+
   auto& at(Key const& k)
   {
     return std::get<1>(sg::find(root_.get(), k)->kv_);
