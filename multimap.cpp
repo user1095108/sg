@@ -51,6 +51,8 @@ int main()
   std::cout << "height: " << sg::height(st.root()) << std::endl;
   std::cout << "size: " << st.size() << std::endl;
 
+  std::cout << st.upper_bound(1)->first << std::endl;
+
   std::for_each(
     st.begin(),
     st.end(),
