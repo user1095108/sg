@@ -430,9 +430,13 @@ public:
     return a;
   }
 
-  auto erase(std::initializer_list<const_iterator> il)
+  auto erase(std::initializer_list<const_iterator> const il)
   {
-    return erase(il.begin(), il.end());
+    iterator r;
+
+    std::for_each(il.begin(), il.end(), [&](auto const i) { r = erase(i); });
+
+    return r;
   }
 
   size_type erase(Key const& k)
