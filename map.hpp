@@ -313,6 +313,16 @@ public:
       typename node::empty_t()))->kv_.second;
   }
 
+  auto& at(Key const& k)
+  {
+    return std::get<1>(sg::find(root_.get(), k)->kv_);
+  }
+
+  auto const& at(Key const& k) const
+  {
+    return std::get<1>(sg::find(root_.get(), k)->kv_);
+  }
+
   //
   size_type count(Key const& k) const noexcept
   {
