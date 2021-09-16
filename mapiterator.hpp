@@ -72,17 +72,8 @@ public:
   auto& operator++() noexcept { return n_ = sg::next(r_, n_), *this; }
   auto& operator--() noexcept { return n_ = sg::prev(r_, n_), *this; }
 
-  auto operator++(int) noexcept
-  {
-    auto r(*this);
-    return ++*this, r;
-  }
-
-  auto operator--(int) noexcept
-  {
-    auto r(*this);
-    return --*this, r;
-  }
+  auto operator++(int) noexcept { auto r(*this); return ++*this, r; }
+  auto operator--(int) noexcept { auto r(*this); return --*this, r; }
 
   // member access
   auto operator->() const noexcept { return &n_->kv_; }
