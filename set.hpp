@@ -13,7 +13,7 @@
 
 #include "utils.hpp"
 
-#include "setiterator.hpp"
+#include "mapiterator.hpp"
 
 namespace sg
 {
@@ -36,15 +36,15 @@ public:
     std::unique_ptr<node> l_;
     std::unique_ptr<node> r_;
 
-    Key const k_;
+    Key const kv_;
 
     explicit node(auto&& k):
-      k_(std::forward<decltype(k)>(k))
+      kv_(std::forward<decltype(k)>(k))
     {
     }
 
     //
-    auto&& key() const noexcept { return k_; }
+    auto&& key() const noexcept { return kv_; }
 
     //
     static auto emplace(auto&& r, auto&& k)
@@ -169,8 +169,8 @@ public:
     }
   };
 
-  using const_iterator = setiterator<node const>;
-  using iterator = setiterator<node>;
+  using const_iterator = mapiterator<node const>;
+  using iterator = mapiterator<node>;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
