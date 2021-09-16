@@ -185,9 +185,7 @@ public:
 
   //
   auto& operator=(auto&& o) requires(
-    std::is_same_v<decltype(o), set&> ||
-    std::is_same_v<decltype(o), set const&> ||
-    std::is_same_v<decltype(o), set const&&> ||
+    std::is_same_v<decltype(o), std::remove_cvref_t<set>> ||
     std::is_same_v<
       std::remove_cvref_t<decltype(o)>,
       std::initializer_list<Key>

@@ -254,7 +254,33 @@ private:
 
 public:
   multimap() = default;
+  multimap(std::initializer_list<value_type> i) { *this = i; }
+  multimap(multimap const& o) { *this = o; }
   multimap(multimap&&) = default;
+
+  //
+  auto& operator=(auto&& o) requires(
+    std::is_same_v<decltype(o), std::remove_cvref_t<multimap>> ||
+    std::is_same_v<
+      std::remove_cvref_t<decltype(o)>,
+      std::initializer_list<value_type>
+    >
+  )
+  {
+    clear();
+
+    std::for_each(
+      std::execution::unseq,
+      o.begin(),
+      o.end(),
+      [&](auto&& p)
+      {
+        emplace(std::get<0>(p), std::get<1>(p));
+      }
+    );
+
+    return *this;
+  }
 
   auto& operator=(multimap&& o) noexcept
   {

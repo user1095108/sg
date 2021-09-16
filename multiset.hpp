@@ -241,7 +241,33 @@ private:
 
 public:
   multiset() = default;
+  multiset(std::initializer_list<value_type> i) { *this = i; }
+  multiset(multiset const& o) { *this = o; }
   multiset(multiset&&) = default;
+
+  //
+  auto& operator=(auto&& o) requires(
+    std::is_same_v<decltype(o), std::remove_cvref_t<multiset>> ||
+    std::is_same_v<
+      std::remove_cvref_t<decltype(o)>,
+      std::initializer_list<value_type>
+    >
+  )
+  {
+    clear();
+
+    std::for_each(
+      std::execution::unseq,
+      o.begin(),
+      o.end(),
+      [&](auto&& p)
+      {
+        emplace(std::get<0>(p), std::get<1>(p));
+      }
+    );
+
+    return *this;
+  }
 
   auto& operator=(multiset&& o) noexcept
   {
