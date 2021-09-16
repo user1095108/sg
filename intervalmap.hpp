@@ -737,15 +737,7 @@ public:
 
   void insert(std::initializer_list<value_type> const il)
   {
-    std::for_each(
-      std::execution::unseq,
-      il.begin(),
-      il.end(),
-      [&](auto&& v)
-      {
-        emplace(std::get<0>(v), std::get<1>(v));
-      }
-    );
+    insert(il.begin(), il.end());
   }
 
   //
