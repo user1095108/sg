@@ -406,7 +406,7 @@ public:
   //
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(), std::get<0>(node::erase(root_, i)));
+    return node::erase(root_, i);
   }
 
   auto erase(const_iterator a, const_iterator const b)
