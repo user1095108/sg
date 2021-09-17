@@ -374,10 +374,7 @@ public:
         }
       );
 
-      [&]<auto ...I>(std::index_sequence<I...>) noexcept
-      {
-        ((m = std::max(m, reset_nodes_max(c))), ...);
-      }(std::index_sequence_for<decltype(c)...>());
+      m = std::max({m, reset_nodes_max(c)...});
 
       return n->m_ = m;
     }
