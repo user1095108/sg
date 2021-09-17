@@ -355,7 +355,7 @@ public:
   }
 
   //
-  friend bool operator==(multiset const&, multiset const&) noexcept = default;
+  friend bool operator==<>(multiset const&, multiset const&) noexcept;
   friend bool operator!=(multiset const&, multiset const&) noexcept = default;
   friend bool operator<(multiset const&, multiset const&) noexcept = default;
   friend bool operator<=(multiset const&, multiset const&) noexcept = default;

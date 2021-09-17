@@ -19,7 +19,7 @@ int main()
     }
   );
 
-  std::cout << (s != s) << std::endl;
+  std::cout << (s == sg::set<int>{1, 2, 3, 4}) << std::endl;
 
   return 0;
 }

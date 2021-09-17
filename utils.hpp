@@ -281,6 +281,19 @@ constexpr auto erase_if(auto& c, auto pred)
 }
 
 template <typename T>
+inline bool operator==(T const& lhs, T const& rhs) noexcept
+{
+  return std::equal(
+    lhs.begin(), lhs.end(),
+    rhs.begin(), rhs.end(),
+    [](auto&& a, auto && b) noexcept
+    {
+      return T::node::cmp(a, b) == 0;
+    }
+  );
+}
+
+template <typename T>
 inline auto operator<=>(T const& lhs, T const& rhs) noexcept
 {
   return std::lexicographical_compare_three_way(

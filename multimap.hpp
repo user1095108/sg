@@ -370,7 +370,7 @@ public:
   }
 
   //
-  friend bool operator==(multimap const&, multimap const&) noexcept = default;
+  friend bool operator==<>(multimap const&, multimap const&) noexcept;
   friend bool operator!=(multimap const&, multimap const&) noexcept = default;
   friend bool operator<(multimap const&, multimap const&) noexcept = default;
   friend bool operator<=(multimap const&, multimap const&) noexcept = default;

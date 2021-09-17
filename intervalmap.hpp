@@ -590,8 +590,8 @@ public:
   }
 
   //
-  friend bool operator==(intervalmap const&,
-    intervalmap const&) noexcept = default;
+  friend bool operator==<>(intervalmap const&,
+    intervalmap const&) noexcept;
   friend bool operator!=(intervalmap const&,
     intervalmap const&) noexcept = default;
   friend bool operator<(intervalmap const&,

@@ -327,7 +327,7 @@ public:
   }
 
   //
-  friend bool operator==(map const&, map const&) noexcept = default;
+  friend bool operator==<>(map const&, map const&) noexcept;
   friend bool operator!=(map const&, map const&) noexcept = default;
   friend bool operator<(map const&, map const&) noexcept = default;
   friend bool operator<=(map const&, map const&) noexcept = default;
