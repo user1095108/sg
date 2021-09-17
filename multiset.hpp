@@ -315,14 +315,8 @@ public:
   //
   auto emplace(auto&& k)
   {
-    auto const n(
-      node::emplace(
-        root_,
-        std::forward<decltype(k)>(k)
-      )
-    );
-
-    return iterator(root_.get(), n);
+    return iterator(root_.get(), node::emplace(root_,
+      std::forward<decltype(k)>(k)));
   }
 
   //
