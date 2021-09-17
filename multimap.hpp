@@ -283,18 +283,11 @@ public:
     return *this;
   }
 
-  auto& operator=(multimap&& o) noexcept
-  {
-    return root_ = std::move(o.root_), *this;
-  }
+  multimap& operator=(multimap&& o) noexcept = default;
+
+# include "common.hpp"
 
   //
-  auto root() const noexcept { return root_.get(); }
-
-  //
-  void clear() { root_.reset(); }
-  bool empty() const noexcept { return !size(); }
-  auto max_size() const noexcept { return ~size_type{} / 3; }
   auto size() const noexcept
   {
     static constinit auto const f(
@@ -307,80 +300,7 @@ public:
     return f(f, root_);
   }
 
-  // iterators
-  iterator begin() noexcept
-  {
-    return root_ ?
-      iterator(root_.get(), sg::detail::first_node(root_.get())) :
-      iterator();
-  }
-
-  iterator end() noexcept { return {}; }
-
-  // const iterators
-  const_iterator begin() const noexcept
-  {
-    return root_ ?
-      const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
-      const_iterator();
-  }
-
-  const_iterator end() const noexcept { return {}; }
-
-  const_iterator cbegin() const noexcept
-  {
-    return root_ ?
-      const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
-      const_iterator();
-  }
-
-  const_iterator cend() const noexcept { return {}; }
-
-  // reverse iterators
-  reverse_iterator rbegin() noexcept
-  {
-    return root_ ?
-      reverse_iterator(iterator(root_.get(), nullptr)) :
-      reverse_iterator();
-  }
-
-  reverse_iterator rend() noexcept
-  {
-    return root_ ?
-      reverse_iterator(
-        iterator{root_.get(), sg::detail::first_node(root_.get())}
-      ) :
-      reverse_iterator();
-  }
-
-  // const reverse iterators
-  const_reverse_iterator crbegin() const noexcept
-  {
-    return root_ ?
-      const_reverse_iterator(const_iterator(root_.get(), nullptr)) :
-      const_reverse_iterator();
-  }
-
-  const_reverse_iterator crend() const noexcept
-  {
-    return root_ ?
-      const_reverse_iterator(
-        const_iterator{root_.get(), sg::detail::first_node(root_.get())}
-      ) :
-      const_reverse_iterator();
-  }
-
   //
-  bool contains(Key const& k) const
-  {
-    return bool(sg::detail::find(root_.get(), k));
-  }
-
-  bool contains(auto&& k) const
-  {
-    return bool(sg::detail::find(root_.get(), std::forward<decltype(k)>(k)));
-  }
-
   size_type count(Key const& k) const noexcept
   {
     if (auto n(root_.get()); n)
@@ -425,86 +345,22 @@ public:
     return node::erase(root_, i);
   }
 
-  auto erase(const_iterator a, const_iterator const b)
-  {
-    for (; a != b; a = erase(a));
-
-    return a;
-  }
-
-  auto erase(std::initializer_list<const_iterator> const il)
-  {
-    iterator r;
-
-    std::for_each(il.begin(), il.end(), [&](auto const i) { r = erase(i); });
-
-    return r;
-  }
-
   size_type erase(Key const& k)
   {
     return std::get<1>(node::erase(root_, k));
   }
 
   //
-  auto equal_range(Key const& k) noexcept
-  {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
-    return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
-    );
-  }
-
-  auto equal_range(Key const& k) const noexcept
-  {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
-    return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
-    );
-  }
-
-  auto equal_range(auto const& k) noexcept
-  {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
-    return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
-    );
-  }
-
-  auto equal_range(auto const& k) const noexcept
-  {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
-    return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
-    );
-  }
-
-  //
-  auto find(Key const& k) noexcept
-  {
-    return iterator(root_.get(), sg::detail::find(root_.get(), k));
-  }
-
-  auto find(Key const& k) const noexcept
-  {
-    return const_iterator(root_.get(), sg::detail::find(root_.get(), k));
-  }
-
-  //
   auto insert(value_type const& v)
   {
-    return iterator(root_.get(),
-      node::emplace(root_, v.first, v.second));
+    return iterator(root_.get(), node::emplace(root_,
+      std::get<0>(v), std::get<1>(v)));
   }
 
   auto insert(value_type&& v)
   {
-    return iterator(root_.get(),
-      node::emplace(root_, std::move(v.first), std::move(v.second)));
+    return iterator(root_.get(), node::emplace(root_,
+      std::move(std::get<0>(v)), std::move(std::get<1>(v))));
   }
 
   void insert(auto const i, decltype(i) j)
@@ -518,61 +374,6 @@ public:
         emplace(std::get<0>(v), std::get<1>(v));
       }
     );
-  }
-
-  void insert(std::initializer_list<value_type> const il)
-  {
-    insert(il.begin(), il.end());
-  }
-
-  //
-  iterator lower_bound(Key const& k) noexcept
-  {
-    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
-    return {root_.get(), e ? e : g};
-  }
-
-  const_iterator lower_bound(Key const& k) const noexcept
-  {
-    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
-    return {root_.get(), e ? e : g};
-  }
-
-  iterator lower_bound(auto const& k) noexcept
-  {
-    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
-    return {root_.get(), e ? e : g};
-  }
-
-  const_iterator lower_bound(auto const& k) const noexcept
-  {
-    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
-    return {root_.get(), e ? e : g};
-  }
-
-  //
-  iterator upper_bound(Key const& k) noexcept
-  {
-    return {root_.get(),
-      std::get<1>(sg::detail::equal_range(root_.get(), k))};
-  }
-
-  const_iterator upper_bound(Key const& k) const noexcept
-  {
-    return {root_.get(),
-      std::get<1>(sg::detail::equal_range(root_.get(), k))};
-  }
-
-  iterator upper_bound(auto const& k) noexcept
-  {
-    return {root_.get(),
-      std::get<1>(sg::detail::equal_range(root_.get(), k))};
-  }
-
-  const_iterator upper_bound(auto const& k) const noexcept
-  {
-    return {root_.get(),
-      std::get<1>(sg::detail::equal_range(root_.get(), k))};
   }
 };
 
