@@ -88,7 +88,7 @@ public:
               return 0;
             }
 
-            sr = sg::size(n->r_);
+            sr = sg::detail::size(n->r_);
           }
           else if (c > 0)
           {
@@ -97,7 +97,7 @@ public:
               return 0;
             }
 
-            sl = sg::size(n->l_);
+            sl = sg::detail::size(n->l_);
           }
           else
           {
@@ -171,7 +171,7 @@ public:
             {
               q.release(); // order important
 
-              sg::move(r, n->l_, n->r_);
+              sg::detail::move(r, n->l_, n->r_);
 
               delete n;
             }
@@ -311,7 +311,7 @@ public:
   iterator begin() noexcept
   {
     return root_ ?
-      iterator(root_.get(), sg::first_node(root_.get())) :
+      iterator(root_.get(), sg::detail::first_node(root_.get())) :
       iterator();
   }
 
@@ -321,7 +321,7 @@ public:
   const_iterator begin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), sg::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -330,7 +330,7 @@ public:
   const_iterator cbegin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), sg::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -347,7 +347,9 @@ public:
   reverse_iterator rend() noexcept
   {
     return root_ ?
-      reverse_iterator(iterator{root_.get(), sg::first_node(root_.get())}) :
+      reverse_iterator(
+        iterator{root_.get(), sg::detail::first_node(root_.get())}
+      ) :
       reverse_iterator();
   }
 
@@ -363,7 +365,7 @@ public:
   {
     return root_ ?
       const_reverse_iterator(
-        const_iterator{root_.get(), sg::first_node(root_.get())}
+        const_iterator{root_.get(), sg::detail::first_node(root_.get())}
       ) :
       const_reverse_iterator();
   }
@@ -371,12 +373,12 @@ public:
   //
   bool contains(Key const& k) const
   {
-    return bool(sg::find(root_.get(), k));
+    return bool(sg::detail::find(root_.get(), k));
   }
 
   bool contains(auto&& k) const
   {
-    return bool(sg::find(root_.get(), std::forward<decltype(k)>(k)));
+    return bool(sg::detail::find(root_.get(), std::forward<decltype(k)>(k)));
   }
 
   size_type count(Key const& k) const noexcept
@@ -447,7 +449,7 @@ public:
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
@@ -456,7 +458,7 @@ public:
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
@@ -465,7 +467,7 @@ public:
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
@@ -474,7 +476,7 @@ public:
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
@@ -484,12 +486,12 @@ public:
   //
   auto find(Key const& k) noexcept
   {
-    return iterator(root_.get(), sg::find(root_.get(), k));
+    return iterator(root_.get(), sg::detail::find(root_.get(), k));
   }
 
   auto find(Key const& k) const noexcept
   {
-    return const_iterator(root_.get(), sg::find(root_.get(), k));
+    return const_iterator(root_.get(), sg::detail::find(root_.get(), k));
   }
 
   //
@@ -526,47 +528,51 @@ public:
   //
   iterator lower_bound(Key const& k) noexcept
   {
-    auto const& [e, g](sg::equal_range(root_.get(), k));
+    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
     return {root_.get(), e ? e : g};
   }
 
   const_iterator lower_bound(Key const& k) const noexcept
   {
-    auto const& [e, g](sg::equal_range(root_.get(), k));
+    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
     return {root_.get(), e ? e : g};
   }
 
   iterator lower_bound(auto const& k) noexcept
   {
-    auto const& [e, g](sg::equal_range(root_.get(), k));
+    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
     return {root_.get(), e ? e : g};
   }
 
   const_iterator lower_bound(auto const& k) const noexcept
   {
-    auto const& [e, g](sg::equal_range(root_.get(), k));
+    auto const& [e, g](sg::detail::equal_range(root_.get(), k));
     return {root_.get(), e ? e : g};
   }
 
   //
   iterator upper_bound(Key const& k) noexcept
   {
-    return {root_.get(), std::get<1>(sg::equal_range(root_.get(), k))};
+    return {root_.get(),
+      std::get<1>(sg::detail::equal_range(root_.get(), k))};
   }
 
   const_iterator upper_bound(Key const& k) const noexcept
   {
-    return {root_.get(), std::get<1>(sg::equal_range(root_.get(), k))};
+    return {root_.get(),
+      std::get<1>(sg::detail::equal_range(root_.get(), k))};
   }
 
   iterator upper_bound(auto const& k) noexcept
   {
-    return {root_.get(), std::get<1>(sg::equal_range(root_.get(), k))};
+    return {root_.get(),
+      std::get<1>(sg::detail::equal_range(root_.get(), k))};
   }
 
   const_iterator upper_bound(auto const& k) const noexcept
   {
-    return {root_.get(), std::get<1>(sg::equal_range(root_.get(), k))};
+    return {root_.get(),
+      std::get<1>(sg::detail::equal_range(root_.get(), k))};
   }
 };
 

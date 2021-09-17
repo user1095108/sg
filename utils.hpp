@@ -9,7 +9,9 @@
 namespace sg
 {
 
-//
+namespace detail
+{
+
 inline std::size_t height(auto&& n) noexcept
 {
   return n ?
@@ -259,6 +261,23 @@ inline auto erase(auto& r, auto&& k)
   }
 
   return pointer{};
+}
+
+}
+
+constexpr auto erase(auto& c, auto const& k)
+{
+  c.erase(k);
+}
+
+constexpr auto erase_if(auto& c, auto pred)
+{
+  auto const end(c.end());
+
+  for (auto i(c.begin()); end != c;)
+  {
+    i = pred(*i) ? c.erase(i) : std::next(i);
+  }
 }
 
 }
