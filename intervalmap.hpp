@@ -172,7 +172,7 @@ public:
 
     static auto erase(auto& r, const_iterator const i)
     {
-      auto const n(const_cast<node*>(i.node()));
+      auto const n(i.node());
 
       return n->v_.size() == 1 ?
         iterator{r.get(), std::get<0>(node::erase(r, n->key()))} :
