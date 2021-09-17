@@ -396,6 +396,7 @@ public:
   auto erase(const_iterator a, const_iterator const b)
   {
     for (; a != b; a = erase(a));
+
     return a;
   }
 
