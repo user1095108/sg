@@ -2,11 +2,6 @@
 # define SG_SET_HPP
 # pragma once
 
-#include <algorithm>
-#include <execution>
-
-#include <compare>
-
 #include <memory>
 
 #include <vector>

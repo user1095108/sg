@@ -4,6 +4,11 @@
 
 #include <cassert>
 
+#include <algorithm>
+#include <execution>
+
+#include <compare>
+
 #include <type_traits>
 
 namespace sg
