@@ -22,10 +22,17 @@ template <typename Key, class Compare = std::compare_three_way>
 class set
 {
 public:
+  struct node;
+
   using key_type = Key;
   using value_type = Key;
 
   using size_type = std::size_t;
+
+  using const_iterator = mapiterator<node const>;
+  using iterator = mapiterator<node>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   struct node
   {
@@ -168,11 +175,6 @@ public:
       return f(f, 0, l.size() - 1);
     }
   };
-
-  using const_iterator = mapiterator<node const>;
-  using iterator = mapiterator<node>;
-  using reverse_iterator = std::reverse_iterator<iterator>;
-  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 private:
   std::unique_ptr<node> root_;

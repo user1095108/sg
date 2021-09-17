@@ -49,7 +49,14 @@ public:
   {
     if (n)
     {
-      i_ = n->v_.begin();
+      if constexpr(std::is_const_v<T>)
+      {
+        i_ = n->v_.cbegin();
+      }
+      else
+      {
+        i_ = n->v_.begin();
+      }
     }
   }
 
