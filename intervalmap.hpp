@@ -427,20 +427,19 @@ public:
             default:
               {
                 assert(i);
-                n->l_.release();
-                n->r_.release();
-
                 auto m(reset_nodes_max(n));
 
                 if (auto const p(f(f, a, i - 1)); p)
                 {
                   m = std::max(m, p->m_);
+                  n->l_.release();
                   n->l_.reset(p);
                 }
 
                 if (auto const p(f(f, i + 1, b)); p)
                 {
                   m = std::max(m, p->m_);
+                  n->r_.release();
                   n->r_.reset(p);
                 }
 
