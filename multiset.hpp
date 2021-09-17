@@ -361,15 +361,7 @@ public:
   friend bool operator<=(multiset const&, multiset const&) noexcept = default;
   friend bool operator>(multiset const&, multiset const&) noexcept = default;
   friend bool operator>=(multiset const&, multiset const&) noexcept = default;
-
-  friend auto operator<=>(multiset const& lhs, multiset const& rhs) noexcept
-  {
-    return std::lexicographical_compare_three_way(
-      lhs.begin(), lhs.end(),
-      rhs.begin(), rhs.end(),
-      node::cmp
-    );
-  }
+  friend auto operator<=><>(multiset const&, multiset const&) noexcept;
 };
 
 }

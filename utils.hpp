@@ -280,6 +280,17 @@ constexpr auto erase_if(auto& c, auto pred)
   }
 }
 
+template <typename T>
+auto operator<=>(T const& lhs, T const& rhs) noexcept
+{
+  return std::lexicographical_compare_three_way(
+    lhs.begin(), lhs.end(),
+    rhs.begin(), rhs.end(),
+    T::node::cmp
+  );
+}
+
+
 }
 
 #endif // SG_UTILS_HPP

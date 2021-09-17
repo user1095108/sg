@@ -376,15 +376,7 @@ public:
   friend bool operator<=(multimap const&, multimap const&) noexcept = default;
   friend bool operator>(multimap const&, multimap const&) noexcept = default;
   friend bool operator>=(multimap const&, multimap const&) noexcept = default;
-
-  friend auto operator<=>(multimap const& lhs, multimap const& rhs) noexcept
-  {
-    return std::lexicographical_compare_three_way(
-      lhs.begin(), lhs.end(),
-      rhs.begin(), rhs.end(),
-      node::cmp
-    );
-  }
+  friend auto operator<=><>(multimap const&, multimap const&) noexcept;
 };
 
 }
