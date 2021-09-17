@@ -167,11 +167,25 @@ public:
 
     static auto erase(auto& r, const_iterator const i)
     {
-      auto const n(i.node());
+      if (auto const n(i.node()); 1 == n->v_.size())
+      {
+        return iterator{r.get(), std::get<0>(node::erase(r, n->key()))};
+      }
+      else
+      {
+        if (auto const k(i.iterator()); std::prev(n->v_.end()) == k)
+        {
+          auto const j(std::next(i));
 
-      return n->v_.size() == 1 ?
-        iterator{r.get(), std::get<0>(node::erase(r, n->key()))} :
-        iterator{r.get(), n, n->v_.erase(i.iterator())};
+          n->v_.erase(k);
+
+          return j;
+        }
+        else
+        {
+          return iterator{r.get(), n, n->v_.erase(k)};
+        }
+      }
     }
 
     static auto erase(auto& r, auto&& k)
