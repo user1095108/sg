@@ -150,6 +150,7 @@ auto erase(std::initializer_list<const_iterator> const il)
 {
   iterator r;
 
+  // must be sequential
   std::for_each(il.begin(), il.end(), [&](auto const i) { r = erase(i); });
 
   return r;
