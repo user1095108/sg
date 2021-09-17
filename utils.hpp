@@ -17,29 +17,33 @@ namespace sg
 namespace detail
 {
 
+inline auto left_node(auto&& n) noexcept { return n->l_.get(); }
+inline auto right_node(auto&& n) noexcept { return n->r_.get(); }
+
 inline std::size_t height(auto&& n) noexcept
 {
   return n ?
-    (n->l_ || n->r_) + std::max(height(n->l_), height(n->r_)) :
+    (left_node(n) || right_node(n)) +
+    std::max(height(left_node(n)), height(right_node(n))) :
     0;
 }
 
 inline std::size_t size(auto&& n) noexcept
 {
-  return n ? 1 + size(n->l_) + size(n->r_) : 0;
+  return n ? 1 + size(left_node(n)) + size(right_node(n)) : 0;
 }
 
 //
 inline auto first_node(auto n) noexcept
 {
-  for (decltype(n) p; (p = n->l_.get()); n = p);
+  for (decltype(n) p; p = left_node(n); n = p);
 
   return n;
 }
 
 inline auto last_node(auto n) noexcept
 {
-  for (decltype(n) p; (p = n->r_.get()); n = p);
+  for (decltype(n) p; p = right_node(n); n = p);
 
   return n;
 }
@@ -49,7 +53,7 @@ inline auto next(auto r, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (auto const p(n->r_.get()); p)
+  if (auto const p(right_node(n)); p)
   {
     decltype(n) const l(first_node(p));
 
@@ -64,7 +68,7 @@ inline auto next(auto r, auto n) noexcept
       if (auto const c(node::cmp(key, r->key())); c < 0)
       {
         n = r;
-        r = r->l_.get(); // deepest parent greater than us
+        r = right_node(n); // deepest parent greater than us
       }
       else if (c > 0)
       {
@@ -86,7 +90,7 @@ inline auto prev(auto r, auto n) noexcept
   {
     return last_node(r);
   }
-  else if (auto const p(n->l_.get()); p)
+  else if (auto const p(left_node(n)); p)
   {
     decltype(n) const r(last_node(p));
 
@@ -100,12 +104,12 @@ inline auto prev(auto r, auto n) noexcept
     {
       if (auto const c(node::cmp(key, r->key())); c < 0)
       {
-        r = r->l_.get();
+        r = left_node(r);
       }
       else if (c > 0)
       {
         n = r;
-        r = r->r_.get(); // deepest parent less than us
+        r = right_node(r); // deepest parent less than us
       }
       else
       {
@@ -127,15 +131,15 @@ inline auto equal_range(auto n, auto&& k) noexcept
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
       g = n;
-      n = n->l_.get();
+      n = left_node(n);
     }
     else if (c > 0)
     {
-      n = n->r_.get();
+      n = right_node(n);
     }
     else
     {
-      if (auto const r(n->r_.get()); r)
+      if (auto const r(right_node(n)); r)
       {
         g = first_node(r);
       }
@@ -155,11 +159,11 @@ inline auto find(auto n, auto&& k) noexcept
   {
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
-      n = n->l_.get();
+      n = left_node(n);
     }
     else if (c > 0)
     {
-      n = n->r_.get();
+      n = right_node(n);
     }
     else
     {
@@ -189,21 +193,21 @@ inline void move(auto& n, auto& ...d)
 
       if (auto const c(node::cmp(d->key(), n->key())); c < 0)
       {
-        if (sl = f(f, n->l_, d); !sl)
+        if (sl = f(f, left_node(n), d); !sl)
         {
           return 0;
         }
 
-        sr = size(n->r_);
+        sr = size(right_node(n));
       }
       else
       {
-        if (sr = f(f, n->r_, d); !sr)
+        if (sr = f(f, right_node(n), d); !sr)
         {
           return 0;
         }
 
-        sl = size(n->l_);
+        sl = size(left_node(n));
       }
 
       //
@@ -230,26 +234,28 @@ inline auto erase(auto& r, auto&& k)
       if (auto const c(node::cmp(k, n->key())); c < 0)
       {
         p = n;
-        n = n->l_.get();
+        n = left_node(n);
       }
       else if (c > 0)
       {
         p = n;
-        n = n->r_.get();
+        n = right_node(n);
       }
       else
       {
-        auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+        auto const lp(left_node(p));
+        auto& q(!p ? r : lp == n ? lp : right_node(p));
 
         auto const nxt(next(r.get(), n));
 
-        if (!n->l_ && !n->r_)
+        if (auto const l(left_node(n)), r(right_node(n)); !l && !r)
         {
           q.reset();
         }
-        else if (!n->l_ || !n->r_)
+        else if (!l || !r)
         {
-          q = std::move(n->l_ ? n->l_ : n->r_);
+          q.release();
+          q.reset(l ? l : r);
         }
         else
         {
