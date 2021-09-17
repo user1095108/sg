@@ -78,7 +78,7 @@ public:
               return 0;
             }
 
-            sr = sg::size(n->r_);
+            sr = sg::detail::size(n->r_);
           }
           else if (c > 0)
           {
@@ -87,7 +87,7 @@ public:
               return 0;
             }
 
-            sl = sg::size(n->l_);
+            sl = sg::detail::size(n->l_);
           }
           else
           {
@@ -116,13 +116,13 @@ public:
       std::vector<node*> l;
 
       {
-        auto n(first_node(this));
+        auto n(sg::detail::first_node(this));
 
         do
         {
           l.emplace_back(n);
 
-          n = next(this, n);
+          n = sg::detail::next(this, n);
         }
         while (n);
       }
@@ -222,13 +222,13 @@ public:
   void clear() { root_.reset(); }
   auto empty() const noexcept { return !size(); }
   auto max_size() const noexcept { return ~size_type{} / 3; }
-  auto size() const noexcept { return sg::size(root_); }
+  auto size() const noexcept { return sg::detail::size(root_); }
 
   // iterators
   iterator begin() noexcept
   {
     return root_ ?
-      iterator(root_.get(), sg::first_node(root_.get())) :
+      iterator(root_.get(), sg::detail::first_node(root_.get())) :
       iterator();
   }
 
@@ -238,7 +238,7 @@ public:
   const_iterator begin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), sg::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -247,7 +247,7 @@ public:
   const_iterator cbegin() const noexcept
   {
     return root_ ?
-      const_iterator(root_.get(), sg::first_node(root_.get())) :
+      const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
       const_iterator();
   }
 
@@ -264,7 +264,9 @@ public:
   reverse_iterator rend() noexcept
   {
     return root_ ?
-      reverse_iterator(iterator{root_.get(), sg::first_node(root_.get())}) :
+      reverse_iterator(
+        iterator{root_.get(), sg::detail::first_node(root_.get())}
+      ) :
       reverse_iterator();
   }
 
@@ -280,7 +282,7 @@ public:
   {
     return root_ ?
       const_reverse_iterator(
-        const_iterator{root_.get(), sg::first_node(root_.get())}
+        const_iterator{root_.get(), sg::detail::first_node(root_.get())}
       ) :
       const_reverse_iterator();
   }
@@ -288,17 +290,17 @@ public:
   //
   bool contains(Key const& k) const
   {
-    return bool(sg::find(root_.get(), k));
+    return bool(sg::detail::find(root_.get(), k));
   }
 
   bool contains(auto&& k) const
   {
-    return bool(sg::find(root_.get(), std::forward<decltype(k)>(k)));
+    return bool(sg::detail::find(root_.get(), std::forward<decltype(k)>(k)));
   }
 
   size_type count(Key const& k) const noexcept
   {
-    return bool(sg::find(root_.get(), k));
+    return bool(sg::detail::find(root_.get(), k));
   }
 
   //
@@ -314,7 +316,7 @@ public:
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
@@ -323,7 +325,7 @@ public:
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
@@ -332,7 +334,7 @@ public:
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
@@ -341,7 +343,7 @@ public:
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](sg::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_.get(), k));
     return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
@@ -351,12 +353,12 @@ public:
   //
   size_type erase(Key const& k)
   {
-    return sg::erase(root_, k) ? 1 : 0;
+    return sg::detail::erase(root_, k) ? 1 : 0;
   }
 
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(), sg::erase(root_, *i));
+    return iterator(root_.get(), sg::detail::erase(root_, *i));
   }
 
   auto erase(const_iterator a, const_iterator const b)
@@ -378,12 +380,12 @@ public:
   //
   auto find(Key const& k) noexcept
   {
-    return iterator(root_.get(), sg::find(root_.get(), k));
+    return iterator(root_.get(), sg::detail::find(root_.get(), k));
   }
 
   auto find(Key const& k) const noexcept
   {
-    return const_iterator(root_.get(), sg::find(root_.get(), k));
+    return const_iterator(root_.get(), sg::detail::find(root_.get(), k));
   }
 
   //

@@ -132,7 +132,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
     {
       if (auto const r(n->r_.get()); r)
       {
-        g = sg::first_node(r);
+        g = first_node(r);
       }
 
       break;
@@ -250,7 +250,7 @@ inline auto erase(auto& r, auto&& k)
         {
           q.release(); // order important
 
-          sg::move(r, n->l_, n->r_);
+          sg::detail::move(r, n->l_, n->r_);
 
           delete n;
         }

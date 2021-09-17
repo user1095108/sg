@@ -381,13 +381,13 @@ public:
       std::vector<node*> l;
 
       {
-        auto n(first_node(this));
+        auto n(sg::detail::first_node(this));
 
         do
         {
           l.emplace_back(n);
 
-          n = next(this, n);
+          n = sg::detail::next(this, n);
         }
         while (n);
       }
