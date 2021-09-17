@@ -17,8 +17,10 @@ class intervalmapiterator
 
   friend inverse_const_t;
 
-  std::remove_const_t<T>* r_{};
-  std::remove_const_t<T>* n_{};
+  using node = std::remove_const_t<T>;
+
+  node* r_{};
+  node* n_{};
 
 public:
   using iterator_category = std::bidirectional_iterator_tag;
@@ -42,8 +44,7 @@ private:
 public:
   intervalmapiterator() = default;
 
-  intervalmapiterator(std::remove_const_t<T>* const r,
-    std::remove_const_t<T>* const n) noexcept:
+  intervalmapiterator(node* const r, node* const n) noexcept:
     r_(r),
     n_(n)
   {
@@ -60,8 +61,7 @@ public:
     }
   }
 
-  intervalmapiterator(std::remove_const_t<T>* const r,
-    std::remove_const_t<T>* const n,
+  intervalmapiterator(node* const r, node* const n,
     decltype(i_) const i) noexcept:
     r_(r),
     n_(n),
