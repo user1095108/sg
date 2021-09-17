@@ -263,7 +263,7 @@ public:
       o.end(),
       [&](auto&& p)
       {
-        emplace(std::get<0>(p), std::get<1>(p));
+        emplace(p);
       }
     );
 
