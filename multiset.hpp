@@ -232,6 +232,7 @@ public:
   };
 
 private:
+  using this_class = multiset;
   std::unique_ptr<node> root_;
 
 public:
@@ -240,32 +241,6 @@ public:
   multiset(multiset const& o) { *this = o; }
   multiset(multiset&&) = default;
   multiset(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
-
-  //
-  auto& operator=(auto&& o) requires(
-    std::same_as<decltype(o), std::remove_cvref_t<multiset>> ||
-    std::same_as<
-      std::remove_cvref_t<decltype(o)>,
-      std::initializer_list<value_type>
-    >
-  )
-  {
-    clear();
-
-    std::for_each(
-      std::execution::unseq,
-      o.begin(),
-      o.end(),
-      [&](auto&& p)
-      {
-        emplace(p);
-      }
-    );
-
-    return *this;
-  }
-
-  multiset& operator=(multiset&& o) noexcept = default;
 
 # include "common.hpp"
 

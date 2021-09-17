@@ -172,6 +172,7 @@ public:
   };
 
 private:
+  using this_class = set;
   std::unique_ptr<node> root_;
 
 public:
@@ -180,32 +181,6 @@ public:
   set(set const& o) { *this = o; }
   set(set&&) = default;
   set(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
-
-  //
-  auto& operator=(auto&& o) requires(
-    std::same_as<decltype(o), std::remove_cvref_t<set>> ||
-    std::same_as<
-      std::remove_cvref_t<decltype(o)>,
-      std::initializer_list<Key>
-    >
-  )
-  {
-    clear();
-
-    std::for_each(
-      std::execution::unseq,
-      o.begin(),
-      o.end(),
-      [&](auto&& p)
-      {
-        emplace(p);
-      }
-    );
-
-    return *this;
-  }
-
-  set& operator=(set&& o) noexcept = default;
 
 # include "common.hpp"
 
