@@ -239,7 +239,7 @@ public:
   multiset(std::initializer_list<value_type> i) { *this = i; }
   multiset(multiset const& o) { *this = o; }
   multiset(multiset&&) = default;
-  multiset(auto const i, decltype(i) j) { insert(i, j); }
+  multiset(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   //
   auto& operator=(auto&& o) requires(

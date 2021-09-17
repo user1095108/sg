@@ -179,7 +179,7 @@ public:
   set(std::initializer_list<Key> i) { *this = i; }
   set(set const& o) { *this = o; }
   set(set&&) = default;
-  set(auto const i, decltype(i) j) { insert(i, j); }
+  set(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   //
   auto& operator=(auto&& o) requires(

@@ -462,7 +462,7 @@ public:
   intervalmap(std::initializer_list<value_type> i) { *this = i; }
   intervalmap(intervalmap const& o) { *this = o; }
   intervalmap(intervalmap&&) = default;
-  intervalmap(auto const i, decltype(i) j) { insert(i, j); }
+  intervalmap(std::input_iterator auto const i, decltype(i) j){insert(i, j);}
 
   //
   auto& operator=(auto&& o) requires(

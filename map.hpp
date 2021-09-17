@@ -201,7 +201,7 @@ public:
   map(std::initializer_list<value_type> i) { *this = i; }
   map(map const& o) { *this = o; }
   map(map&&) = default;
-  map(auto const i, decltype(i) j) { insert(i, j); }
+  map(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   //
   auto& operator=(auto&& o) requires(
