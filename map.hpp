@@ -138,10 +138,8 @@ public:
         do
         {
           l.emplace_back(n);
-
-          n = sg::detail::next(this, n);
         }
-        while (n);
+        while ((n = sg::detail::next(this, n)));
       }
 
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
