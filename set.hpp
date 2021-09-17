@@ -242,18 +242,14 @@ public:
   //
   auto insert(value_type const& v)
   {
-    auto const [n, s](
-      node::emplace(root_, v)
-    );
+    auto const [n, s](node::emplace(root_, v));
 
     return std::tuple(iterator(root_.get(), n), s);
   }
 
   auto insert(value_type&& v)
   {
-    auto const [n, s](
-      node::emplace(root_, std::move(v))
-    );
+    auto const [n, s](node::emplace(root_, std::move(v)));
 
     return std::tuple(iterator(root_.get(), n), s);
   }
