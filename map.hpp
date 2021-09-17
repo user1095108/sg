@@ -95,7 +95,7 @@ public:
               return 0;
             }
 
-            sr = sg::detail::size(sg::detail::right_node(n));
+            sr = sg::detail::size(n->r_);
           }
           else if (c > 0)
           {
@@ -104,7 +104,7 @@ public:
               return 0;
             }
 
-            sl = sg::detail::size(sg::detail::left_node(n));
+            sl = sg::detail::size(n->l_);
           }
           else
           {
