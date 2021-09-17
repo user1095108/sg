@@ -113,9 +113,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  decltype(n) g{};
-
-  while (n)
+  for (decltype(n) g{}; n;)
   {
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
