@@ -351,7 +351,7 @@ public:
       std::move(std::get<0>(v)), std::move(std::get<1>(v))));
   }
 
-  void insert(auto const i, decltype(i) j)
+  void insert(std::input_iterator auto const i, decltype(i) j)
   {
     std::for_each(
       std::execution::unseq,

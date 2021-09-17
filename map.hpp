@@ -308,7 +308,7 @@ public:
     return std::tuple(iterator(root_.get(), n), s);
   }
 
-  void insert(auto const i, decltype(i) j)
+  void insert(std::input_iterator auto const i, decltype(i) j)
   {
     std::for_each(
       std::execution::unseq,
