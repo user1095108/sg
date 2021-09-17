@@ -173,25 +173,25 @@ void insert(std::initializer_list<value_type> const il)
 //
 iterator lower_bound(Key const& k) noexcept
 {
-  auto const& [e, g](sg::detail::equal_range(root_.get(), k));
+  auto const [e, g](sg::detail::equal_range(root_.get(), k));
   return {root_.get(), e ? e : g};
 }
 
 const_iterator lower_bound(Key const& k) const noexcept
 {
-  auto const& [e, g](sg::detail::equal_range(root_.get(), k));
+  auto const [e, g](sg::detail::equal_range(root_.get(), k));
   return {root_.get(), e ? e : g};
 }
 
 iterator lower_bound(auto const& k) noexcept
 {
-  auto const& [e, g](sg::detail::equal_range(root_.get(), k));
+  auto const [e, g](sg::detail::equal_range(root_.get(), k));
   return {root_.get(), e ? e : g};
 }
 
 const_iterator lower_bound(auto const& k) const noexcept
 {
-  auto const& [e, g](sg::detail::equal_range(root_.get(), k));
+  auto const [e, g](sg::detail::equal_range(root_.get(), k));
   return {root_.get(), e ? e : g};
 }
 
