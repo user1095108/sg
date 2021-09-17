@@ -585,8 +585,6 @@ public:
   }
 
   //
-  friend bool operator==<>(intervalmap const&,
-    intervalmap const&) noexcept;
   friend bool operator!=(intervalmap const&,
     intervalmap const&) noexcept = default;
   friend bool operator<(intervalmap const&,
@@ -597,8 +595,6 @@ public:
     intervalmap const&) noexcept = default;
   friend bool operator>=(intervalmap const&,
     intervalmap const&) noexcept = default;
-  friend auto operator<=><>(intervalmap const&,
-    intervalmap const&) noexcept;
 
   //
   void all(Key const& k, auto g) const

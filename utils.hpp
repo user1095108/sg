@@ -285,8 +285,8 @@ constexpr auto erase_if(auto& c, auto pred)
   }
 }
 
-template <typename T>
-inline bool operator==(T const& lhs, T const& rhs) noexcept
+template <typename T> requires(requires(T c){c.begin(); c.end();})
+inline bool operator==(T const& lhs, T const& rhs) noexcept 
 {
   return std::equal(
     std::execution::unseq,
@@ -299,7 +299,7 @@ inline bool operator==(T const& lhs, T const& rhs) noexcept
   );
 }
 
-template <typename T>
+template <typename T> requires(requires(T c){c.begin(); c.end();})
 inline auto operator<=>(T const& lhs, T const& rhs) noexcept
 {
   return std::lexicographical_compare_three_way(

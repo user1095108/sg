@@ -272,13 +272,11 @@ public:
   }
 
   //
-  friend bool operator==<>(set const&, set const&) noexcept;
   friend bool operator!=(set const&, set const&) noexcept = default;
   friend bool operator<(set const&, set const&) noexcept = default;
   friend bool operator<=(set const&, set const&) noexcept = default;
   friend bool operator>(set const&, set const&) noexcept = default;
   friend bool operator>=(set const&, set const&) noexcept = default;
-  friend auto operator<=><>(set const&, set const&) noexcept;
 };
 
 }
