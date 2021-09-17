@@ -50,7 +50,7 @@ int main()
   dump(st.root());
 
   std::cout << "count: " << st.count(1) << std::endl;
-  std::cout << "height: " << sg::height(st.root()) << std::endl;
+  std::cout << "height: " << sg::detail::height(st.root()) << std::endl;
   std::cout << "size: " << st.size() << std::endl;
 
   std::for_each(
