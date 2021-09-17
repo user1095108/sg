@@ -111,20 +111,17 @@ public:
       {
         return iterator{r.get(), std::get<0>(node::erase(r, n->key()))};
       }
+      else if (auto const k(i.iterator()); std::prev(n->v_.end()) == k)
+      {
+        auto const j(std::next(i));
+
+        n->v_.erase(k);
+
+        return j;
+      }
       else
       {
-        if (auto const k(i.iterator()); std::prev(n->v_.end()) == k)
-        {
-          auto const j(std::next(i));
-
-          n->v_.erase(k);
-
-          return j;
-        }
-        else
-        {
-          return iterator{r.get(), n, n->v_.erase(k)};
-        }
+        return iterator{r.get(), n, n->v_.erase(k)};
       }
     }
 
