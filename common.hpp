@@ -139,9 +139,11 @@ auto equal_range(auto const& k) const noexcept
 //
 auto erase(const_iterator a, const_iterator const b)
 {
-  for (; a != b; a = erase(a));
+  iterator i;
 
-  return a;
+  for (; a != b; i = erase(a), a = i);
+
+  return i;
 }
 
 auto erase(std::initializer_list<const_iterator> const il)
