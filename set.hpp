@@ -124,7 +124,6 @@ public:
         {
           auto const i((a + b) / 2);
           auto const n(l[i]);
-          assert(n);
 
           switch (b - a)
           {
@@ -150,7 +149,6 @@ public:
               }
 
             default:
-              assert(i);
               n->l_.release();
               n->l_.reset(f(f, a, i - 1));
 

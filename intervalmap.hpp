@@ -258,7 +258,6 @@ public:
     {
       auto const f([&](auto&& f, auto& n, auto& d) noexcept -> std::size_t
         {
-          assert(d);
           if (!n)
           {
             n = std::move(d);
@@ -395,7 +394,6 @@ public:
         {
           auto const i((a + b) / 2);
           auto const n(l[i]);
-          assert(n);
 
           switch (b - a)
           {
@@ -426,7 +424,6 @@ public:
 
             default:
               {
-                assert(i);
                 auto m(reset_nodes_max(n));
 
                 if (auto const p(f(f, a, i - 1)); p)
