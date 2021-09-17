@@ -466,8 +466,8 @@ public:
 
   //
   auto& operator=(auto&& o) requires(
-    std::is_same_v<decltype(o), std::remove_cvref_t<intervalmap>> ||
-    std::is_same_v<
+    std::same_as<decltype(o), std::remove_cvref_t<intervalmap>> ||
+    std::same_as<
       std::remove_cvref_t<decltype(o)>,
       std::initializer_list<value_type>
     >

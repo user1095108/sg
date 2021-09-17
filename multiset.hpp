@@ -243,8 +243,8 @@ public:
 
   //
   auto& operator=(auto&& o) requires(
-    std::is_same_v<decltype(o), std::remove_cvref_t<multiset>> ||
-    std::is_same_v<
+    std::same_as<decltype(o), std::remove_cvref_t<multiset>> ||
+    std::same_as<
       std::remove_cvref_t<decltype(o)>,
       std::initializer_list<value_type>
     >
@@ -336,7 +336,7 @@ public:
     return iterator(root_.get(), node::emplace(root_, std::move(v)));
   }
 
-  void insert(auto const i, decltype(i) j)
+  void insert(std::input_iterator auto const i, decltype(i) j)
   {
     std::for_each(
       std::execution::unseq,
