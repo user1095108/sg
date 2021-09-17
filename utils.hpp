@@ -115,31 +115,26 @@ inline auto equal_range(auto n, auto&& k) noexcept
 
   decltype(n) g{};
 
-  if (n)
+  for (; n;)
   {
-    do
+    if (auto const c(node::cmp(k, n->key())); c < 0)
     {
-      if (auto const c(node::cmp(std::forward<decltype(k)>(k), n->key()));
-        c < 0)
-      {
-        g = n;
-        n = n->l_.get();
-      }
-      else if (c > 0)
-      {
-        n = n->r_.get();
-      }
-      else
-      {
-        if (auto const r(n->r_.get()); r)
-        {
-          g = sg::first_node(r);
-        }
-
-        break;
-      }
+      g = n;
+      n = n->l_.get();
     }
-    while (n);
+    else if (c > 0)
+    {
+      n = n->r_.get();
+    }
+    else
+    {
+      if (auto const r(n->r_.get()); r)
+      {
+        g = sg::first_node(r);
+      }
+
+      break;
+    }
   }
 
   return std::tuple(n, g);
