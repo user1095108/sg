@@ -163,7 +163,7 @@ public:
 
             auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
-            auto const nxt(next_node(r.get(), n));
+            auto const nxt(sg::detail::next_node(r.get(), n));
 
             if (!n->l_ && !n->r_)
             {
@@ -201,7 +201,7 @@ public:
         {
           l.emplace_back(n);
         }
-        while ((n = next_node(this, n)));
+        while ((n = sg::detail::next_node(this, n)));
       }
 
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
