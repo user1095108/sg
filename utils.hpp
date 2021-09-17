@@ -115,7 +115,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
 
   decltype(n) g{};
 
-  for (; n;)
+  while (n)
   {
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
