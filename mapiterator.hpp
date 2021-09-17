@@ -69,8 +69,15 @@ public:
   }
 
   // increment, decrement
-  auto& operator++() noexcept { return n_ = sg::detail::next(r_, n_), *this; }
-  auto& operator--() noexcept { return n_ = sg::detail::prev(r_, n_), *this; }
+  auto& operator++() noexcept
+  {
+    return n_ = sg::detail::next_node(r_, n_), *this;
+  }
+
+  auto& operator--() noexcept
+  {
+    return n_ = sg::detail::prev_node(r_, n_), *this;
+  }
 
   auto operator++(int) noexcept { auto r(*this); return ++*this, r; }
   auto operator--(int) noexcept { auto r(*this); return --*this, r; }

@@ -55,7 +55,7 @@ inline auto last_node(auto n) noexcept
 }
 
 //
-inline auto next(auto r, auto n) noexcept
+inline auto next_node(auto r, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
@@ -88,7 +88,7 @@ inline auto next(auto r, auto n) noexcept
   }
 }
 
-inline auto prev(auto r, auto n) noexcept
+inline auto prev_node(auto r, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
@@ -251,7 +251,7 @@ inline auto erase(auto& r, auto&& k)
       {
         auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
-        auto const nxt(next(r.get(), n));
+        auto const nxt(next_node(r.get(), n));
 
         if (!n->l_ && !n->r_)
         {
