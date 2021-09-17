@@ -120,26 +120,26 @@ inline auto prev(auto r, auto n) noexcept
 }
 
 //
-inline auto equal_range(auto n, auto&& k) noexcept
+inline auto equal_range(auto e, auto&& k) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  decltype(n) g{};
+  decltype(e) g{};
 
-  while (n)
+  while (e)
   {
-    if (auto const c(node::cmp(k, n->key())); c < 0)
+    if (auto const c(node::cmp(k, e->key())); c < 0)
     {
-      g = n;
-      n = left_node(n);
+      g = e;
+      e = left_node(e);
     }
     else if (c > 0)
     {
-      n = right_node(n);
+      e = right_node(e);
     }
     else
     {
-      if (auto const r(right_node(n)); r)
+      if (auto const r(right_node(e)); r)
       {
         g = first_node(r);
       }
@@ -148,7 +148,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
     }
   }
 
-  return std::tuple(n, g);
+  return std::tuple(e, g);
 }
 
 inline auto find(auto n, auto&& k) noexcept
