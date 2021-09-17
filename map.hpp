@@ -325,6 +325,23 @@ public:
       }
     );
   }
+
+  //
+  friend bool operator==(map const&, map const&) noexcept = default;
+  friend bool operator!=(map const&, map const&) noexcept = default;
+  friend bool operator<(map const&, map const&) noexcept = default;
+  friend bool operator<=(map const&, map const&) noexcept = default;
+  friend bool operator>(map const&, map const&) noexcept = default;
+  friend bool operator>=(map const&, map const&) noexcept = default;
+
+  friend auto operator<=>(map const& lhs, map const& rhs) noexcept
+  {
+    return std::lexicographical_compare_three_way(
+      lhs.begin(), lhs.end(),
+      rhs.begin(), rhs.end(),
+      node::cmp
+    );
+  }
 };
 
 }

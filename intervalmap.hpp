@@ -590,6 +590,30 @@ public:
   }
 
   //
+  friend bool operator==(intervalmap const&,
+    intervalmap const&) noexcept = default;
+  friend bool operator!=(intervalmap const&,
+    intervalmap const&) noexcept = default;
+  friend bool operator<(intervalmap const&,
+    intervalmap const&) noexcept = default;
+  friend bool operator<=(intervalmap const&,
+    intervalmap const&) noexcept = default;
+  friend bool operator>(intervalmap const&,
+    intervalmap const&) noexcept = default;
+  friend bool operator>=(intervalmap const&,
+    intervalmap const&) noexcept = default;
+
+  friend auto operator<=>(intervalmap const& lhs,
+    intervalmap const& rhs) noexcept
+  {
+    return std::lexicographical_compare_three_way(
+      lhs.begin(), lhs.end(),
+      rhs.begin(), rhs.end(),
+      node::cmp
+    );
+  }
+
+  //
   void all(Key const& k, auto g) const
   {
     auto const& [mink, maxk](k);
