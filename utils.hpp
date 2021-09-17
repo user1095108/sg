@@ -30,16 +30,26 @@ inline std::size_t size(auto&& n) noexcept
 }
 
 //
+inline auto left_node(auto&& n) noexcept
+{
+  return n->l_.get();
+}
+
+inline auto right_node(auto&& n) noexcept
+{
+  return n->r_.get();
+}
+
 inline auto first_node(auto n) noexcept
 {
-  for (decltype(n) p; (p = n->l_.get()); n = p);
+  for (decltype(n) p; (p = left_node(n)); n = p);
 
   return n;
 }
 
 inline auto last_node(auto n) noexcept
 {
-  for (decltype(n) p; (p = n->r_.get()); n = p);
+  for (decltype(n) p; (p = right_node(n)); n = p);
 
   return n;
 }
@@ -49,7 +59,7 @@ inline auto next(auto r, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (auto const p(n->r_.get()); p)
+  if (auto const p(right_node(n)); p)
   {
     decltype(n) const l(first_node(p));
 
@@ -64,11 +74,11 @@ inline auto next(auto r, auto n) noexcept
       if (auto const c(node::cmp(key, r->key())); c < 0)
       {
         n = r;
-        r = r->l_.get(); // deepest parent greater than us
+        r = left_node(r); // deepest parent greater than us
       }
       else if (c > 0)
       {
-        r = r->r_.get();
+        r = right_node(r);
       }
       else
       {
@@ -86,7 +96,7 @@ inline auto prev(auto r, auto n) noexcept
   {
     return last_node(r);
   }
-  else if (auto const p(n->l_.get()); p)
+  else if (auto const p(left_node(n)); p)
   {
     decltype(n) const r(last_node(p));
 
@@ -100,12 +110,12 @@ inline auto prev(auto r, auto n) noexcept
     {
       if (auto const c(node::cmp(key, r->key())); c < 0)
       {
-        r = r->l_.get();
+        r = left_node(r);
       }
       else if (c > 0)
       {
         n = r;
-        r = r->r_.get(); // deepest parent less than us
+        r = right_node(r); // deepest parent less than us
       }
       else
       {
@@ -127,15 +137,15 @@ inline auto equal_range(auto n, auto&& k) noexcept
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
       g = n;
-      n = n->l_.get();
+      n = left_node(n);
     }
     else if (c > 0)
     {
-      n = n->r_.get();
+      n = right_node(n);
     }
     else
     {
-      if (auto const r(n->r_.get()); r)
+      if (auto const r(right_node(n)); r)
       {
         g = first_node(r);
       }
@@ -155,11 +165,11 @@ inline auto find(auto n, auto&& k) noexcept
   {
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
-      n = n->l_.get();
+      n = left_node(n);
     }
     else if (c > 0)
     {
-      n = n->r_.get();
+      n = right_node(n);
     }
     else
     {
@@ -194,7 +204,7 @@ inline void move(auto& n, auto& ...d)
           return 0;
         }
 
-        sr = size(n->r_);
+        sr = size(right_node(n));
       }
       else
       {
@@ -203,7 +213,7 @@ inline void move(auto& n, auto& ...d)
           return 0;
         }
 
-        sl = size(n->l_);
+        sl = size(left_node(n));
       }
 
       //
@@ -270,12 +280,14 @@ inline auto erase(auto& r, auto&& k)
 
 }
 
-constexpr auto erase(auto& c, auto const& k)
+constexpr auto erase(auto& c, auto const& k) requires(
+  requires{c.begin(); c.end(); &decltype(c)::node::cmp;})
 {
   c.erase(k);
 }
 
-constexpr auto erase_if(auto& c, auto pred)
+constexpr auto erase_if(auto& c, auto pred) requires(
+  requires{c.begin(); c.end(); &decltype(c)::node::cmp;})
 {
   auto const end(c.end());
 
