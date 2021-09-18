@@ -373,7 +373,9 @@ public:
         }
       );
 
-      return n->m_ = std::max({m, reset_nodes_max(c)...});
+      ((m = std::max(m, reset_nodes_max(c))), ...);
+
+      return n->m_ = m;
     }
 
     auto rebuild()
