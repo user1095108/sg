@@ -1,5 +1,5 @@
-#ifndef SG_INTERVALMAPITERATOR_HPP
-# define SG_INTERVALMAPITERATOR_HPP
+#ifndef SG_MULTIMAPITERATOR_HPP
+# define SG_MULTIMAPITERATOR_HPP
 # pragma once
 
 #include <iterator>
@@ -7,12 +7,12 @@
 #include <type_traits>
 
 template <typename T>
-class intervalmapiterator
+class multimapiterator
 {
   using inverse_const_t = std::conditional_t<
     std::is_const_v<T>,
-    intervalmapiterator<std::remove_const_t<T>>,
-    intervalmapiterator<T const>
+    multimapiterator<std::remove_const_t<T>>,
+    multimapiterator<T const>
   >;
 
   friend inverse_const_t;
@@ -42,14 +42,14 @@ private:
   > i_{};
 
 public:
-  intervalmapiterator() noexcept = default;
+  multimapiterator() noexcept = default;
 
-  intervalmapiterator(node_t* const r) noexcept:
+  multimapiterator(node_t* const r) noexcept:
     r_(r)
   {
   }
 
-  intervalmapiterator(node_t* const r, node_t* const n) noexcept:
+  multimapiterator(node_t* const r, node_t* const n) noexcept:
     r_(r),
     n_(n)
   {
@@ -66,7 +66,7 @@ public:
     }
   }
 
-  intervalmapiterator(node_t* const r, node_t* const n,
+  multimapiterator(node_t* const r, node_t* const n,
     decltype(i_) const i) noexcept:
     r_(r),
     n_(n),
@@ -74,10 +74,10 @@ public:
   {
   }
 
-  intervalmapiterator(intervalmapiterator const&) noexcept = default;
-  intervalmapiterator(intervalmapiterator&&) noexcept = default;
+  multimapiterator(multimapiterator const&) noexcept = default;
+  multimapiterator(multimapiterator&&) noexcept = default;
 
-  intervalmapiterator(inverse_const_t const& o) noexcept
+  multimapiterator(inverse_const_t const& o) noexcept
     requires(std::is_const_v<T>):
     r_(o.r_),
     n_(o.n_),
@@ -86,13 +86,13 @@ public:
   }
 
   //
-  intervalmapiterator& operator=(
-    intervalmapiterator const&) noexcept = default;
-  intervalmapiterator& operator=(intervalmapiterator&&) noexcept = default;
+  multimapiterator& operator=(
+    multimapiterator const&) noexcept = default;
+  multimapiterator& operator=(multimapiterator&&) noexcept = default;
 
   bool operator==(auto const& o) const noexcept
     requires(
-      std::is_same_v<std::remove_cvref_t<decltype(o)>, intervalmapiterator> ||
+      std::is_same_v<std::remove_cvref_t<decltype(o)>, multimapiterator> ||
       std::is_same_v<std::remove_cvref_t<decltype(o)>, inverse_const_t>
     )
   {
@@ -143,4 +143,4 @@ public:
   auto node() const noexcept { return n_; }
 };
 
-#endif // SG_INTERVALMAPITERATOR_HPP
+#endif // SG_MULTIMAPITERATOR_HPP

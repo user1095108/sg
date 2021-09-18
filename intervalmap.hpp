@@ -9,7 +9,7 @@
 
 #include "utils.hpp"
 
-#include "intervalmapiterator.hpp"
+#include "multimapiterator.hpp"
 
 namespace sg
 {
@@ -27,8 +27,8 @@ public:
 
   using size_type = std::size_t;
 
-  using const_iterator = intervalmapiterator<node const>;
-  using iterator = intervalmapiterator<node>;
+  using const_iterator = multimapiterator<node const>;
+  using iterator = multimapiterator<node>;
   using reverse_iterator = std::reverse_iterator<iterator>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
