@@ -281,15 +281,7 @@ public:
         }
         else
         {
-          return std::count(
-            std::execution::unseq,
-            n->v_.cbegin(),
-            n->v_.cend(),
-            [&](auto&& p) noexcept
-            {
-              return node::cmp(k, p) == 0;
-            }
-          );
+          return n->v_.size();
         }
       }
     }

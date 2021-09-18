@@ -286,23 +286,15 @@ public:
       {
         if (auto const c(node::cmp(k, n->key())); c < 0)
         {
-          n = n->l_.get();
+          n = sg::detail::left_node(n);
         }
         else if (c > 0)
         {
-          n = n->r_.get();
+          n = sg::detail::right_node(n);
         }
         else
         {
-          return std::count(
-            std::execution::unseq,
-            n->v_.cbegin(),
-            n->v_.cend(),
-            [&](auto&& p) noexcept
-            {
-              return node::cmp(k, std::get<0>(p)) == 0;
-            }
-          );
+          return n->v_.size();
         }
       }
     }
