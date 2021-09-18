@@ -163,19 +163,19 @@ public:
     {
       if (auto const n(i.node()); 1 == n->v_.size())
       {
-        return {r.get(), std::get<0>(node::erase(r, n->key()))};
+        return {r.get(), std::get<0>(node::erase(r, std::get<0>(*i)))};
       }
-      else if (auto const k(i.iterator()); std::prev(n->v_.end()) == k)
+      else if (auto const it(i.iterator()); std::prev(n->v_.end()) == it)
       {
-        auto const m(std::next(i).node());
+        auto const nn(std::next(i).node());
 
-        n->v_.erase(k);
+        n->v_.erase(it);
 
-        return {r.get(), m};
+        return {r.get(), nn};
       }
       else
       {
-        return {r.get(), n, n->v_.erase(k)};
+        return {r.get(), n, n->v_.erase(it)};
       }
     }
 
@@ -202,45 +202,60 @@ public:
           }
           else
           {
-            auto const s(n->v_.size());
+            auto const s0(n->v_.size());
 
-            auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
-
-            auto const nxt(sg::detail::next_node(r.get(), n));
-
-            if (!n->l_ && !n->r_)
-            {
-              q.reset();
-
-              if (p)
+            std::erase_if(
+              n->v_,
+              [&](auto&& p) noexcept
               {
-                node::reset_max(r.get(), p);
+                return cmp(std::get<0>(p), k) == 0;
               }
-            }
-            else if (!n->l_ || !n->r_)
-            {
-              q = std::move(n->l_ ? n->l_ : n->r_);
+            );
 
-              if (p)
-              {
-                node::reset_max(r.get(), q.get());
-              }
+            if (auto const s1(n->v_.size()); s1)
+            {
+              return std::tuple(n, s0 - s1);
             }
             else
             {
-              q.release(); // order important
+              auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
 
-              if (p)
+              auto const nxt(sg::detail::next_node(r.get(), n));
+
+              if (!n->l_ && !n->r_)
               {
-                node::reset_max(r.get(), p);
+                q.reset();
+
+                if (p)
+                {
+                  node::reset_max(r.get(), p);
+                }
+              }
+              else if (!n->l_ || !n->r_)
+              {
+                q = std::move(n->l_ ? n->l_ : n->r_);
+
+                if (p)
+                {
+                  node::reset_max(r.get(), q.get());
+                }
+              }
+              else
+              {
+                q.release(); // order important
+
+                if (p)
+                {
+                  node::reset_max(r.get(), p);
+                }
+
+                node::move(r, n->l_, n->r_);
+
+                delete n;
               }
 
-              node::move(r, n->l_, n->r_);
-
-              delete n;
+              return std::tuple(nxt, s0);
             }
-
-            return std::tuple(nxt, s);
           }
         }
       }

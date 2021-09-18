@@ -1,20 +1,21 @@
 //
-auto& operator=(auto&& o) requires(
-  std::same_as<decltype(o), std::remove_cvref_t<this_class>> ||
-  std::same_as<
-    std::remove_cvref_t<decltype(o)>,
-    std::initializer_list<value_type>
-  >
-)
+auto& operator=(this_class const& o)
 {
   clear();
-
   insert(o.begin(), o.end());
 
   return *this;
 }
 
 this_class& operator=(this_class&& o) noexcept = default;
+
+auto& operator=(std::initializer_list<value_type> const o)
+{
+  clear();
+  insert(o.begin(), o.end());
+
+  return *this;
+}
 
 //
 auto root() const noexcept { return root_.get(); }
