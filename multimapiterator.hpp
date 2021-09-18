@@ -86,8 +86,7 @@ public:
   }
 
   //
-  multimapiterator& operator=(
-    multimapiterator const&) noexcept = default;
+  multimapiterator& operator=(multimapiterator const&) noexcept = default;
   multimapiterator& operator=(multimapiterator&&) noexcept = default;
 
   bool operator==(auto const& o) const noexcept
