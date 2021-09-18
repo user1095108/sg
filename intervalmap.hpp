@@ -83,7 +83,7 @@ public:
           }
 
           //
-          n->m_ = std::max(n->m_, maxk);
+          n->m_ = cmp(n->m_, maxk) < 0 ? maxk : n->m_;
 
           //
           size_type sl, sr;
@@ -275,7 +275,7 @@ public:
           }
 
           //
-          n->m_ = std::max(n->m_, d->m_);
+          n->m_ = cmp(n->m_, d->m_) < 0 ? d->m_ : n->m_;
 
           //
           size_type sl, sr;
