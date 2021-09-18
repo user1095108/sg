@@ -44,7 +44,12 @@ private:
 public:
   intervalmapiterator() noexcept = default;
 
-  intervalmapiterator(node_t* const r, node_t* const n = {}) noexcept:
+  intervalmapiterator(node_t* const r) noexcept:
+    r_(r)
+  {
+  }
+
+  intervalmapiterator(node_t* const r, node_t* const n) noexcept:
     r_(r),
     n_(n)
   {
