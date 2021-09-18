@@ -55,6 +55,31 @@ inline auto last_node(auto n) noexcept
 }
 
 //
+inline auto parent_node(auto r, auto n) noexcept
+{
+  using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
+
+  auto&& key(n->key());
+
+  for (n = {};;)
+  {
+    if (auto const c(node::cmp(key, r->key())); c < 0)
+    {
+      n = r;
+      r = left_node(r);
+    }
+    else if (c > 0)
+    {
+      n = r;
+      r = right_node(r);
+    }
+    else
+    {
+      return n;
+    }
+  }
+}
+
 inline auto next_node(auto r, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
@@ -121,31 +146,6 @@ inline auto prev_node(auto r, auto n) noexcept
       {
         return n;
       }
-    }
-  }
-}
-
-inline auto parent_node(auto r, auto n) noexcept
-{
-  using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
-
-  auto&& key(n->key());
-
-  for (n = {};;)
-  {
-    if (auto const c(node::cmp(key, r->key())); c < 0)
-    {
-      n = r;
-      r = left_node(r);
-    }
-    else if (c > 0)
-    {
-      n = r;
-      r = right_node(r);
-    }
-    else
-    {
-      return n;
     }
   }
 }
