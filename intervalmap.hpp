@@ -320,6 +320,7 @@ public:
           decltype(node::m_) m(n->key());
 
           std::for_each(
+            std::execution::noseq,
             n->v_.cbegin(),
             n->v_.cend(),
             [&](auto&& p) noexcept
@@ -374,6 +375,7 @@ public:
       decltype(node::m_) m(n->key());
 
       std::for_each(
+        std::execution::noseq,
         n->v_.cbegin(),
         n->v_.cend(),
         [&](auto&& p) noexcept
