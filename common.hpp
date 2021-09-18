@@ -29,7 +29,7 @@ iterator begin() noexcept
 {
   return root_ ?
     iterator(root_.get(), sg::detail::first_node(root_.get())) :
-    iterator({});
+    iterator();
 }
 
 iterator end() noexcept { return {root_.get()}; }
@@ -39,7 +39,7 @@ const_iterator begin() const noexcept
 {
   return root_ ?
     const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
-    const_iterator({});
+    const_iterator();
 }
 
 const_iterator end() const noexcept { return {root_.get()}; }
@@ -48,7 +48,7 @@ const_iterator cbegin() const noexcept
 {
   return root_ ?
     const_iterator(root_.get(), sg::detail::first_node(root_.get())) :
-    const_iterator({});
+    const_iterator();
 }
 
 const_iterator cend() const noexcept { return {root_.get()}; }
@@ -58,7 +58,7 @@ reverse_iterator rbegin() noexcept
 {
   return root_ ?
     reverse_iterator(iterator(root_.get(), {})) :
-    reverse_iterator({});
+    reverse_iterator();
 }
 
 reverse_iterator rend() noexcept
@@ -67,7 +67,7 @@ reverse_iterator rend() noexcept
     reverse_iterator(
       iterator{root_.get(), sg::detail::first_node(root_.get())}
     ) :
-    reverse_iterator({});
+    reverse_iterator();
 }
 
 // const reverse iterators
@@ -75,7 +75,7 @@ const_reverse_iterator crbegin() const noexcept
 {
   return root_ ?
     const_reverse_iterator(const_iterator(root_.get())) :
-    const_reverse_iterator({});
+    const_reverse_iterator();
 }
 
 const_reverse_iterator crend() const noexcept
@@ -84,7 +84,7 @@ const_reverse_iterator crend() const noexcept
     const_reverse_iterator(
       const_iterator{root_.get(), sg::detail::first_node(root_.get())}
     ) :
-    const_reverse_iterator({});
+    const_reverse_iterator();
 }
 
 //
