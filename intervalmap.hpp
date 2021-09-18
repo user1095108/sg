@@ -132,15 +132,13 @@ public:
 
     static auto equal_range(auto n, auto&& k) noexcept
     {
-      using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
-
       auto const& [mink, maxk](k);
 
       decltype(n) g{};
 
       while (n)
       {
-        if (auto const c(node::cmp(mink, n->key())); c < 0)
+        if (auto const c(cmp(mink, n->key())); c < 0)
         {
           g = n;
           n = left_node(n);
