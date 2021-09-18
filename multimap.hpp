@@ -124,11 +124,11 @@ public:
       {
         return {r.get(), std::get<0>(node::erase(r, n->key()))};
       }
-      else if (auto const it(i.iterator()); std::prev(n->v_.end()) == k)
+      else if (auto const it(i.iterator()); std::prev(n->v_.end()) == it)
       {
         auto const nn(std::next(i).node());
 
-        n->v_.erase(k);
+        n->v_.erase(it);
 
         return {r.get(), nn};
       }
