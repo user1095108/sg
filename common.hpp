@@ -42,7 +42,7 @@ const_iterator begin() const noexcept
     const_iterator();
 }
 
-const_iterator end() const noexcept { return {}; }
+const_iterator end() const noexcept { return {root_.get(), {}}; }
 
 const_iterator cbegin() const noexcept
 {
@@ -51,13 +51,13 @@ const_iterator cbegin() const noexcept
     const_iterator();
 }
 
-const_iterator cend() const noexcept { return {}; }
+const_iterator cend() const noexcept { return {root_.get(), {}}; }
 
 // reverse iterators
 reverse_iterator rbegin() noexcept
 {
   return root_ ?
-    reverse_iterator(iterator(root_.get(), nullptr)) :
+    reverse_iterator(iterator(root_.get(), {})) :
     reverse_iterator();
 }
 
@@ -74,7 +74,7 @@ reverse_iterator rend() noexcept
 const_reverse_iterator crbegin() const noexcept
 {
   return root_ ?
-    const_reverse_iterator(const_iterator(root_.get(), nullptr)) :
+    const_reverse_iterator(const_iterator(root_.get(), {})) :
     const_reverse_iterator();
 }
 
