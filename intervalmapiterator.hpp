@@ -19,7 +19,7 @@ class intervalmapiterator
 
   using node_t = std::remove_const_t<T>;
 
-  node_t* r_;
+  node_t* r_{};
   node_t* n_{};
 
 public:
@@ -42,6 +42,8 @@ private:
   > i_{};
 
 public:
+  intervalmapiterator() noexcept = default;
+
   intervalmapiterator(node_t* const r, node_t* const n = {}) noexcept:
     r_(r),
     n_(n)
