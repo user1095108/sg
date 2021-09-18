@@ -88,16 +88,6 @@ const_reverse_iterator crend() const noexcept
 }
 
 //
-auto equal_range(Key const& k) noexcept
-{
-  auto const [e, g](sg::detail::equal_range(root_.get(), k));
-  return std::pair(
-    iterator(root_.get(), e ? e : g),
-    iterator(root_.get(), g)
-  );
-}
-
-//
 bool contains(Key const& k) const
 {
   return bool(sg::detail::find(root_.get(), k));
@@ -106,34 +96,6 @@ bool contains(Key const& k) const
 bool contains(auto&& k) const
 {
   return bool(sg::detail::find(root_.get(), std::forward<decltype(k)>(k)));
-}
-
-//
-auto equal_range(Key const& k) const noexcept
-{
-  auto const [e, g](sg::detail::equal_range(root_.get(), k));
-  return std::pair(
-    const_iterator(root_.get(), e ? e : g),
-    const_iterator(root_.get(), g)
-  );
-}
-
-auto equal_range(auto const& k) noexcept
-{
-  auto const [e, g](sg::detail::equal_range(root_.get(), k));
-  return std::pair(
-    iterator(root_.get(), e ? e : g),
-    iterator(root_.get(), g)
-  );
-}
-
-auto equal_range(auto const& k) const noexcept
-{
-  auto const [e, g](sg::detail::equal_range(root_.get(), k));
-  return std::pair(
-    const_iterator(root_.get(), e ? e : g),
-    const_iterator(root_.get(), g)
-  );
 }
 
 //

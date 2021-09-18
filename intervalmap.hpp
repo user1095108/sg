@@ -130,6 +130,39 @@ public:
       return q;
     }
 
+    static auto equal_range(auto n, auto&& k) noexcept
+    {
+      using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
+
+      auto const& [mink, maxk](k);
+
+      decltype(n) g{};
+
+      while (n)
+      {
+        if (auto const c(node::cmp(mink, n->key())); c < 0)
+        {
+          g = n;
+          n = left_node(n);
+        }
+        else if (c > 0)
+        {
+          n = right_node(n);
+        }
+        else
+        {
+          if (auto const r(right_node(n)); r)
+          {
+            g = first_node(r);
+          }
+
+          break;
+        }
+      }
+
+      return std::tuple(n, g);
+    }
+
     static auto erase(auto& r, const_iterator const i)
     {
       if (auto const n(i.node()); 1 == n->v_.size())
@@ -495,6 +528,43 @@ public:
     );
 
     return iterator(root_.get(), n);
+  }
+
+  //
+  auto equal_range(Key const& k) noexcept
+  {
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
+      iterator(root_.get(), e ? e : g),
+      iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(Key const& k) const noexcept
+  {
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
+      const_iterator(root_.get(), e ? e : g),
+      const_iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(auto const& k) noexcept
+  {
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
+      iterator(root_.get(), e ? e : g),
+      iterator(root_.get(), g)
+    );
+  }
+
+  auto equal_range(auto const& k) const noexcept
+  {
+    auto const [e, g](node::equal_range(root_.get(), k));
+    return std::pair(
+      const_iterator(root_.get(), e ? e : g),
+      const_iterator(root_.get(), g)
+    );
   }
 
   //
