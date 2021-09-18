@@ -17,7 +17,7 @@ class mapiterator
 
   friend inverse_const_t;
 
-  T* r_{};
+  T* r_;
   T* n_{};
 
 public:
@@ -33,9 +33,7 @@ public:
   using reference = value_type&;
 
 public:
-  mapiterator() = default;
-
-  mapiterator(T* const r, T* const n) noexcept:
+  mapiterator(T* const r, T* const n = {}) noexcept:
     r_(r),
     n_(n)
   {
