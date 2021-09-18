@@ -105,23 +105,23 @@ public:
       return q;
     }
 
-    static auto erase(auto& r, const_iterator const i)
+    static iterator erase(auto& r, const_iterator const i)
     {
       if (auto const n(i.node()); 1 == n->v_.size())
       {
-        return iterator{r.get(), std::get<0>(node::erase(r, n->key()))};
+        return {r.get(), std::get<0>(node::erase(r, n->key()))};
       }
       else if (auto const k(i.iterator()); std::prev(n->v_.end()) == k)
       {
-        auto const j(std::next(i));
+        auto const m(std::next(i).node());
 
         n->v_.erase(k);
 
-        return j;
+        return {r.get(), m};
       }
       else
       {
-        return iterator{r.get(), n, n->v_.erase(k)};
+        return {r.get(), n, n->v_.erase(k)};
       }
     }
 
