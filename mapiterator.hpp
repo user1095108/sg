@@ -41,18 +41,18 @@ public:
   {
   }
 
-  mapiterator(mapiterator const&) = default;
-  mapiterator(mapiterator&&) = default;
+  mapiterator(mapiterator const&) noexcept = default;
+  mapiterator(mapiterator&&) noexcept = default;
 
-  mapiterator(inverse_const_t const& o) requires(std::is_const_v<T>):
+  mapiterator(inverse_const_t const& o) noexcept requires(std::is_const_v<T>):
     r_(o.r_),
     n_(o.n_)
   {
   }
 
   //
-  mapiterator& operator=(mapiterator const&) = default;
-  mapiterator& operator=(mapiterator&&) = default;
+  mapiterator& operator=(mapiterator const&) noexcept = default;
+  mapiterator& operator=(mapiterator&&) noexcept = default;
 
   bool operator==(auto const& o) const noexcept
     requires(

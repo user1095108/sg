@@ -69,10 +69,11 @@ public:
   {
   }
 
-  intervalmapiterator(intervalmapiterator const&) = default;
-  intervalmapiterator(intervalmapiterator&&) = default;
+  intervalmapiterator(intervalmapiterator const&) noexcept = default;
+  intervalmapiterator(intervalmapiterator&&) noexcept = default;
 
-  intervalmapiterator(inverse_const_t const& o) requires(std::is_const_v<T>):
+  intervalmapiterator(inverse_const_t const& o) noexcept
+    requires(std::is_const_v<T>):
     r_(o.r_),
     n_(o.n_),
     i_(o.i_)
@@ -80,8 +81,9 @@ public:
   }
 
   //
-  intervalmapiterator& operator=(intervalmapiterator const&) = default;
-  intervalmapiterator& operator=(intervalmapiterator&&) = default;
+  intervalmapiterator& operator=(
+    intervalmapiterator const&) noexcept = default;
+  intervalmapiterator& operator=(intervalmapiterator&&) noexcept = default;
 
   bool operator==(auto const& o) const noexcept
     requires(
