@@ -325,7 +325,8 @@ public:
             n->v_.cend(),
             [&](auto&& p) noexcept
             {
-              m = std::max(m, std::get<1>(std::get<0>(p)));
+              auto const tmp(std::get<1>(std::get<0>(p)));
+              m = cmp(m, tmp) < 0 ? tmp : m;
             }
           );
 
@@ -335,30 +336,32 @@ public:
           {
             if (r)
             {
-              m = std::max(m, r->m_);
+              m = cmp(m, r->m_) < 0 ? r->m_ : m;
             }
 
-            m = std::max(m, f(f, l)); // visit left
+            auto const tmp(f(f, l)); // visit left
+            m = cmp(m, tmp) < 0 ? tmp : m;
           }
           else if (c > 0)
           {
             if (l)
             {
-              m = std::max(m, l->m_);
+              m = cmp(m, l->m_) < 0 ? l->m_ : m;
             }
 
-            m = std::max(m, f(f, r)); // visit right
+            auto const tmp(f(f, r)); // visit right
+            m = cmp(m, tmp) < 0 ? tmp : m;
           }
           else // we are there
           {
             if (l)
             {
-              m = std::max(m, l->m_);
+              m = cmp(m, l->m_) < 0 ? l->m_ : m;
             }
 
             if (r)
             {
-              m = std::max(m, r->m_);
+              m = cmp(m, r->m_) < 0 ? r->m_ : m;
             }
           }
 
@@ -380,11 +383,13 @@ public:
         n->v_.cend(),
         [&](auto&& p) noexcept
         {
-          m = std::max(m, std::get<1>(std::get<0>(p)));
+          auto const tmp(std::get<1>(std::get<0>(p)));
+          m = cmp(m, tmp) < 0 ? tmp : m;
         }
       );
 
-      ((m = std::max(m, reset_nodes_max(c))), ...);
+      decltype(node::m_) tmp;
+      ((tmp = reset_nodes_max(c), m = cmp(m, tmp) < 0 ? tmp : m), ...);
 
       return n->m_ = m;
     }
@@ -441,14 +446,14 @@ public:
 
                 if (auto const p(f(f, a, i - 1)); p)
                 {
-                  m = std::max(m, p->m_);
+                  m = cmp(m, p->m_) < 0 ? p->m_ : m;
                   n->l_.release();
                   n->l_.reset(p);
                 }
 
                 if (auto const p(f(f, i + 1, b)); p)
                 {
-                  m = std::max(m, p->m_);
+                  m = cmp(m, p->m_) < 0 ? p->m_ : m;
                   n->r_.release();
                   n->r_.reset(p);
                 }
