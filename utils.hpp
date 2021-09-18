@@ -293,7 +293,7 @@ constexpr auto erase_if(auto& c, auto pred) requires(
 {
   auto const end(c.end());
 
-  for (auto i(c.begin()); end != c;)
+  for (auto i(c.begin()); end != i;)
   {
     i = pred(*i) ? c.erase(i) : std::next(i);
   }
