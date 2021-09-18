@@ -208,14 +208,14 @@ public:
   //
   auto& operator[](Key const& k)
   {
-    return std::get<0>(node::emplace(root_, k,
-      typename node::empty_t()))->kv_.second;
+    return std::get<1>(std::get<0>(node::emplace(root_, k,
+      typename node::empty_t()))->kv_);
   }
 
   auto& operator[](Key&& k)
   {
-    return std::get<0>(node::emplace(root_, std::move(k),
-      typename node::empty_t()))->kv_.second;
+    return std::get<1>(std::get<0>(node::emplace(root_, std::move(k),
+      typename node::empty_t()))->kv_);
   }
 
   auto& at(Key const& k)
