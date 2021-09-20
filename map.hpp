@@ -50,8 +50,7 @@ public:
     }
 
     explicit node(auto&& k, auto&& v):
-      kv_(std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v))
+      kv_(std::forward<decltype(k)>(k), std::forward<decltype(v)>(v))
     {
     }
 
