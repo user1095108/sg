@@ -360,14 +360,14 @@ public:
   //
   auto insert(value_type const& v)
   {
-    return iterator(root_.get(), node::emplace(root_,
-      std::get<0>(v), std::get<1>(v)));
+    return iterator(root_.get(),
+      node::emplace(root_, std::get<0>(v), std::get<1>(v)));
   }
 
   auto insert(value_type&& v)
   {
-    return iterator(root_.get(), node::emplace(root_,
-      std::move(std::get<0>(v)), std::move(std::get<1>(v))));
+    return iterator(root_.get(),
+      node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v))));
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
