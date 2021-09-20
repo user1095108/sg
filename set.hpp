@@ -25,9 +25,9 @@ public:
   using size_type = std::size_t;
 
   using const_iterator = mapiterator<node const>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
   using iterator = mapiterator<node>;
   using reverse_iterator = std::reverse_iterator<iterator>;
-  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   struct node
   {
