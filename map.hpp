@@ -62,7 +62,7 @@ public:
     static auto emplace(auto&& r, auto&& k, auto&& v)
     {
       bool s{true};
-      node* q{};
+      node* q;
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
