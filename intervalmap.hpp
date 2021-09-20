@@ -551,6 +551,7 @@ public:
   auto equal_range(Key const& k) noexcept
   {
     auto const [e, g](node::equal_range(root_.get(), k));
+
     return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
@@ -560,6 +561,7 @@ public:
   auto equal_range(Key const& k) const noexcept
   {
     auto const [e, g](node::equal_range(root_.get(), k));
+
     return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
@@ -569,6 +571,7 @@ public:
   auto equal_range(auto const& k) noexcept
   {
     auto const [e, g](node::equal_range(root_.get(), k));
+
     return std::pair(
       iterator(root_.get(), e ? e : g),
       iterator(root_.get(), g)
@@ -578,6 +581,7 @@ public:
   auto equal_range(auto const& k) const noexcept
   {
     auto const [e, g](node::equal_range(root_.get(), k));
+
     return std::pair(
       const_iterator(root_.get(), e ? e : g),
       const_iterator(root_.get(), g)
