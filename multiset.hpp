@@ -358,7 +358,6 @@ public:
   void insert(std::input_iterator auto const i, decltype(i) j)
   {
     std::for_each(
-      std::execution::unseq,
       i,
       j,
       [&](auto&& v)

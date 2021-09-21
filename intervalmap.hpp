@@ -319,7 +319,6 @@ public:
           decltype(node::m_) m(n->key());
 
           std::for_each(
-            std::execution::unseq,
             n->v_.cbegin(),
             n->v_.cend(),
             [&](auto&& p) noexcept
@@ -377,7 +376,6 @@ public:
       decltype(node::m_) m(n->key());
 
       std::for_each(
-        std::execution::unseq,
         n->v_.cbegin(),
         n->v_.cend(),
         [&](auto&& p) noexcept
@@ -517,7 +515,6 @@ public:
           else
           {
             return std::count(
-              std::execution::unseq,
               n->v_.cbegin(),
               n->v_.cend(),
               [&](auto&& p) noexcept
@@ -615,7 +612,6 @@ public:
   void insert(std::input_iterator auto const i, decltype(i) j)
   {
     std::for_each(
-      std::execution::unseq,
       i,
       j,
       [&](auto&& v)
@@ -652,7 +648,6 @@ public:
           if (auto const cg0(c > 0); cg0 || (eq && (c == 0)))
           {
             std::for_each(
-              std::execution::unseq,
               n->v_.cbegin(),
               n->v_.cend(),
               [&](auto&& p)
@@ -693,7 +688,6 @@ public:
         if (cg0 || (eq && (c == 0)))
         {
           if (auto const i(std::find_if(
-                std::execution::unseq,
                 n->v_.cbegin(),
                 n->v_.cend(),
                 [&](auto&& p) noexcept
