@@ -130,6 +130,7 @@ public:
     auto rebuild()
     {
       std::vector<node*> l;
+      l.reserve(1024);
 
       {
         auto n(sg::detail::first_node(this));
