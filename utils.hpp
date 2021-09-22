@@ -222,7 +222,7 @@ inline void move(auto& n, auto& ...d)
           return 0;
         }
 
-        sr = size(right_node(n));
+        sr = size(n->r_);
       }
       else
       {
@@ -231,7 +231,7 @@ inline void move(auto& n, auto& ...d)
           return 0;
         }
 
-        sl = size(left_node(n));
+        sl = size(n->l_);
       }
 
       //
