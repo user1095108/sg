@@ -19,7 +19,7 @@ namespace detail
 inline auto left_node(auto&& n) noexcept { return n->l_; }
 inline auto right_node(auto&& n) noexcept { return n->r_; }
 
-inline auto height(auto&& n) noexcept
+inline std::size_t height(auto&& n) noexcept
 {
   return n ?
     (left_node(n) || right_node(n)) +
