@@ -368,8 +368,7 @@ public:
       return f(f, n);
     }
 
-    static decltype(node::m_) reset_nodes_max(auto const n,
-      auto const ...c) noexcept
+    static decltype(node::m_) reset_node_max(auto const n) noexcept
     {
       decltype(node::m_) m(n->key());
 
@@ -382,9 +381,6 @@ public:
           m = cmp(m, tmp) < 0 ? tmp : m;
         }
       );
-
-      decltype(node::m_) tmp;
-      ((tmp = reset_nodes_max(c), m = cmp(m, tmp) < 0 ? tmp : m), ...);
 
       return n->m_ = m;
     }
@@ -414,7 +410,7 @@ public:
             case 0:
               n->l_ = n->r_ = {};
 
-              reset_nodes_max(n);
+              reset_node_max(n);
 
               break;
 
@@ -422,10 +418,10 @@ public:
               {
                 auto const p(l[b]);
 
-                p->l_ = p->r_ = n->l_ = {};
+                n->l_ = p->l_ = p->r_ = {};
                 n->r_ = p;
 
-                reset_nodes_max(n, p);
+                n->m_ = std::max(reset_node_max(n), reset_node_max(p));
 
                 break;
               }
@@ -435,7 +431,7 @@ public:
                 auto const l(n->l_ = f(f, a, i - 1));
                 auto const r(n->r_ = f(f, i + 1, b));
 
-                n->m_ = std::max({reset_nodes_max(n), l->m_, r->m_});
+                n->m_ = std::max({reset_node_max(n), l->m_, r->m_});
 
                 break;
               }
