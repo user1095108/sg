@@ -18,7 +18,7 @@ void dump(auto n)
 
       if (n)
       {
-        q.insert(q.end(), {n->l_.get(), n->r_.get()});
+        q.insert(q.end(), {n->l_, n->r_});
 
         std::cout << '(' << n->kv_.first << ',' << n->kv_.second << ')';
       }

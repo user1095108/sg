@@ -16,10 +16,14 @@ namespace sg
 namespace detail
 {
 
+inline auto left_node(auto&& n) noexcept { return n->l_; }
+inline auto right_node(auto&& n) noexcept { return n->r_; }
+
 inline std::size_t height(auto&& n) noexcept
 {
   return n ?
-    (n->l_ || n->r_) + std::max(height(n->l_), height(n->r_)) :
+    (left_node(n) || right_node(n)) +
+    std::max(height(left_node(n)), height(right_node(n))) :
     0;
 }
 
@@ -29,16 +33,6 @@ inline std::size_t size(auto&& n) noexcept
 }
 
 //
-inline auto left_node(auto&& n) noexcept
-{
-  return n->l_.get();
-}
-
-inline auto right_node(auto&& n) noexcept
-{
-  return n->r_.get();
-}
-
 inline auto first_node(auto n) noexcept
 {
   for (decltype(n) p; (p = left_node(n)); n = p);
@@ -206,14 +200,14 @@ inline auto find(auto n, auto&& k) noexcept
 
 inline void move(auto& n, auto& ...d)
 {
-  using pointer = typename std::remove_cvref_t<decltype(n)>::pointer;
+  using pointer = std::remove_cvref_t<decltype(n)>;
   using node = std::remove_pointer_t<pointer>;
 
   auto const f([&](auto&& f, auto& n, auto& d) noexcept -> std::size_t
     {
       if (!n)
       {
-        n = std::move(d);
+        n = d;
 
         return 1;
       }
@@ -243,9 +237,7 @@ inline void move(auto& n, auto& ...d)
       //
       auto const s(1 + sl + sr), S(2 * s);
 
-      return (3 * sl > S) || (3 * sr > S) ?
-        (n.reset(n.release()->rebuild()), 0) :
-        s;
+      return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
     }
   );
 
@@ -254,44 +246,43 @@ inline void move(auto& n, auto& ...d)
 
 inline auto erase(auto& r, auto&& k)
 {
-  using pointer = typename std::remove_cvref_t<decltype(r)>::pointer;
+  using pointer = std::remove_cvref_t<decltype(r)>;
   using node = std::remove_pointer_t<pointer>;
 
-  if (auto n(r.get()); n)
+  if (auto n(r); n)
   {
     for (pointer p{};;)
     {
       if (auto const c(node::cmp(k, n->key())); c < 0)
       {
         p = n;
-        n = n->l_.get();
+        n = left_node(n);
       }
       else if (c > 0)
       {
         p = n;
-        n = n->r_.get();
+        n = right_node(n);
       }
       else
       {
-        auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+        auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
 
-        auto const nxt(next_node(r.get(), n));
+        auto const nxt(next_node(r, n));
 
         if (!n->l_ && !n->r_)
         {
-          q.reset();
+          q = {}; delete n;
         }
         else if (!n->l_ || !n->r_)
         {
-          q = std::move(n->l_ ? n->l_ : n->r_);
+          q = n->l_ ? n->l_ : n->r_;
+          n->l_ = n->r_ = {}; delete n;
         }
         else
         {
-          q.release(); // order important
-
+          q = {};
           sg::detail::move(r, n->l_, n->r_);
-
-          delete n;
+          n->l_ = n->r_ = {}; delete n;
         }
 
         return nxt;

@@ -2,8 +2,6 @@
 # define SG_MULTISET_HPP
 # pragma once
 
-#include <memory>
-
 #include <list>
 #include <vector>
 
@@ -36,14 +34,17 @@ public:
 
     static constinit inline auto const cmp{Compare{}};
 
-    std::unique_ptr<node> l_;
-    std::unique_ptr<node> r_;
-
+    node* l_{}, *r_{};
     std::list<value_type> v_;
 
     explicit node(auto&& k)
     {
       v_.emplace_back(std::forward<decltype(k)>(k));
+    }
+
+    ~node() noexcept(noexcept(std::declval<Key>().~Key()))
+    {
+      delete l_; delete r_;
     }
 
     //
@@ -58,7 +59,7 @@ public:
         {
           if (!n)
           {
-            n.reset(q = new node(std::forward<decltype(k)>(k)));
+            n = q = new node(std::forward<decltype(k)>(k));
 
             return 1;
           }
@@ -86,7 +87,7 @@ public:
           }
           else
           {
-            (q = n.get())->v_.emplace_back(std::forward<decltype(k)>(k));
+            (q = n)->v_.emplace_back(std::forward<decltype(k)>(k));
 
             return 0;
           }
@@ -94,9 +95,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ?
-            (n.reset(n.release()->rebuild()), 0) :
-            s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
         }
       );
 
@@ -109,7 +108,7 @@ public:
     {
       if (auto const n(i.node()); 1 == n->v_.size())
       {
-        return {r.get(), std::get<0>(node::erase(r, n->key()))};
+        return {r, std::get<0>(node::erase(r, n->key()))};
       }
       else if (auto const it(i.iterator()); std::prev(n->v_.end()) == it)
       {
@@ -117,11 +116,11 @@ public:
 
         n->v_.erase(it);
 
-        return {r.get(), nn};
+        return {r, nn};
       }
       else
       {
-        return {r.get(), n, n->v_.erase(it)};
+        return {r, n, n->v_.erase(it)};
       }
     }
 
@@ -130,43 +129,42 @@ public:
       using pointer = typename std::remove_cvref_t<decltype(r)>::pointer;
       using node = std::remove_pointer_t<pointer>;
 
-      if (auto n(r.get()); n)
+      if (auto n(r); n)
       {
         for (pointer p{};;)
         {
           if (auto const c(node::cmp(k, n->key())); c < 0)
           {
             p = n;
-            n = n->l_.get();
+            n = n->l_;
           }
           else if (c > 0)
           {
             p = n;
-            n = n->r_.get();
+            n = n->r_;
           }
           else
           {
             auto const s(n->v_.size());
 
-            auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+            auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
 
-            auto const nxt(sg::detail::next_node(r.get(), n));
+            auto const nxt(sg::detail::next_node(r, n));
 
             if (!n->l_ && !n->r_)
             {
-              q.reset();
+              q = {}; delete n;
             }
             else if (!n->l_ || !n->r_)
             {
-              q = std::move(n->l_ ? n->l_ : n->r_);
+              q = n->l_ ? n->l_ : n->r_;
+              n->l_ = n->r_ = {}; delete n;
             }
             else
             {
-              q.release(); // order important
-
+              q = {};
               sg::detail::move(r, n->l_, n->r_);
-
-              delete n;
+              n->l_ = n->r_ = {}; delete n;
             }
 
             return std::tuple(nxt, s);
@@ -200,8 +198,7 @@ public:
           switch (b - a)
           {
             case 0:
-              n->l_.release();
-              n->r_.release();
+              n->l_ = n->r_ = {};
 
               break;
 
@@ -209,23 +206,15 @@ public:
               {
                 auto const p(l[b]);
 
-                p->l_.release();
-                p->r_.release();
-
-                n->l_.release();
-                n->r_.release();
-
-                n->r_.reset(p);
+                p->l_ = p->r_ = n->l_ = {};
+                n->r_ = p;
 
                 break;
               }
 
             default:
-              n->l_.release();
-              n->l_.reset(f(f, a, i - 1));
-
-              n->r_.release();
-              n->r_.reset(f(f, i + 1, b));
+              n->l_ = f(f, a, i - 1);
+              n->r_ = f(f, i + 1, b);
 
               break;
           }
@@ -241,14 +230,16 @@ public:
 
 private:
   using this_class = multiset;
-  std::unique_ptr<node> root_;
+  node* root_{};
 
 public:
-  multiset() = default;
+  multiset() noexcept = default;
   multiset(std::initializer_list<value_type> i) { *this = i; }
   multiset(multiset const& o) { *this = o; }
-  multiset(multiset&&) = default;
+  multiset(multiset&&) noexcept = default;
   multiset(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
+
+  ~multiset() noexcept(noexcept(root_->~node())) { delete root_; }
 
 # include "common.hpp"
 
@@ -268,7 +259,7 @@ public:
   //
   size_type count(Key const& k) const noexcept
   {
-    if (auto n(root_.get()); n)
+    if (auto n(root_); n)
     {
       for (;;)
       {
@@ -293,44 +284,44 @@ public:
   //
   auto emplace(auto&& k)
   {
-    return iterator(root_.get(), node::emplace(root_,
+    return iterator(root_, node::emplace(root_,
       std::forward<decltype(k)>(k)));
   }
 
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
     return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
+      iterator(root_, e ? e : g),
+      iterator(root_, g)
     );
   }
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
     return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
+      const_iterator(root_, e ? e : g),
+      const_iterator(root_, g)
     );
   }
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
     return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
+      iterator(root_, e ? e : g),
+      iterator(root_, g)
     );
   }
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
     return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
+      const_iterator(root_, e ? e : g),
+      const_iterator(root_, g)
     );
   }
 
@@ -348,12 +339,12 @@ public:
   //
   auto insert(value_type const& v)
   {
-    return iterator(root_.get(), node::emplace(root_, v.first));
+    return iterator(root_, node::emplace(root_, v.first));
   }
 
   auto insert(value_type&& v)
   {
-    return iterator(root_.get(), node::emplace(root_, std::move(v)));
+    return iterator(root_, node::emplace(root_, std::move(v)));
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)

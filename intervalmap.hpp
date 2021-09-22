@@ -2,8 +2,6 @@
 # define SG_INTERVALMAP_HPP
 # pragma once
 
-#include <memory>
-
 #include <list>
 #include <vector>
 
@@ -38,11 +36,9 @@ public:
 
     static constinit inline auto const cmp{Compare{}};
 
-    std::unique_ptr<node> l_;
-    std::unique_ptr<node> r_;
+    node* l_{}, *r_{};
 
     typename std::tuple_element_t<1, Key> m_;
-
     std::list<value_type> v_;
 
     explicit node(auto&& k, auto&& v):
@@ -53,6 +49,12 @@ public:
         std::forward<decltype(k)>(k),
         std::forward<decltype(v)>(v)
       );
+    }
+
+    ~node() noexcept(noexcept(std::declval<Key>().~Key(),
+      std::declval<Value>().~Value()))
+    {
+      delete l_; delete r_;
     }
 
     //
@@ -71,11 +73,9 @@ public:
         {
           if (!n)
           {
-            n.reset(
-              q = new node(
-                std::forward<decltype(k)>(k),
-                std::forward<decltype(v)>(v)
-              )
+            n = q = new node(
+              std::forward<decltype(k)>(k),
+              std::forward<decltype(v)>(v)
             );
 
             return 1;
@@ -107,7 +107,7 @@ public:
           }
           else
           {
-            (q = n.get())->v_.emplace_back(
+            (q = n)->v_.emplace_back(
               std::forward<decltype(k)>(k),
               std::forward<decltype(v)>(v)
             );
@@ -118,9 +118,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ?
-            (n.reset(n.release()->rebuild()), 0) :
-            s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
         }
       );
 
@@ -162,7 +160,7 @@ public:
     {
       if (auto const n(i.node()); 1 == n->v_.size())
       {
-        return {r.get(), std::get<0>(node::erase(r, std::get<0>(*i)))};
+        return {r, std::get<0>(node::erase(r, std::get<0>(*i)))};
       }
       else if (auto const it(i.iterator()); std::prev(n->v_.end()) == it)
       {
@@ -170,20 +168,20 @@ public:
 
         n->v_.erase(it);
 
-        return {r.get(), nn};
+        return {r, nn};
       }
       else
       {
-        return {r.get(), n, n->v_.erase(it)};
+        return {r, n, n->v_.erase(it)};
       }
     }
 
     static auto erase(auto& r, auto&& k)
     {
-      using pointer = typename std::remove_cvref_t<decltype(r)>::pointer;
+      using pointer = typename std::remove_cvref_t<decltype(r)>;
       using node = std::remove_pointer_t<pointer>;
 
-      if (auto n(r.get()); n)
+      if (auto n(r); n)
       {
         auto const& [mink, maxk](k);
 
@@ -192,12 +190,12 @@ public:
           if (auto const c(node::cmp(mink, n->key())); c < 0)
           {
             p = n;
-            n = n->l_.get();
+            n = n->l_;
           }
           else if (c > 0)
           {
             p = n;
-            n = n->r_.get();
+            n = n->r_;
           }
           else
           {
@@ -217,40 +215,42 @@ public:
             }
             else
             {
-              auto& q(!p ? r : p->l_.get() == n ? p->l_ : p->r_);
+              auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
 
-              auto const nxt(sg::detail::next_node(r.get(), n));
+              auto const nxt(sg::detail::next_node(r, n));
 
               if (!n->l_ && !n->r_)
               {
-                q.reset();
+                q = {}; delete n;
 
                 if (p)
                 {
-                  node::reset_max(r.get(), p);
+                  node::reset_max(r, p);
                 }
               }
               else if (!n->l_ || !n->r_)
               {
-                q = std::move(n->l_ ? n->l_ : n->r_);
+                q = n->l_ ? n->l_ : n->r_;
 
                 if (p)
                 {
-                  node::reset_max(r.get(), q.get());
+                  node::reset_max(r, q);
                 }
+
+                n->l_ = n->r_ = {}; delete n;
               }
               else
               {
-                q.release(); // order important
+                q = {};
 
                 if (p)
                 {
-                  node::reset_max(r.get(), p);
+                  node::reset_max(r, p);
                 }
 
                 node::move(r, n->l_, n->r_);
 
-                delete n;
+                n->l_ = n->r_ = {}; delete n;
               }
 
               return std::tuple(nxt, s0);
@@ -264,11 +264,11 @@ public:
 
     static void move(auto& n, auto& ...d)
     {
-      auto const f([&](auto&& f, auto& n, auto& d) noexcept -> std::size_t
+      auto const f([&](auto&& f, auto& n, auto& d) noexcept -> size_type
         {
           if (!n)
           {
-            n = std::move(d);
+            n = d;
 
             return 1;
           }
@@ -301,9 +301,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ?
-            (n.reset(n.release()->rebuild()), 0) :
-            s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
         }
       );
 
@@ -328,7 +326,7 @@ public:
             }
           );
 
-          auto const l(n->l_.get()), r(n->r_.get());
+          auto const l(n->l_), r(n->r_);
 
           if (auto const c(cmp(key, n->key())); c < 0)
           {
@@ -414,8 +412,7 @@ public:
           switch (b - a)
           {
             case 0:
-              n->l_.release();
-              n->r_.release();
+              n->l_ = n->r_ = {};
 
               reset_nodes_max(n);
 
@@ -425,38 +422,20 @@ public:
               {
                 auto const p(l[b]);
 
-                p->l_.release();
-                p->r_.release();
+                p->l_ = p->r_ = n->l_ = {};
+                n->r_ = p;
 
-                n->l_.release();
-                n->r_.release();
-
-                n->r_.reset(p);
-
-                reset_nodes_max(n, n->r_.get());
+                reset_nodes_max(n, p);
 
                 break;
               }
 
             default:
               {
-                auto m(reset_nodes_max(n));
+                auto const l(n->l_ = f(f, a, i - 1));
+                auto const r(n->r_ = f(f, i + 1, b));
 
-                if (auto const p(f(f, a, i - 1)); p)
-                {
-                  m = cmp(m, p->m_) < 0 ? p->m_ : m;
-                  n->l_.release();
-                  n->l_.reset(p);
-                }
-
-                if (auto const p(f(f, i + 1, b)); p)
-                {
-                  m = cmp(m, p->m_) < 0 ? p->m_ : m;
-                  n->r_.release();
-                  n->r_.reset(p);
-                }
-
-                n->m_ = m;
+                n->m_ = std::max({reset_nodes_max(n), l->m_, r->m_});
 
                 break;
               }
@@ -472,14 +451,16 @@ public:
 
 private:
   using this_class = intervalmap;
-  std::unique_ptr<node> root_;
+  node* root_{};
 
 public:
-  intervalmap() = default;
+  intervalmap() noexcept = default;
   intervalmap(std::initializer_list<value_type> i) { *this = i; }
   intervalmap(intervalmap const& o) { *this = o; }
-  intervalmap(intervalmap&&) = default;
+  intervalmap(intervalmap&&) noexcept = default;
   intervalmap(std::input_iterator auto const i, decltype(i) j){insert(i, j);}
+
+  ~intervalmap() noexcept(noexcept(root_->~node())) { delete root_; }
 
 # include "common.hpp"
 
@@ -499,7 +480,7 @@ public:
   //
   size_type count(Key const& k) const noexcept
   {
-    if (auto n(root_.get()); n)
+    if (auto n(root_); n)
     {
       for (auto const& [mink, maxk](k);;)
       {
@@ -542,47 +523,47 @@ public:
       )
     );
 
-    return iterator(root_.get(), n);
+    return iterator(root_, n);
   }
 
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](node::equal_range(root_.get(), k));
+    auto const [e, g](node::equal_range(root_, k));
 
     return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
+      iterator(root_, e ? e : g),
+      iterator(root_, g)
     );
   }
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](node::equal_range(root_.get(), k));
+    auto const [e, g](node::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
+      const_iterator(root_, e ? e : g),
+      const_iterator(root_, g)
     );
   }
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](node::equal_range(root_.get(), k));
+    auto const [e, g](node::equal_range(root_, k));
 
     return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
+      iterator(root_, e ? e : g),
+      iterator(root_, g)
     );
   }
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](node::equal_range(root_.get(), k));
+    auto const [e, g](node::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
+      const_iterator(root_, e ? e : g),
+      const_iterator(root_, g)
     );
   }
 
@@ -600,13 +581,13 @@ public:
   //
   auto insert(value_type const& v)
   {
-    return iterator(root_.get(),
+    return iterator(root_,
       node::emplace(root_, std::get<0>(v), std::get<1>(v)));
   }
 
   auto insert(value_type&& v)
   {
-    return iterator(root_.get(),
+    return iterator(root_,
       node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v))));
   }
 
@@ -662,16 +643,16 @@ public:
 
             if (cg0)
             {
-              f(f, n->r_.get());
+              f(f, n->r_);
             }
           }
 
-          f(f, n->l_.get());
+          f(f, n->l_);
         }
       }
     );
 
-    f(f, root_.get());
+    f(f, root_);
   }
 
   bool any(Key const& k) const noexcept
@@ -679,7 +660,7 @@ public:
     auto const& [mink, maxk](k);
     auto const eq(node::cmp(mink, maxk) == 0);
 
-    if (auto n(root_.get()); n && (node::cmp(mink, n->m_) < 0))
+    if (auto n(root_); n && (node::cmp(mink, n->m_) < 0))
     {
       for (;;)
       {
@@ -705,11 +686,11 @@ public:
         }
 
         //
-        if (auto const l(n->l_.get()); l && (node::cmp(mink, l->m_) < 0))
+        if (auto const l(n->l_); l && (node::cmp(mink, l->m_) < 0))
         {
           n = l;
         }
-        else if (auto const r(n->r_.get());
+        else if (auto const r(n->r_);
           cg0 && r && (node::cmp(mink, r->m_) < 0))
         {
           n = r;

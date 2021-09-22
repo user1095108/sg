@@ -2,8 +2,6 @@
 # define SG_MAP_HPP
 # pragma once
 
-#include <memory>
-
 #include <vector>
 
 #include "utils.hpp"
@@ -39,19 +37,23 @@ public:
 
     static constinit inline auto const cmp{Compare{}};
 
-    std::unique_ptr<node> l_;
-    std::unique_ptr<node> r_;
-
+    node* l_{}, *r_{};
     value_type kv_;
 
-    explicit node(auto&& k):
+    explicit node(auto&& k) noexcept(noexcept(Key())):
       kv_(std::forward<decltype(k)>(k), Value())
     {
     }
 
-    explicit node(auto&& k, auto&& v):
+    explicit node(auto&& k, auto&& v) noexcept(noexcept(Key(), Value())):
       kv_(std::forward<decltype(k)>(k), std::forward<decltype(v)>(v))
     {
+    }
+
+    ~node() noexcept(noexcept(std::declval<Key>().~Key(),
+      std::declval<Value>().~Value()))
+    {
+      delete l_; delete r_;
     }
 
     //
@@ -69,16 +71,14 @@ public:
           {
             if constexpr(!std::is_same_v<decltype(v), empty_t&&>)
             {
-              n.reset(
-                q = new node(
-                  std::forward<decltype(k)>(k),
-                  std::forward<decltype(v)>(v)
-                )
+              n = q = new node(
+                std::forward<decltype(k)>(k),
+                std::forward<decltype(v)>(v)
               );
             }
             else
             {
-              n.reset(q = new node(std::forward<decltype(k)>(k)));
+              n = q = new node(std::forward<decltype(k)>(k));
             }
 
             return 1;
@@ -107,7 +107,7 @@ public:
           }
           else
           {
-            q = n.get();
+            q = n;
             s = false;
 
             return 0;
@@ -117,7 +117,7 @@ public:
           auto const s(1 + sl + sr), S(2 * s);
 
           return (3 * sl > S) || (3 * sr > S) ?
-            (n.reset(n.release()->rebuild()), 0) :
+            (n = n->rebuild(), 0) :
             s;
         }
       );
@@ -150,8 +150,7 @@ public:
           switch (b - a)
           {
             case 0:
-              n->l_.release();
-              n->r_.release();
+              n->l_ = n->r_ = {};
 
               break;
 
@@ -159,23 +158,15 @@ public:
               {
                 auto const p(l[b]);
 
-                p->l_.release();
-                p->r_.release();
-
-                n->l_.release();
-                n->r_.release();
-
-                n->r_.reset(p);
+                p->l_ = p->r_ = n->l_ = {};
+                n->r_ = p;
 
                 break;
               }
 
             default:
-              n->l_.release();
-              n->l_.reset(f(f, a, i - 1));
-
-              n->r_.release();
-              n->r_.reset(f(f, i + 1, b));
+              n->l_ = f(f, a, i - 1);
+              n->r_ = f(f, i + 1, b);
 
               break;
           }
@@ -191,19 +182,21 @@ public:
 
 private:
   using this_class = map;
-  std::unique_ptr<node> root_;
+  node* root_{};
 
 public:
-  map() = default;
+  map() noexcept = default;
   map(std::initializer_list<value_type> i) { *this = i; }
   map(map const& o) { *this = o; }
-  map(map&&) = default;
+  map(map&&) noexcept = default;
   map(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
+
+  ~map() noexcept(noexcept(root_->~node())) { delete root_; }
 
 # include "common.hpp"
 
   //
-  auto size() const noexcept { return sg::detail::size(root_.get()); }
+  auto size() const noexcept { return sg::detail::size(root_); }
 
   //
   auto& operator[](Key const& k)
@@ -220,18 +213,18 @@ public:
 
   auto& at(Key const& k)
   {
-    return std::get<1>(sg::detail::find(root_.get(), k)->kv_);
+    return std::get<1>(sg::detail::find(root_, k)->kv_);
   }
 
   auto const& at(Key const& k) const
   {
-    return std::get<1>(sg::detail::find(root_.get(), k)->kv_);
+    return std::get<1>(sg::detail::find(root_, k)->kv_);
   }
 
   //
   size_type count(Key const& k) const noexcept
   {
-    return bool(sg::detail::find(root_.get(), k));
+    return bool(sg::detail::find(root_, k));
   }
 
   //
@@ -245,54 +238,45 @@ public:
       )
     );
 
-    return std::tuple(iterator(root_.get(), n), s);
+    return std::tuple(iterator(root_, n), s);
   }
 
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
 
-    return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
-    );
+    return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
 
-    return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
-    );
+    return std::pair(const_iterator(root_, e ? e : g),
+      const_iterator(root_, g));
   }
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
 
-    return std::pair(
-      iterator(root_.get(), e ? e : g),
-      iterator(root_.get(), g)
-    );
+    return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_.get(), k));
+    auto const [e, g](sg::detail::equal_range(root_, k));
 
-    return std::pair(
-      const_iterator(root_.get(), e ? e : g),
-      const_iterator(root_.get(), g)
+    return std::pair(const_iterator(root_, e ? e : g),
+      const_iterator(root_, g)
     );
   }
 
   //
   iterator erase(const_iterator const i)
   {
-    return iterator(root_.get(), sg::detail::erase(root_, std::get<0>(*i)));
+    return iterator(root_, sg::detail::erase(root_, std::get<0>(*i)));
   }
 
   size_type erase(Key const& k)
@@ -305,7 +289,7 @@ public:
   {
     auto const [n, s](node::emplace(root_, std::get<0>(v), std::get<1>(v)));
 
-    return std::tuple(iterator(root_.get(), n), s);
+    return std::tuple(iterator(root_, n), s);
   }
 
   auto insert(value_type&& v)
@@ -313,7 +297,7 @@ public:
     auto const [n, s](node::emplace(root_,
       std::get<0>(v), std::move(std::get<1>(v))));
 
-    return std::tuple(iterator(root_.get(), n), s);
+    return std::tuple(iterator(root_, n), s);
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
