@@ -100,7 +100,7 @@ bool contains(auto&& k) const
 }
 
 //
-auto erase(const_iterator a, const_iterator const b)
+iterator erase(const_iterator a, const_iterator const b)
 {
   iterator i;
 
@@ -109,7 +109,7 @@ auto erase(const_iterator a, const_iterator const b)
   return i;
 }
 
-auto erase(std::initializer_list<const_iterator> const il)
+iterator erase(std::initializer_list<const_iterator> const il)
 {
   iterator r;
 
@@ -120,12 +120,12 @@ auto erase(std::initializer_list<const_iterator> const il)
 }
 
 //
-auto find(Key const& k) noexcept
+iterator find(Key const& k) noexcept
 {
   return iterator(root_, sg::detail::find(root_, k));
 }
 
-auto find(Key const& k) const noexcept
+const_iterator find(Key const& k) const noexcept
 {
   return const_iterator(root_, sg::detail::find(root_, k));
 }
