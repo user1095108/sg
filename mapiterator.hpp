@@ -33,7 +33,7 @@ public:
   using reference = value_type&;
 
 public:
-  mapiterator() noexcept = default;
+  mapiterator() = default;
 
   mapiterator(T* const r, T* const n = {}) noexcept:
     r_(r),
@@ -41,8 +41,8 @@ public:
   {
   }
 
-  mapiterator(mapiterator const&) noexcept = default;
-  mapiterator(mapiterator&&) noexcept = default;
+  mapiterator(mapiterator const&) = default;
+  mapiterator(mapiterator&&) = default;
 
   mapiterator(inverse_const_t const& o) noexcept requires(std::is_const_v<T>):
     r_(o.r_),
@@ -51,8 +51,8 @@ public:
   }
 
   //
-  mapiterator& operator=(mapiterator const&) noexcept = default;
-  mapiterator& operator=(mapiterator&&) noexcept = default;
+  mapiterator& operator=(mapiterator const&) = default;
+  mapiterator& operator=(mapiterator&&) = default;
 
   bool operator==(auto const& o) const noexcept
     requires(

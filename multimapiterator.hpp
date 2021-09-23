@@ -42,7 +42,7 @@ private:
   > i_{};
 
 public:
-  multimapiterator() noexcept = default;
+  multimapiterator() = default;
 
   multimapiterator(node_t* const r) noexcept:
     r_(r)
@@ -74,8 +74,8 @@ public:
   {
   }
 
-  multimapiterator(multimapiterator const&) noexcept = default;
-  multimapiterator(multimapiterator&&) noexcept = default;
+  multimapiterator(multimapiterator const&) = default;
+  multimapiterator(multimapiterator&&) = default;
 
   multimapiterator(inverse_const_t const& o) noexcept
     requires(std::is_const_v<T>):
@@ -86,8 +86,8 @@ public:
   }
 
   //
-  multimapiterator& operator=(multimapiterator const&) noexcept = default;
-  multimapiterator& operator=(multimapiterator&&) noexcept = default;
+  multimapiterator& operator=(multimapiterator const&) = default;
+  multimapiterator& operator=(multimapiterator&&) = default;
 
   bool operator==(auto const& o) const noexcept
     requires(
