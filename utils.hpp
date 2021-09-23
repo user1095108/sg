@@ -295,25 +295,6 @@ inline auto erase(auto& r, auto&& k)
 
 }
 
-constexpr auto erase(auto& c, auto const& k) requires(
-  requires{c.begin(); c.end(); &decltype(c)::node::cmp;} &&
-  !std::is_const_v<decltype(c)>)
-{
-  c.erase(k);
-}
-
-constexpr auto erase_if(auto& c, auto pred) requires(
-  requires{c.begin(); c.end(); &decltype(c)::node::cmp;} &&
-  !std::is_const_v<decltype(c)>)
-{
-  auto const end(c.end());
-
-  for (auto i(c.begin()); end != i;)
-  {
-    i = pred(*i) ? c.erase(i) : std::next(i);
-  }
-}
-
 template <typename T> requires(
   requires(T c){c.begin(); c.end(); &T::node::cmp;})
 inline bool operator==(T const& lhs, T const& rhs) noexcept 
@@ -337,6 +318,29 @@ inline auto operator<=>(T const& lhs, T const& rhs) noexcept
     rhs.begin(), rhs.end(),
     T::node::cmp
   );
+}
+
+constexpr auto erase(auto& c, auto const& k) requires(
+  requires{c.begin(); c.end(); &decltype(c)::node::cmp;} &&
+  !std::is_const_v<decltype(c)>)
+{
+  return c.erase(k);
+}
+
+constexpr auto erase_if(auto& c, auto pred) requires(
+  requires{c.begin(); c.end(); &decltype(c)::node::cmp;} &&
+  !std::is_const_v<decltype(c)>)
+{
+  std::size_t r{};
+
+  auto const end(c.end());
+
+  for (auto i(c.begin()); end != i;)
+  {
+    i = pred(*i) ? (++r, c.erase(i)) : std::next(i);
+  }
+
+  return r;
 }
 
 }
