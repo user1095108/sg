@@ -22,6 +22,7 @@ public:
   using mapped_type = Value;
   using value_type = std::pair<Key const, Value>;
 
+  using difference_type = std::ptrdiff_t;
   using size_type = std::size_t;
 
   using const_iterator = mapiterator<node const>;

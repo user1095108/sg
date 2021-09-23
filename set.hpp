@@ -20,6 +20,7 @@ public:
   using key_type = Key;
   using value_type = Key;
 
+  using difference_type = std::ptrdiff_t;
   using size_type = std::size_t;
 
   using const_iterator = mapiterator<node const>;
