@@ -166,10 +166,10 @@ private:
   node* root_{};
 
 public:
-  set() noexcept = default;
+  set() = default;
   set(std::initializer_list<Key> i) { *this = i; }
   set(set const& o) { *this = o; }
-  set(set&&) noexcept = default;
+  set(set&&) = default;
   set(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~set() noexcept(noexcept(root_->~node())) { delete root_; }
@@ -273,11 +273,11 @@ public:
   }
 
   //
-  friend bool operator!=(set const&, set const&) noexcept = default;
-  friend bool operator<(set const&, set const&) noexcept = default;
-  friend bool operator<=(set const&, set const&) noexcept = default;
-  friend bool operator>(set const&, set const&) noexcept = default;
-  friend bool operator>=(set const&, set const&) noexcept = default;
+  friend bool operator!=(set const&, set const&) = default;
+  friend bool operator<(set const&, set const&) = default;
+  friend bool operator<=(set const&, set const&) = default;
+  friend bool operator>(set const&, set const&) = default;
+  friend bool operator>=(set const&, set const&) = default;
 };
 
 }

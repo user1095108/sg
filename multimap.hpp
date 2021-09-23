@@ -247,10 +247,10 @@ private:
   node* root_{};
 
 public:
-  multimap() noexcept = default;
+  multimap() = default;
   multimap(std::initializer_list<value_type> i) { *this = i; }
   multimap(multimap const& o) { *this = o; }
-  multimap(multimap&&) noexcept = default;
+  multimap(multimap&&) = default;
   multimap(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~multimap() noexcept(noexcept(root_->~node())) { delete root_; }
@@ -380,11 +380,11 @@ public:
   }
 
   //
-  friend bool operator!=(multimap const&, multimap const&) noexcept = default;
-  friend bool operator<(multimap const&, multimap const&) noexcept = default;
-  friend bool operator<=(multimap const&, multimap const&) noexcept = default;
-  friend bool operator>(multimap const&, multimap const&) noexcept = default;
-  friend bool operator>=(multimap const&, multimap const&) noexcept = default;
+  friend bool operator!=(multimap const&, multimap const&) = default;
+  friend bool operator<(multimap const&, multimap const&) = default;
+  friend bool operator<=(multimap const&, multimap const&) = default;
+  friend bool operator>(multimap const&, multimap const&) = default;
+  friend bool operator>=(multimap const&, multimap const&) = default;
 };
 
 }

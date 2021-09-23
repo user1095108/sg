@@ -236,10 +236,10 @@ private:
   node* root_{};
 
 public:
-  multiset() noexcept = default;
+  multiset() = default;
   multiset(std::initializer_list<value_type> i) { *this = i; }
   multiset(multiset const& o) { *this = o; }
-  multiset(multiset&&) noexcept = default;
+  multiset(multiset&&) = default;
   multiset(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~multiset() noexcept(noexcept(root_->~node())) { delete root_; }
@@ -363,11 +363,11 @@ public:
   }
 
   //
-  friend bool operator!=(multiset const&, multiset const&) noexcept = default;
-  friend bool operator<(multiset const&, multiset const&) noexcept = default;
-  friend bool operator<=(multiset const&, multiset const&) noexcept = default;
-  friend bool operator>(multiset const&, multiset const&) noexcept = default;
-  friend bool operator>=(multiset const&, multiset const&) noexcept = default;
+  friend bool operator!=(multiset const&, multiset const&) = default;
+  friend bool operator<(multiset const&, multiset const&) = default;
+  friend bool operator<=(multiset const&, multiset const&) = default;
+  friend bool operator>(multiset const&, multiset const&) = default;
+  friend bool operator>=(multiset const&, multiset const&) = default;
 };
 
 }

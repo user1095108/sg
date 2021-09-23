@@ -188,10 +188,10 @@ private:
   node* root_{};
 
 public:
-  map() noexcept = default;
+  map() = default;
   map(std::initializer_list<value_type> i) { *this = i; }
   map(map const& o) { *this = o; }
-  map(map&&) noexcept = default;
+  map(map&&) = default;
   map(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~map() noexcept(noexcept(root_->~node())) { delete root_; }
@@ -310,11 +310,11 @@ public:
   }
 
   //
-  friend bool operator!=(map const&, map const&) noexcept = default;
-  friend bool operator<(map const&, map const&) noexcept = default;
-  friend bool operator<=(map const&, map const&) noexcept = default;
-  friend bool operator>(map const&, map const&) noexcept = default;
-  friend bool operator>=(map const&, map const&) noexcept = default;
+  friend bool operator!=(map const&, map const&) = default;
+  friend bool operator<(map const&, map const&) = default;
+  friend bool operator<=(map const&, map const&) = default;
+  friend bool operator>(map const&, map const&) = default;
+  friend bool operator>=(map const&, map const&) = default;
 };
 
 }

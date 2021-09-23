@@ -456,10 +456,10 @@ private:
   node* root_{};
 
 public:
-  intervalmap() noexcept = default;
+  intervalmap() = default;
   intervalmap(std::initializer_list<value_type> i) { *this = i; }
   intervalmap(intervalmap const& o) { *this = o; }
-  intervalmap(intervalmap&&) noexcept = default;
+  intervalmap(intervalmap&&) = default;
   intervalmap(std::input_iterator auto const i, decltype(i) j){insert(i, j);}
 
   ~intervalmap() noexcept(noexcept(root_->~node())) { delete root_; }
@@ -593,16 +593,11 @@ public:
   }
 
   //
-  friend bool operator!=(intervalmap const&,
-    intervalmap const&) noexcept = default;
-  friend bool operator<(intervalmap const&,
-    intervalmap const&) noexcept = default;
-  friend bool operator<=(intervalmap const&,
-    intervalmap const&) noexcept = default;
-  friend bool operator>(intervalmap const&,
-    intervalmap const&) noexcept = default;
-  friend bool operator>=(intervalmap const&,
-    intervalmap const&) noexcept = default;
+  friend bool operator!=(intervalmap const&, intervalmap const&) = default;
+  friend bool operator<(intervalmap const&, intervalmap const&) = default;
+  friend bool operator<=(intervalmap const&, intervalmap const&) = default;
+  friend bool operator>(intervalmap const&, intervalmap const&) = default;
+  friend bool operator>=(intervalmap const&, intervalmap const&) = default;
 
   //
   void all(Key const& k, auto g) const
