@@ -36,8 +36,8 @@ public:
     node* l_{}, *r_{};
     Key const kv_;
 
-    explicit node(auto&& k) noexcept(noexcept(Key())):
-      kv_(std::forward<decltype(k)>(k))
+    explicit node(auto&& ...a) noexcept(noexcept(Key())):
+      kv_(std::forward<decltype(a)>(a)...)
     {
     }
 
@@ -50,10 +50,12 @@ public:
     auto&& key() const noexcept { return kv_; }
 
     //
-    static auto emplace(auto&& r, auto&& k)
+    static auto emplace(auto&& r, auto&& ...a)
     {
       bool s{true};
       node* q;
+
+      key_type const k(std::forward<decltype(a)>(a)...);
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
@@ -183,9 +185,9 @@ public:
   }
 
   //
-  auto emplace(auto&& k)
+  auto emplace(auto&& ...a)
   {
-    auto const [n, s](node::emplace(root_, std::forward<decltype(k)>(k)));
+    auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
     return std::tuple(iterator(root_, n), s);
   }

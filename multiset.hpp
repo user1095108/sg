@@ -37,9 +37,9 @@ public:
     node* l_{}, *r_{};
     std::list<value_type> v_;
 
-    explicit node(auto&& k)
+    explicit node(auto&& ...a)
     {
-      v_.emplace_back(std::forward<decltype(k)>(k));
+      v_.emplace_back(std::forward<decltype(a)>(a)...);
     }
 
     ~node() noexcept(noexcept(std::declval<Key>().~Key()))
@@ -51,15 +51,17 @@ public:
     auto&& key() const noexcept { return v_.front(); }
 
     //
-    static auto emplace(auto&& r, auto&& k)
+    static auto emplace(auto&& r, auto&& ...a)
     {
       node* q;
+
+      key_type const k(std::forward<decltype(a)>...);
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
           if (!n)
           {
-            n = q = new node(std::forward<decltype(k)>(k));
+            n = q = new node(std::forward<decltype(a)>(a)...);
 
             return 1;
           }
@@ -87,7 +89,7 @@ public:
           }
           else
           {
-            (q = n)->v_.emplace_back(std::forward<decltype(k)>(k));
+            (q = n)->v_.emplace_back(std::forward<decltype(a)>(a)...);
 
             return 0;
           }

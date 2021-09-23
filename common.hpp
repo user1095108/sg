@@ -58,7 +58,7 @@ const_iterator cend() const noexcept { return {root_}; }
 reverse_iterator rbegin() noexcept
 {
   return root_ ?
-    reverse_iterator(iterator(root_, {})) :
+    reverse_iterator(iterator(root_)) :
     reverse_iterator();
 }
 

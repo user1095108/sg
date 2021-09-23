@@ -41,14 +41,17 @@ public:
     typename std::tuple_element_t<1, Key> m_;
     std::list<value_type> v_;
 
-    explicit node(auto&& k, auto&& v):
-      m_(std::get<1>(k))
+    explicit node(auto&& k, auto&& v)
     {
-      assert(std::get<0>(k) <= std::get<1>(k));
       v_.emplace_back(
         std::forward<decltype(k)>(k),
         std::forward<decltype(v)>(v)
       );
+
+      assert(std::get<0>(std::get<0>(v_.back())) <=
+        std::get<0>(std::get<1>(v_.back())));
+
+      m_= std::get<1>(std::get<0>(v_.back()));
     }
 
     ~node() noexcept(noexcept(std::declval<Key>().~Key(),
@@ -64,9 +67,11 @@ public:
     }
 
     //
-    static auto emplace(auto&& r, auto&& k, auto&& v)
+    static auto emplace(auto&& r, auto&& a, auto&& v)
     {
+      key_type const k(std::forward<decltype(a)>(a));
       auto const& [mink, maxk](k);
+
       node* q;
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
@@ -74,7 +79,7 @@ public:
           if (!n)
           {
             n = q = new node(
-              std::forward<decltype(k)>(k),
+              std::forward<decltype(a)>(a),
               std::forward<decltype(v)>(v)
             );
 
@@ -108,7 +113,7 @@ public:
           else
           {
             (q = n)->v_.emplace_back(
-              std::forward<decltype(k)>(k),
+              std::forward<decltype(a)>(a),
               std::forward<decltype(v)>(v)
             );
 
@@ -509,17 +514,10 @@ public:
   }
 
   //
-  auto emplace(auto&& k, auto&& v)
+  auto emplace(auto&& ...a)
   {
-    auto const n(
-      node::emplace(
-        root_,
-        std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v)
-      )
-    );
-
-    return iterator(root_, n);
+    return iterator(root_,
+      node::emplace(root_, std::forward<decltype(a)>(a)...));
   }
 
   //
@@ -527,10 +525,7 @@ public:
   {
     auto const [e, g](node::equal_range(root_, k));
 
-    return std::pair(
-      iterator(root_, e ? e : g),
-      iterator(root_, g)
-    );
+    return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(Key const& k) const noexcept
@@ -547,10 +542,7 @@ public:
   {
     auto const [e, g](node::equal_range(root_, k));
 
-    return std::pair(
-      iterator(root_, e ? e : g),
-      iterator(root_, g)
-    );
+    return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(auto const& k) const noexcept

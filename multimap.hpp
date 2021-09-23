@@ -41,12 +41,9 @@ public:
     node* l_{}, *r_{};
     std::list<value_type> v_;
 
-    explicit node(auto&& k, auto&& v)
+    explicit node(auto&& ...a)
     {
-      v_.emplace_back(
-        std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v)
-      );
+      v_.emplace_back(std::forward<decltype(a)>(a)...);
     }
 
     ~node() noexcept(noexcept(std::declval<Key>().~Key(),
@@ -59,16 +56,18 @@ public:
     auto&& key() const noexcept { return std::get<0>(v_.front()); }
 
     //
-    static auto emplace(auto&& r, auto&& k, auto&& v)
+    static auto emplace(auto&& r, auto&& a, auto&& v)
     {
       node* q;
+
+      key_type const k(std::forward<decltype(a)>(a));
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
           if (!n)
           {
             n = q = new node(
-              std::forward<decltype(k)>(k),
+              std::forward<decltype(a)>(a),
               std::forward<decltype(v)>(v)
             );
 
@@ -99,7 +98,7 @@ public:
           else
           {
             (q = n)->v_.emplace_back(
-              std::forward<decltype(k)>(k),
+              std::forward<decltype(a)>(a),
               std::forward<decltype(v)>(v)
             );
 
@@ -296,10 +295,10 @@ public:
   }
 
   //
-  auto emplace(auto&& k, auto&& v)
+  auto emplace(auto&& ...a)
   {
-    return iterator(root_, node::emplace(root_,
-      std::forward<decltype(k)>(k), std::forward<decltype(v)>(v)));
+    return iterator(root_,
+      node::emplace(root_, std::forward<decltype(a)>(a)...));
   }
 
   //

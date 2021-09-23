@@ -60,10 +60,12 @@ public:
     auto&& key() const noexcept { return std::get<0>(kv_); }
 
     //
-    static auto emplace(auto&& r, auto&& k, auto&& v)
+    static auto emplace(auto&& r, auto&& a, auto&& v)
     {
       bool s{true};
       node* q;
+
+      key_type const k(std::forward<decltype(a)>(a));
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
@@ -72,7 +74,7 @@ public:
             if constexpr(!std::is_same_v<decltype(v), empty_t&&>)
             {
               n = q = new node(
-                std::forward<decltype(k)>(k),
+                std::forward<decltype(a)>(a),
                 std::forward<decltype(v)>(v)
               );
             }
@@ -228,15 +230,9 @@ public:
   }
 
   //
-  auto emplace(auto&& k, auto&& v)
+  auto emplace(auto&& ...a)
   {
-    auto const [n, s](
-      node::emplace(
-        root_,
-        std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v)
-      )
-    );
+    auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
     return std::tuple(iterator(root_, n), s);
   }
