@@ -70,7 +70,7 @@ public:
     //
     static auto emplace(auto&& r, auto&& a, auto&& v)
     {
-      key_type const k(std::forward<decltype(a)>(a));
+      key_type const k(a);
       auto const& [mink, maxk](k);
 
       node* q;
