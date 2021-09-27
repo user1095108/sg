@@ -50,9 +50,9 @@ public:
       );
 
       assert(std::get<0>(std::get<0>(v_.back())) <=
-        std::get<0>(std::get<1>(v_.back())));
+        std::get<1>(std::get<0>(v_.back())));
 
-      m_= std::get<1>(std::get<0>(v_.back()));
+      m_ = std::get<1>(std::get<0>(v_.back()));
     }
 
     ~node() noexcept(noexcept(std::declval<Key>().~Key(),
