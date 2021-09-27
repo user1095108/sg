@@ -56,13 +56,13 @@ public:
       bool s{true};
       node* q;
 
-      key_type const k(a...);
+      key_type k(std::forward<decltype(a)>(a)...);
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
           if (!n)
           {
-            n = q = new node(std::forward<decltype(k)>(k));
+            n = q = new node(std::move(k));
 
             return 1;
           }

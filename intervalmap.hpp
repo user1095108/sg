@@ -70,8 +70,8 @@ public:
     //
     static auto emplace(auto&& r, auto&& a, auto&& v)
     {
-      key_type const k(a);
-      auto& [mink, maxk](k);
+      key_type k(std::forward<decltype(a)>(a));
+      auto const& [mink, maxk](k);
 
       node* q;
 
@@ -79,10 +79,7 @@ public:
         {
           if (!n)
           {
-            n = q = new node(
-              std::forward<decltype(a)>(a),
-              std::forward<decltype(v)>(v)
-            );
+            n = q = new node(std::move(k), std::forward<decltype(v)>(v));
 
             return 1;
           }
