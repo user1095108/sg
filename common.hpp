@@ -17,14 +17,6 @@ auto& operator=(std::initializer_list<value_type> const o)
   return *this;
 }
 
-//
-auto root() const noexcept { return root_; }
-
-//
-void clear() { delete root_; root_ = {}; }
-auto empty() const noexcept { return !size(); }
-auto max_size() const noexcept { return ~size_type{} / 3; }
-
 // iterators
 iterator begin() noexcept
 {
@@ -87,6 +79,14 @@ const_reverse_iterator crend() const noexcept
     ) :
     const_reverse_iterator();
 }
+
+//
+auto root() const noexcept { return root_; }
+
+//
+void clear() { delete root_; root_ = {}; }
+auto empty() const noexcept { return !size(); }
+auto max_size() const noexcept { return ~size_type{} / 3; }
 
 //
 bool contains(Key const& k) const
