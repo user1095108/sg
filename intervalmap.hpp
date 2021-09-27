@@ -71,7 +71,7 @@ public:
     static auto emplace(auto&& r, auto&& a, auto&& v)
     {
       key_type const k(a);
-      auto const& [mink, maxk](k);
+      auto& [mink, maxk](k);
 
       node* q;
 
