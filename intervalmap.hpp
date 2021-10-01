@@ -265,15 +265,15 @@ public:
       return std::tuple(pointer{}, size_type{});
     }
 
-    static void move(auto& n, auto& ...d)
+    static void move(auto& n, auto const ...d)
     {
-      auto const f([&](auto&& f, auto& n, auto& d) noexcept -> size_type
+      auto const f([&](auto&& f, auto& n, auto const d) noexcept -> size_type
         {
           if (!n)
           {
             n = d;
 
-            return 1;
+            return sg::detail::size(d);
           }
 
           //

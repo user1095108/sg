@@ -198,18 +198,18 @@ inline auto find(auto n, auto&& k) noexcept
   return n;
 }
 
-inline void move(auto& n, auto& ...d)
+inline void move(auto& n, auto const ...d)
 {
   using pointer = std::remove_cvref_t<decltype(n)>;
   using node = std::remove_pointer_t<pointer>;
 
-  auto const f([&](auto&& f, auto& n, auto& d) noexcept -> std::size_t
+  auto const f([&](auto&& f, auto& n, auto const d) noexcept -> std::size_t
     {
       if (!n)
       {
         n = d;
 
-        return 1;
+        return size(d);
       }
 
       //
