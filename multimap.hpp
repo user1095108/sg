@@ -156,11 +156,10 @@ public:
           }
           else
           {
+            auto const nxt(sg::detail::next_node(r, n));
             auto const s(n->v_.size());
 
             auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
-
-            auto const nxt(sg::detail::next_node(r, n));
 
             if (!n->l_ && !n->r_)
             {

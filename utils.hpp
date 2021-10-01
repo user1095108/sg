@@ -265,9 +265,9 @@ inline auto erase(auto& r, auto&& k)
       }
       else
       {
-        auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
-
         auto const nxt(next_node(r, n));
+
+        auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
 
         if (!n->l_ && !n->r_)
         {
