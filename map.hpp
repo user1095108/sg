@@ -64,7 +64,7 @@ public:
     static auto emplace(auto&& r, auto&& a, auto&& v)
     {
       node* q;
-      bool s{}; // success
+      bool s; // success
 
       key_type k(std::forward<decltype(a)>(a));
 
@@ -108,7 +108,7 @@ public:
           }
           else
           {
-            q = n;
+            s = !(q = n);
 
             return 0;
           }
