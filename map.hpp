@@ -74,8 +74,8 @@ public:
           {
             if constexpr(!std::is_same_v<decltype(v), empty_t&&>)
             {
-              s = (n = q =
-                new node(std::move(k), std::forward<decltype(v)>(v)));
+              s = (n = q = new node(std::move(k),
+                std::forward<decltype(v)>(v)));
             }
             else
             {
