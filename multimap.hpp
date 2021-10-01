@@ -96,7 +96,7 @@ public:
           else
           {
             (q = n)->v_.emplace_back(
-              std::forward<decltype(a)>(a),
+              std::move(k),
               std::forward<decltype(v)>(v)
             );
 

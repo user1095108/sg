@@ -90,7 +90,7 @@ public:
           }
           else
           {
-            (q = n)->v_.emplace_back(std::forward<decltype(a)>(a)...);
+            (q = n)->v_.emplace_back(std::move(k));
 
             return 0;
           }

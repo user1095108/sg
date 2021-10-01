@@ -116,9 +116,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ?
-            (n = n->rebuild(), 0) :
-            s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
         }
       );
 
