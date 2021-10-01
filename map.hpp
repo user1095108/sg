@@ -63,8 +63,8 @@ public:
     //
     static auto emplace(auto&& r, auto&& a, auto&& v)
     {
-      bool s{true};
       node* q;
+      bool s{}; // success
 
       key_type k(std::forward<decltype(a)>(a));
 
@@ -74,11 +74,12 @@ public:
           {
             if constexpr(!std::is_same_v<decltype(v), empty_t&&>)
             {
-              n = q = new node(std::move(k), std::forward<decltype(v)>(v));
+              s = (n = q =
+                new node(std::move(k), std::forward<decltype(v)>(v)));
             }
             else
             {
-              n = q = new node(std::move(k));
+              s = (n = q = new node(std::move(k)));
             }
 
             return 1;
@@ -108,7 +109,6 @@ public:
           else
           {
             q = n;
-            s = false;
 
             return 0;
           }
