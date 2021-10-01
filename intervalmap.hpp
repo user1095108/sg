@@ -165,7 +165,7 @@ public:
       {
         return {r, std::get<0>(node::erase(r, std::get<0>(*i)))};
       }
-      else if (auto const it(i.iterator()); std::prev(n->v_.end()) == it)
+      else if (auto const it(i.iterator()); std::next(it) == n->v_.end())
       {
         auto const nn(std::next(i).node());
 
