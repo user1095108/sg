@@ -40,13 +40,13 @@ void dump(auto n)
 int main()
 {
   sg::map<std::string, int> st{
-    {"a"s, -1},
+    {"a", -1},
     {"b"s, 0},
-    {"c"s, 1}
+    {"c", 1}
   };
 
   st.emplace("d"s, 2);
-  st.insert({"e"s, 3});
+  st.insert({"e", 3});
   st["f"s] = 4;
 
   /*
