@@ -56,7 +56,7 @@ public:
     {
       node* q;
 
-      key_type k(std::forward<decltype(a)>...);
+      key_type k(std::forward<decltype(a)>(a)...);
 
       auto const f([&](auto&& f, auto& n) noexcept -> size_type
         {
