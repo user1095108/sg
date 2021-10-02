@@ -48,7 +48,7 @@ inline auto last_node(auto n) noexcept
 }
 
 //
-inline auto parent_node(auto r, auto n) noexcept
+inline auto parent_node(auto r0, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
@@ -56,15 +56,15 @@ inline auto parent_node(auto r, auto n) noexcept
 
   for (n = {};;)
   {
-    if (auto const c(node::cmp(key, r->key())); c < 0)
+    if (auto const c(node::cmp(key, r0->key())); c < 0)
     {
-      n = r;
-      r = left_node(r);
+      n = r0;
+      r0 = left_node(r0);
     }
     else if (c > 0)
     {
-      n = r;
-      r = right_node(r);
+      n = r0;
+      r0 = right_node(r0);
     }
     else
     {
@@ -73,15 +73,15 @@ inline auto parent_node(auto r, auto n) noexcept
   }
 }
 
-inline auto next_node(auto r, auto n) noexcept
+inline auto next_node(auto r0, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
   if (auto const p(right_node(n)); p)
   {
-    decltype(n) const l(first_node(p));
+    decltype(n) const f(first_node(p));
 
-    return l ? l : p;
+    return f ? f : p;
   }
   else
   {
@@ -89,14 +89,14 @@ inline auto next_node(auto r, auto n) noexcept
 
     for (n = {};;)
     {
-      if (auto const c(node::cmp(key, r->key())); c < 0)
+      if (auto const c(node::cmp(key, r0->key())); c < 0)
       {
-        n = r;
-        r = left_node(r); // deepest parent greater than us
+        n = r0;
+        r0 = left_node(r0); // deepest parent greater than us
       }
       else if (c > 0)
       {
-        r = right_node(r);
+        r0 = right_node(r0);
       }
       else
       {
@@ -106,19 +106,19 @@ inline auto next_node(auto r, auto n) noexcept
   }
 }
 
-inline auto prev_node(auto r, auto n) noexcept
+inline auto prev_node(auto r0, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
   if (!n)
   {
-    return last_node(r);
+    return last_node(r0);
   }
   else if (auto const p(left_node(n)); p)
   {
-    decltype(n) const r(last_node(p));
+    decltype(n) const l(last_node(p));
 
-    return r ? r : p;
+    return l ? l : p;
   }
   else
   {
@@ -126,14 +126,14 @@ inline auto prev_node(auto r, auto n) noexcept
 
     for (n = {};;)
     {
-      if (auto const c(node::cmp(key, r->key())); c < 0)
+      if (auto const c(node::cmp(key, r0->key())); c < 0)
       {
-        r = left_node(r);
+        r0 = left_node(r0);
       }
       else if (c > 0)
       {
-        n = r;
-        r = right_node(r); // deepest parent less than us
+        n = r0;
+        r0 = right_node(r0); // deepest parent less than us
       }
       else
       {
