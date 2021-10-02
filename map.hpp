@@ -308,6 +308,33 @@ public:
   }
 
   //
+  auto insert_or_assign(key_type const& k, auto&& v)
+  {
+    auto const [n, s](
+      node::emplace(root_, k, std::forward<decltype(v)>(v)));
+
+    if (!s)
+    {
+      n->v = std::forward<decltype(v)>(v);
+    }
+
+    return std::tuple(iterator(root_, n), s);
+  }
+
+  auto insert_or_assign(key_type&& k, auto&& v)
+  {
+    auto const [n, s](
+      node::emplace(root_, std::move(k), std::forward<decltype(v)>(v)));
+
+    if (!s)
+    {
+      n->v = std::forward<decltype(v)>(v);
+    }
+
+    return std::tuple(iterator(root_, n), s);
+  }
+
+  //
   friend bool operator!=(map const&, map const&) = default;
   friend bool operator<(map const&, map const&) = default;
   friend bool operator<=(map const&, map const&) = default;
