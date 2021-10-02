@@ -151,7 +151,7 @@ public:
             auto const nxt(sg::detail::next_node(r, n));
             auto const s(n->v_.size());
 
-            switch (auto const l_(n->l_), r_(n->r_); 2 * (!!r_) | (!!l_))
+            switch (auto const l_(n->l_), r_(n->r_); 2 * (!!r_) + (!!l_))
             {
               case 0:
                 *q = {};
