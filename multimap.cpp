@@ -60,5 +60,16 @@ int main()
     }
   );
 
+  sg::erase(st, 1);
+
+  std::for_each(
+    st.begin(),
+    st.end(),
+    [](auto&& p) noexcept
+    {
+      std::cout << '(' << p.first << ',' << p.second << ')' << std::endl;
+    }
+  );
+
   return 0;
 }

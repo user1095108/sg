@@ -325,14 +325,16 @@ inline auto operator<=>(T const& lhs, T const& rhs) noexcept
 }
 
 constexpr auto erase(auto& c, auto const& k) requires(
-  requires{c.begin(); c.end(); &decltype(c)::node::cmp;} &&
+  requires{c.begin(); c.end();
+  &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
   !std::is_const_v<decltype(c)>)
 {
   return c.erase(k);
 }
 
 constexpr auto erase_if(auto& c, auto pred) requires(
-  requires{c.begin(); c.end(); &decltype(c)::node::cmp;} &&
+  requires{c.begin(); c.end();
+  &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
   !std::is_const_v<decltype(c)>)
 {
   std::size_t r{};
