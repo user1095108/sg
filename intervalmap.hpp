@@ -184,21 +184,25 @@ public:
       using pointer = typename std::remove_cvref_t<decltype(r)>;
       using node = std::remove_pointer_t<pointer>;
 
-      if (auto n(r); n)
+      if (r)
       {
         auto const& [mink, maxk](k);
 
-        for (pointer p{};;)
+        pointer p{};
+
+        for (pointer* q(&r);;)
         {
+          auto const n(*q);
+
           if (auto const c(node::cmp(mink, n->key())); c < 0)
           {
             p = n;
-            n = n->l_;
+            q = &n->l_;
           }
           else if (c > 0)
           {
             p = n;
-            n = n->r_;
+            q = &n->r_;
           }
           else
           {
@@ -206,9 +210,9 @@ public:
 
             std::erase_if(
               n->v_,
-              [&](auto&& p) noexcept
+              [&](auto&& v) noexcept
               {
-                return cmp(std::get<0>(p), k) == 0;
+                return cmp(std::get<0>(v), k) == 0;
               }
             );
 
@@ -220,41 +224,43 @@ public:
             {
               auto const nxt(sg::detail::next_node(r, n));
 
-              auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
-
-              if (!n->l_ && !n->r_)
+              switch (auto const l_(n->l_), r_(n->r_); !!l_ + !!r_)
               {
-                q = {}; delete n;
+                case 0:
+                  *q = {};
 
-                if (p)
-                {
-                  node::reset_max(r, p);
-                }
+                  if (p)
+                  {
+                    node::reset_max(r, p);
+                  }
+
+                  break;
+
+                case 1:
+                  *q = l_ ? l_ : r_;
+                  n->l_ = n->r_ = {};
+
+                  if (p)
+                  {
+                    node::reset_max(r, p);
+                  }
+
+                  break;
+
+                default:
+                  *q = n->l_ = n->r_ = {};
+
+                  if (p)
+                  {
+                    node::reset_max(r, p);
+                  }
+
+                  node::move(r, l_, r_);
+
+                  break;
               }
-              else if (!n->l_ || !n->r_)
-              {
-                q = n->l_ ? n->l_ : n->r_;
 
-                if (p)
-                {
-                  node::reset_max(r, q);
-                }
-
-                n->l_ = n->r_ = {}; delete n;
-              }
-              else
-              {
-                q = {};
-
-                if (p)
-                {
-                  node::reset_max(r, p);
-                }
-
-                node::move(r, n->l_, n->r_);
-
-                n->l_ = n->r_ = {}; delete n;
-              }
+              delete n;
 
               return std::tuple(nxt, s0);
             }

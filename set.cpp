@@ -19,7 +19,18 @@ int main()
     }
   );
 
-  std::cout << (s == sg::set<int>{1, 2, 3, 4}) << std::endl;
+  std::cout << "eq: " << (s == sg::set<int>{1, 2, 3, 4}) << std::endl;
+
+  s.erase({std::next(s.cbegin()), std::prev(s.cend())});
+
+  std::for_each(
+    s.cbegin(),
+    s.cend(),
+    [](auto&& p) noexcept
+    {
+      std::cout << p << std::endl;
+    }
+  );
 
   return 0;
 }

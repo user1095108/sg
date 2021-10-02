@@ -137,45 +137,46 @@ public:
 
     static auto erase(auto& r, auto&& k)
     {
-      using pointer = typename std::remove_cvref_t<decltype(r)>;
+      using pointer = std::remove_cvref_t<decltype(r)>;
       using node = std::remove_pointer_t<pointer>;
 
-      if (auto n(r); n)
+      if (r)
       {
-        for (pointer p{};;)
+        for (pointer* q(&r);;)
         {
+          auto const n(*q);
+
           if (auto const c(node::cmp(k, n->key())); c < 0)
           {
-            p = n;
-            n = n->l_;
+            q = &n->l_;
           }
           else if (c > 0)
           {
-            p = n;
-            n = n->r_;
+            q = &n->r_;
           }
           else
           {
             auto const nxt(sg::detail::next_node(r, n));
             auto const s(n->v_.size());
 
-            auto& q(!p ? r : p->l_ == n ? p->l_ : p->r_);
+            switch (auto const l_(n->l_), r_(n->r_); !!l_ + !!r_)
+            {
+              case 0:
+                *q = {};
+                break;
 
-            if (!n->l_ && !n->r_)
-            {
-              q = {}; delete n;
+              case 1:
+                *q = l_ ? l_ : r_;
+                n->l_ = n->r_ = {};
+                break;
+
+              default:
+                *q = n->l_ = n->r_ = {};
+                sg::detail::move(r, l_, r_);
+                break;
             }
-            else if (!n->l_ || !n->r_)
-            {
-              q = n->l_ ? n->l_ : n->r_;
-              n->l_ = n->r_ = {}; delete n;
-            }
-            else
-            {
-              q = {};
-              sg::detail::move(r, n->l_, n->r_);
-              n->l_ = n->r_ = {}; delete n;
-            }
+
+            delete n;
 
             return std::tuple(nxt, s);
           }
