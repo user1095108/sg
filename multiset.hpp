@@ -158,13 +158,11 @@ public:
                 break;
 
               case 1:
-                *q = l_;
-                n->l_ = {};
+                *q = l_; n->l_ = {};
                 break;
 
               case 2:
-                *q = r_;
-                n->r_ = {};
+                *q = r_; n->r_ = {};
                 break;
 
               default:
