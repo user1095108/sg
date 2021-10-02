@@ -224,7 +224,7 @@ public:
             {
               auto const nxt(sg::detail::next_node(r, n));
 
-              switch (auto const l_(n->l_), r_(n->r_); !!l_ + !!r_)
+              switch (auto const l_(n->l_), r_(n->r_); (!!l_) | (!!r_ << 1))
               {
                 case 0:
                   *q = {};
@@ -237,8 +237,19 @@ public:
                   break;
 
                 case 1:
-                  *q = l_ ? l_ : r_;
-                  n->l_ = n->r_ = {};
+                  *q = l_;
+                  n->l_ = {};
+
+                  if (p)
+                  {
+                    node::reset_max(r, p);
+                  }
+
+                  break;
+
+                case 2:
+                  *q = r_;
+                  n->r_ = {};
 
                   if (p)
                   {
