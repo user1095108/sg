@@ -61,6 +61,8 @@ int main()
   std::cout << "height: " << sg::detail::height(st.root()) << std::endl;
   std::cout << "size: " << st.size() << std::endl;
 
+  st.erase(st.cbegin());
+
   std::for_each(
     st.crbegin(),
     st.crend(),
