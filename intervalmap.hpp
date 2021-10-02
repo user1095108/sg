@@ -230,7 +230,7 @@ public:
 
                 if (p)
                 {
-                  node::reset_max(r0, p);
+                  node::reset_max(r0, p->key());
                 }
 
                 node::move(r0, l, r);
@@ -241,7 +241,7 @@ public:
 
                 if (p)
                 {
-                  node::reset_max(r0, p);
+                  node::reset_max(r0, p->key());
                 }
               }
 
@@ -320,10 +320,8 @@ public:
       return m;
     }
 
-    static void reset_max(auto const n, auto const p) noexcept
+    static void reset_max(auto const n, auto&& key) noexcept
     {
-      auto&& key(p->key());
-
       auto const f([&](auto&& f, auto const n) noexcept -> decltype(node::m_)
         {
           auto m(node_max(n));
