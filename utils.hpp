@@ -267,7 +267,7 @@ inline auto erase(auto& r, auto&& k)
       {
         auto const nxt(next_node(r, n));
 
-        switch (auto const l_(n->l_), r_(n->r_); (!!l_) | (!!r_ << 1))
+        switch (auto const l_(n->l_), r_(n->r_); 2 * (!!r_) | (!!l_))
         {
           case 0:
             *q = {};
