@@ -343,23 +343,13 @@ public:
       return m;
     }
 
-    static decltype(node::m_) reset_max(auto const n, auto const p) noexcept
+    static void reset_max(auto const n, auto const p) noexcept
     {
       auto&& key(p->key());
 
       auto const f([&](auto&& f, auto const n) noexcept -> decltype(node::m_)
         {
-          decltype(node::m_) m(n->key());
-
-          std::for_each(
-            n->v_.cbegin(),
-            n->v_.cend(),
-            [&](auto&& p) noexcept
-            {
-              auto const tmp(std::get<1>(std::get<0>(p)));
-              m = cmp(m, tmp) < 0 ? tmp : m;
-            }
-          );
+          auto m(node_max(n));
 
           auto const l(n->l_), r(n->r_);
 
@@ -400,7 +390,7 @@ public:
         }
       );
 
-      return f(f, n);
+      f(f, n);
     }
 
     auto rebuild()
