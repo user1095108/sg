@@ -418,12 +418,6 @@ public:
         while ((n = sg::detail::next_node(this, n)));
       }
 
-      auto const comp([](auto&& a, auto&& b) noexcept
-        {
-          return node::cmp(a, b) < 0;
-        }
-      );
-
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
         {
           auto const i((a + b) / 2);
@@ -445,7 +439,9 @@ public:
                 n->l_ = p->l_ = p->r_ = {};
                 n->r_ = p;
 
-                n->m_ = std::max(node_max(n), p->m_ = node_max(p), comp);
+                n->m_ = std::max(node_max(n), p->m_ = node_max(p),
+                  [](auto&& a, auto&& b)noexcept{return node::cmp(a, b) < 0;}
+                );
 
                 break;
               }
@@ -455,7 +451,9 @@ public:
                 auto const l(n->l_ = f(f, a, i - 1));
                 auto const r(n->r_ = f(f, i + 1, b));
 
-                n->m_ = std::max({node_max(n), l->m_, r->m_}, comp);
+                n->m_ = std::max({node_max(n), l->m_, r->m_},
+                  [](auto&& a, auto&& b)noexcept{return node::cmp(a, b) < 0;}
+                );
 
                 break;
               }
