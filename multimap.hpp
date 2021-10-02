@@ -159,7 +159,7 @@ public:
             auto const nxt(sg::detail::next_node(r0, n));
             auto const s(n->v_.size());
 
-            if (auto const l(n->l_), r(n->r_); r && l)
+            if (auto const l(n->l_), r(n->r_); l && r)
             {
               *q = {};
               sg::detail::move(r0, l, r);
