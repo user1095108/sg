@@ -161,15 +161,15 @@ public:
 
             if (auto const l(n->l_), r(n->r_); r && l)
             {
-              *q = n->l_ = n->r_ = {};
+              *q = {};
               sg::detail::move(r0, l, r);
             }
             else
             {
               *q = l ? l : r;
-              n->l_ = n->r_ = {};
             }
 
+            n->l_ = n->r_ = {};
             delete n;
 
             return std::tuple(nxt, s);

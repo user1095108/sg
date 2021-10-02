@@ -226,7 +226,7 @@ public:
 
               if (auto const l(n->l_), r(n->r_); l && r)
               {
-                *q = n->l_ = n->r_ = {};
+                *q = {};
 
                 if (p)
                 {
@@ -238,7 +238,6 @@ public:
               else
               {
                 *q = l ? l : r;
-                n->l_ = n->r_ = {};
 
                 if (p)
                 {
@@ -246,6 +245,7 @@ public:
                 }
               }
 
+              n->l_ = n->r_ = {};
               delete n;
 
               return std::tuple(nxt, s0);
