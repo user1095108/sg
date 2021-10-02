@@ -131,7 +131,8 @@ const_iterator find(Key const& k) const noexcept
 }
 
 //
-void insert(std::initializer_list<value_type> const il)
+void insert(std::initializer_list<value_type> il) noexcept(
+  noexcept(insert(il.begin(), il.end())))
 {
   insert(il.begin(), il.end());
 }
