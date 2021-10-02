@@ -311,7 +311,8 @@ public:
   auto insert_or_assign(key_type const& k, auto&& v)
   {
     auto const [n, s](
-      node::emplace(root_, k, std::forward<decltype(v)>(v)));
+      node::emplace(root_, k, std::forward<decltype(v)>(v))
+    );
 
     if (!s)
     {
@@ -324,7 +325,8 @@ public:
   auto insert_or_assign(key_type&& k, auto&& v)
   {
     auto const [n, s](
-      node::emplace(root_, std::move(k), std::forward<decltype(v)>(v)));
+      node::emplace(root_, std::move(k), std::forward<decltype(v)>(v))
+    );
 
     if (!s)
     {
