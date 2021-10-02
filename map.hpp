@@ -316,7 +316,7 @@ public:
 
     if (!s)
     {
-      n->v = std::forward<decltype(v)>(v);
+      std::get<1>(n->kv_) = std::forward<decltype(v)>(v);
     }
 
     return std::tuple(iterator(root_, n), s);
@@ -330,7 +330,7 @@ public:
 
     if (!s)
     {
-      n->v = std::forward<decltype(v)>(v);
+      std::get<1>(n->kv_) = std::forward<decltype(v)>(v);
     }
 
     return std::tuple(iterator(root_, n), s);
