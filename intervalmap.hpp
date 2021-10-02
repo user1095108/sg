@@ -439,7 +439,7 @@ public:
                 n->l_ = p->l_ = p->r_ = {};
                 n->r_ = p;
 
-                n->m_ = std::max(node_max(n), node_max(p));
+                n->m_ = std::max(node_max(n), p->m_ = node_max(p));
 
                 break;
               }
