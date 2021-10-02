@@ -127,14 +127,14 @@ public:
       }
     }
 
-    static auto erase(auto& r, auto&& k)
+    static auto erase(auto& r0, auto&& k)
     {
-      using pointer = std::remove_cvref_t<decltype(r)>;
+      using pointer = std::remove_cvref_t<decltype(r0)>;
       using node = std::remove_pointer_t<pointer>;
 
-      if (r)
+      if (r0)
       {
-        for (pointer* q(&r);;)
+        for (auto q(&r0);;)
         {
           auto const n(*q);
 
@@ -148,27 +148,18 @@ public:
           }
           else
           {
-            auto const nxt(sg::detail::next_node(r, n));
+            auto const nxt(sg::detail::next_node(r0, n));
             auto const s(n->v_.size());
 
-            switch (auto const l_(n->l_), r_(n->r_); 2 * (!!r_) + (!!l_))
+            if (auto const l(n->l_), r(n->r_); r && l)
             {
-              case 0:
-                *q = {};
-                break;
-
-              case 1:
-                *q = l_; n->l_ = {};
-                break;
-
-              case 2:
-                *q = r_; n->r_ = {};
-                break;
-
-              default:
-                *q = n->l_ = n->r_ = {};
-                sg::detail::move(r, l_, r_);
-                break;
+              *q = n->l_ = n->r_ = {};
+              sg::detail::move(r0, l, r);
+            }
+            else
+            {
+              *q = l ? l : r;
+              n->l_ = n->r_ = {};
             }
 
             delete n;

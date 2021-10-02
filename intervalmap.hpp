@@ -179,18 +179,18 @@ public:
       }
     }
 
-    static auto erase(auto& r, auto&& k)
+    static auto erase(auto& r0, auto&& k)
     {
-      using pointer = typename std::remove_cvref_t<decltype(r)>;
+      using pointer = typename std::remove_cvref_t<decltype(r0)>;
       using node = std::remove_pointer_t<pointer>;
 
-      if (r)
+      if (r0)
       {
         auto const& [mink, maxk](k);
 
         pointer p{};
 
-        for (pointer* q(&r);;)
+        for (auto q(&r0);;)
         {
           auto const n(*q);
 
@@ -222,51 +222,28 @@ public:
             }
             else
             {
-              auto const nxt(sg::detail::next_node(r, n));
+              auto const nxt(sg::detail::next_node(r0, n));
 
-              switch (auto const l_(n->l_), r_(n->r_); 2 * (!!r_) + (!!l_))
+              if (auto const l(n->l_), r(n->r_); l && r)
               {
-                case 0:
-                  *q = {};
+                *q = n->l_ = n->r_ = {};
 
-                  if (p)
-                  {
-                    node::reset_max(r, p);
-                  }
+                if (p)
+                {
+                  node::reset_max(r0, p);
+                }
 
-                  break;
+                node::move(r0, l, r);
+              }
+              else
+              {
+                *q = l ? l : r;
+                n->l_ = n->r_ = {};
 
-                case 1:
-                  *q = l_; n->l_ = {};
-
-                  if (p)
-                  {
-                    node::reset_max(r, p);
-                  }
-
-                  break;
-
-                case 2:
-                  *q = r_; n->r_ = {};
-
-                  if (p)
-                  {
-                    node::reset_max(r, p);
-                  }
-
-                  break;
-
-                default:
-                  *q = n->l_ = n->r_ = {};
-
-                  if (p)
-                  {
-                    node::reset_max(r, p);
-                  }
-
-                  node::move(r, l_, r_);
-
-                  break;
+                if (p)
+                {
+                  node::reset_max(r0, p);
+                }
               }
 
               delete n;
