@@ -276,7 +276,7 @@ public:
 
   size_type erase(Key const& k)
   {
-    return sg::detail::erase(root_, k) ? 1 : 0;
+    return bool(sg::detail::erase(root_, k));
   }
 
   //
