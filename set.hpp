@@ -22,6 +22,8 @@ public:
 
   using difference_type = std::ptrdiff_t;
   using size_type = std::size_t;
+  using reference = value_type&;
+  using const_reference = value_type const&;
 
   using const_iterator = mapiterator<node const>;
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
