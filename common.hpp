@@ -9,7 +9,7 @@ auto& operator=(this_class const& o)
 
 this_class& operator=(this_class&& o) noexcept = default;
 
-auto& operator=(std::initializer_list<value_type> const o)
+auto& operator=(std::initializer_list<value_type> o)
 {
   clear();
   insert(o.begin(), o.end());

@@ -202,14 +202,20 @@ public:
   //
   auto& operator[](Key const& k)
   {
-    return std::get<1>(std::get<0>(node::emplace(root_, k,
-      typename node::empty_t()))->kv_);
+    return std::get<1>(
+      std::get<0>(
+        node::emplace(root_, k, typename node::empty_t())
+      )->kv_
+    );
   }
 
   auto& operator[](Key&& k)
   {
-    return std::get<1>(std::get<0>(node::emplace(root_, std::move(k),
-      typename node::empty_t()))->kv_);
+    return std::get<1>(
+      std::get<0>(
+        node::emplace(root_, std::move(k), typename node::empty_t())
+      )->kv_
+    );
   }
 
   auto& at(Key const& k)
@@ -248,8 +254,10 @@ public:
   {
     auto const [e, g](sg::detail::equal_range(root_, k));
 
-    return std::pair(const_iterator(root_, e ? e : g),
-      const_iterator(root_, g));
+    return std::pair(
+      const_iterator(root_, e ? e : g),
+      const_iterator(root_, g)
+    );
   }
 
   auto equal_range(auto const& k) noexcept
@@ -263,7 +271,8 @@ public:
   {
     auto const [e, g](sg::detail::equal_range(root_, k));
 
-    return std::pair(const_iterator(root_, e ? e : g),
+    return std::pair(
+      const_iterator(root_, e ? e : g),
       const_iterator(root_, g)
     );
   }
@@ -282,15 +291,18 @@ public:
   //
   auto insert(value_type const& v)
   {
-    auto const [n, s](node::emplace(root_, std::get<0>(v), std::get<1>(v)));
+    auto const [n, s](
+      node::emplace(root_, std::get<0>(v), std::get<1>(v))
+    );
 
     return std::tuple(iterator(root_, n), s);
   }
 
   auto insert(value_type&& v)
   {
-    auto const [n, s](node::emplace(root_,
-      std::get<0>(v), std::move(std::get<1>(v))));
+    auto const [n, s](
+      node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v)))
+    );
 
     return std::tuple(iterator(root_, n), s);
   }
