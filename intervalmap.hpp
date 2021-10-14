@@ -438,7 +438,7 @@ private:
 
 public:
   intervalmap() = default;
-  intervalmap(std::initializer_list<value_type> i) { *this = i; }
+  intervalmap(std::initializer_list<value_type> const il) { *this = il; }
   intervalmap(intervalmap const& o) { *this = o; }
   intervalmap(intervalmap&&) = default;
   intervalmap(std::input_iterator auto const i, decltype(i) j){insert(i, j);}

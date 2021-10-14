@@ -166,7 +166,7 @@ private:
 
 public:
   set() = default;
-  set(std::initializer_list<Key> i) { *this = i; }
+  set(std::initializer_list<Key> const il) { *this = il; }
   set(set const& o) { *this = o; }
   set(set&&) = default;
   set(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }

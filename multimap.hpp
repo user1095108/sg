@@ -239,7 +239,7 @@ private:
 
 public:
   multimap() = default;
-  multimap(std::initializer_list<value_type> i) { *this = i; }
+  multimap(std::initializer_list<value_type> const il) { *this = il; }
   multimap(multimap const& o) { *this = o; }
   multimap(multimap&&) = default;
   multimap(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }

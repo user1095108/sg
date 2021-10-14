@@ -187,7 +187,7 @@ private:
 
 public:
   map() = default;
-  map(std::initializer_list<value_type> i) { *this = i; }
+  map(std::initializer_list<value_type> const il) { *this = il; }
   map(map const& o) { *this = o; }
   map(map&&) = default;
   map(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }

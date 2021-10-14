@@ -9,10 +9,10 @@ auto& operator=(this_class const& o)
 
 this_class& operator=(this_class&& o) noexcept = default;
 
-auto& operator=(std::initializer_list<value_type> o)
+auto& operator=(std::initializer_list<value_type> const il)
 {
   clear();
-  insert(o.begin(), o.end());
+  insert(il.begin(), il.end());
 
   return *this;
 }
@@ -131,7 +131,7 @@ const_iterator find(Key const& k) const noexcept
 }
 
 //
-void insert(std::initializer_list<value_type> il) noexcept(
+void insert(std::initializer_list<value_type> const il) noexcept(
   noexcept(insert(il.begin(), il.end())))
 {
   insert(il.begin(), il.end());
@@ -165,24 +165,32 @@ const_iterator lower_bound(auto const& k) const noexcept
 //
 iterator upper_bound(Key const& k) noexcept
 {
-  return {root_,
-    std::get<1>(sg::detail::equal_range(root_, k))};
+  return {
+    root_,
+    std::get<1>(sg::detail::equal_range(root_, k))
+  };
 }
 
 const_iterator upper_bound(Key const& k) const noexcept
 {
-  return {root_,
-    std::get<1>(sg::detail::equal_range(root_, k))};
+  return {
+    root_,
+    std::get<1>(sg::detail::equal_range(root_, k))
+  };
 }
 
 iterator upper_bound(auto const& k) noexcept
 {
-  return {root_,
-    std::get<1>(sg::detail::equal_range(root_, k))};
+  return {
+    root_,
+    std::get<1>(sg::detail::equal_range(root_, k))
+  };
 }
 
 const_iterator upper_bound(auto const& k) const noexcept
 {
-  return {root_,
-    std::get<1>(sg::detail::equal_range(root_, k))};
+  return {
+    root_,
+    std::get<1>(sg::detail::equal_range(root_, k))
+  };
 }
