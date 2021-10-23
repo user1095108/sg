@@ -130,8 +130,8 @@ public:
     return *this;
   }
 
-  auto operator++(int) noexcept { auto r(*this); return ++*this, r; }
-  auto operator--(int) noexcept { auto r(*this); return --*this, r; }
+  auto operator++(int) noexcept { auto const r(*this); return ++*this, r; }
+  auto operator--(int) noexcept { auto const r(*this); return --*this, r; }
 
   // member access
   auto& operator->() const noexcept { return i_; }

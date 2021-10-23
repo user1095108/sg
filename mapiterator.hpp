@@ -79,8 +79,8 @@ public:
     return n_ = sg::detail::prev_node(r_, n_), *this;
   }
 
-  auto operator++(int) noexcept { auto r(*this); return ++*this, r; }
-  auto operator--(int) noexcept { auto r(*this); return --*this, r; }
+  auto operator++(int) noexcept { auto const r(*this); return ++*this, r; }
+  auto operator--(int) noexcept { auto const r(*this); return --*this, r; }
 
   // member access
   auto operator->() const noexcept { return &n_->kv_; }
