@@ -17,6 +17,13 @@ auto& operator=(std::initializer_list<value_type> const il)
   return *this;
 }
 
+//
+friend bool operator!=(this_class const&, this_class const&) = default;
+friend bool operator<(this_class const&, this_class const&) = default;
+friend bool operator<=(this_class const&, this_class const&) = default;
+friend bool operator>(this_class const&, this_class const&) = default;
+friend bool operator>=(this_class const&, this_class const&) = default;
+
 // iterators
 iterator begin() noexcept
 {

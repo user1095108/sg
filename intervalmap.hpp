@@ -582,13 +582,6 @@ public:
   }
 
   //
-  friend bool operator!=(intervalmap const&, intervalmap const&) = default;
-  friend bool operator<(intervalmap const&, intervalmap const&) = default;
-  friend bool operator<=(intervalmap const&, intervalmap const&) = default;
-  friend bool operator>(intervalmap const&, intervalmap const&) = default;
-  friend bool operator>=(intervalmap const&, intervalmap const&) = default;
-
-  //
   void all(Key const& k, auto g) const
   {
     auto const& [mink, maxk](k);

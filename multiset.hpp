@@ -357,13 +357,6 @@ public:
       }
     );
   }
-
-  //
-  friend bool operator!=(multiset const&, multiset const&) = default;
-  friend bool operator<(multiset const&, multiset const&) = default;
-  friend bool operator<=(multiset const&, multiset const&) = default;
-  friend bool operator>(multiset const&, multiset const&) = default;
-  friend bool operator>=(multiset const&, multiset const&) = default;
 };
 
 }

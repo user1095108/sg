@@ -272,13 +272,6 @@ public:
       }
     );
   }
-
-  //
-  friend bool operator!=(set const&, set const&) = default;
-  friend bool operator<(set const&, set const&) = default;
-  friend bool operator<=(set const&, set const&) = default;
-  friend bool operator>(set const&, set const&) = default;
-  friend bool operator>=(set const&, set const&) = default;
 };
 
 }

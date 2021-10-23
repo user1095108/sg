@@ -349,13 +349,6 @@ public:
 
     return std::tuple(iterator(root_, n), s);
   }
-
-  //
-  friend bool operator!=(map const&, map const&) = default;
-  friend bool operator<(map const&, map const&) = default;
-  friend bool operator<=(map const&, map const&) = default;
-  friend bool operator>(map const&, map const&) = default;
-  friend bool operator>=(map const&, map const&) = default;
 };
 
 }

@@ -371,13 +371,6 @@ public:
       }
     );
   }
-
-  //
-  friend bool operator!=(multimap const&, multimap const&) = default;
-  friend bool operator<(multimap const&, multimap const&) = default;
-  friend bool operator<=(multimap const&, multimap const&) = default;
-  friend bool operator>(multimap const&, multimap const&) = default;
-  friend bool operator>=(multimap const&, multimap const&) = default;
 };
 
 }
