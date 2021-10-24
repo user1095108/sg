@@ -17,6 +17,9 @@ namespace detail
 {
 
 //
+inline auto left_node(auto const n) noexcept { return n->l_; }
+inline auto right_node(auto const n) noexcept { return n->r_; }
+
 inline std::size_t height(auto const n) noexcept
 {
   return n ?
@@ -31,9 +34,6 @@ inline std::size_t size(auto const n) noexcept
 }
 
 //
-inline auto left_node(auto const n) noexcept { return n->l_; }
-inline auto right_node(auto const n) noexcept { return n->r_; }
-
 inline auto first_node(auto n) noexcept
 {
   for (decltype(n) p; (p = left_node(n)); n = p);
