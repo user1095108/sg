@@ -303,7 +303,7 @@ public:
   auto insert(value_type&& v)
   {
     auto const [n, s](
-      node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v)))
+      node::emplace(root_, std::get<0>(v), std::get<1>(v))
     );
 
     return std::tuple(iterator(root_, n), s);

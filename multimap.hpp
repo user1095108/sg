@@ -360,7 +360,7 @@ public:
   {
     return {
       root_,
-      node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v)))
+      node::emplace(root_, std::get<0>(v), std::get<1>(v))
     };
   }
 
