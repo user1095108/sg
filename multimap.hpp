@@ -348,16 +348,20 @@ public:
   }
 
   //
-  auto insert(value_type const& v)
+  iterator insert(value_type const& v)
   {
-    return iterator(root_,
-      node::emplace(root_, std::get<0>(v), std::get<1>(v)));
+    return {
+      root_,
+      node::emplace(root_, std::get<0>(v), std::get<1>(v))
+    };
   }
 
-  auto insert(value_type&& v)
+  iterator insert(value_type&& v)
   {
-    return iterator(root_,
-      node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v))));
+    return {
+      root_,
+      node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v)))
+    };
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)

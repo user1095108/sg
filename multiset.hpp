@@ -336,14 +336,14 @@ public:
   }
 
   //
-  auto insert(value_type const& v)
+  iterator insert(value_type const& v)
   {
-    return iterator(root_, node::emplace(root_, v.first));
+    return {root_, node::emplace(root_, v.first)};
   }
 
-  auto insert(value_type&& v)
+  iterator insert(value_type&& v)
   {
-    return iterator(root_, node::emplace(root_, std::move(v)));
+    return {root_, node::emplace(root_, std::move(v))};
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)

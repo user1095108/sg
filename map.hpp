@@ -282,7 +282,7 @@ public:
   //
   iterator erase(const_iterator const i)
   {
-    return iterator(root_, sg::detail::erase(root_, std::get<0>(*i)));
+    return {root_, sg::detail::erase(root_, std::get<0>(*i))};
   }
 
   size_type erase(Key const& k)

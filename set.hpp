@@ -243,7 +243,7 @@ public:
 
   iterator erase(const_iterator const i)
   {
-    return iterator(root_, sg::detail::erase(root_, *i));
+    return {root_, sg::detail::erase(root_, *i)};
   }
 
   //
