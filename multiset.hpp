@@ -281,16 +281,16 @@ public:
   }
 
   //
-  auto emplace(auto&& k)
+  iterator emplace(auto&& k)
   {
-    return iterator(root_, node::emplace(root_,
-      std::forward<decltype(k)>(k)));
+    return {root_, node::emplace(root_, std::forward<decltype(k)>(k))};
   }
 
   //
   auto equal_range(Key const& k) noexcept
   {
     auto const [e, g](sg::detail::equal_range(root_, k));
+
     return std::pair(
       iterator(root_, e ? e : g),
       iterator(root_, g)
@@ -300,6 +300,7 @@ public:
   auto equal_range(Key const& k) const noexcept
   {
     auto const [e, g](sg::detail::equal_range(root_, k));
+
     return std::pair(
       const_iterator(root_, e ? e : g),
       const_iterator(root_, g)
@@ -309,6 +310,7 @@ public:
   auto equal_range(auto const& k) noexcept
   {
     auto const [e, g](sg::detail::equal_range(root_, k));
+
     return std::pair(
       iterator(root_, e ? e : g),
       iterator(root_, g)
@@ -318,6 +320,7 @@ public:
   auto equal_range(auto const& k) const noexcept
   {
     auto const [e, g](sg::detail::equal_range(root_, k));
+
     return std::pair(
       const_iterator(root_, e ? e : g),
       const_iterator(root_, g)
