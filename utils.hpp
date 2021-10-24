@@ -16,10 +16,8 @@ namespace sg
 namespace detail
 {
 
-inline auto left_node(auto&& n) noexcept { return n->l_; }
-inline auto right_node(auto&& n) noexcept { return n->r_; }
-
-inline std::size_t height(auto&& n) noexcept
+//
+inline std::size_t height(auto const n) noexcept
 {
   return n ?
     (left_node(n) || right_node(n)) +
@@ -27,12 +25,15 @@ inline std::size_t height(auto&& n) noexcept
     std::size_t{};
 }
 
-inline std::size_t size(auto&& n) noexcept
+inline std::size_t size(auto const n) noexcept
 {
   return n ? 1 + size(n->l_) + size(n->r_) : 0;
 }
 
 //
+inline auto left_node(auto const n) noexcept { return n->l_; }
+inline auto right_node(auto const n) noexcept { return n->r_; }
+
 inline auto first_node(auto n) noexcept
 {
   for (decltype(n) p; (p = left_node(n)); n = p);
