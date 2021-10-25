@@ -94,7 +94,7 @@ public:
     return (n_ == o.n_) && (i_ == o.i_);
   }
 
-  bool operator!=(multimapiterator const&) const = default;
+  bool operator!=(multimapiterator const&) = default;
 
   // increment, decrement
   auto& operator++() noexcept
