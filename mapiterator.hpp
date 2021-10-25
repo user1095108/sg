@@ -55,7 +55,7 @@ public:
   mapiterator& operator=(mapiterator&&) = default;
 
   bool operator==(mapiterator const& o) const noexcept { return n_ == o.n_; }
-  bool operator!=(mapiterator const&) const noexcept = default;
+  bool operator!=(mapiterator const&) const = default;
 
   // increment, decrement
   auto& operator++() noexcept
