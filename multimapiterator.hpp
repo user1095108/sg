@@ -91,7 +91,7 @@ public:
 
   bool operator==(multimapiterator const& o) const noexcept
   {
-    return (n_ == o.n_) && (i_ == o.i_);
+    return (o.n_ == n_) && (o.i_ == i_);
   }
 
   bool operator!=(multimapiterator const&) const = default;
