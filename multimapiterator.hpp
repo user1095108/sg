@@ -89,19 +89,12 @@ public:
   multimapiterator& operator=(multimapiterator const&) = default;
   multimapiterator& operator=(multimapiterator&&) = default;
 
-  bool operator==(auto const& o) const noexcept
-    requires(
-      std::is_same_v<std::remove_cvref_t<decltype(o)>, multimapiterator> ||
-      std::is_same_v<std::remove_cvref_t<decltype(o)>, inverse_const_t>
-    )
+  bool operator==(multimapiterator const& o) const noexcept
   {
     return (n_ == o.n_) && (i_ == o.i_);
   }
 
-  bool operator!=(auto&& o) const noexcept
-  {
-    return !(*this == std::forward<decltype(o)>(o));
-  }
+  bool operator!=(multimapiterator const& o) const noexcept = default;
 
   // increment, decrement
   auto& operator++() noexcept
