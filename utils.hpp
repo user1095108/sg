@@ -8,8 +8,6 @@
 
 #include <compare>
 
-#include <type_traits>
-
 namespace sg
 {
 

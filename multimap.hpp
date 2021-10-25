@@ -2,8 +2,6 @@
 # define SG_MULTIMAP_HPP
 # pragma once
 
-#include <memory>
-
 #include <list>
 #include <vector>
 
