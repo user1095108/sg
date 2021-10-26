@@ -57,7 +57,7 @@ public:
     auto&& key() const noexcept { return std::get<0>(v_.front()); }
 
     //
-    static auto emplace(auto&& r, auto&& a, auto&& v)
+    static auto emplace(auto& r, auto&& a, auto&& v)
     {
       node* q;
 

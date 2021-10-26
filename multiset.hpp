@@ -54,7 +54,7 @@ public:
     auto&& key() const noexcept { return v_.front(); }
 
     //
-    static auto emplace(auto&& r, auto&& ...a)
+    static auto emplace(auto& r, auto&& ...a)
     {
       node* q;
 

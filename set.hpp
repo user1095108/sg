@@ -53,7 +53,7 @@ public:
     auto&& key() const noexcept { return kv_; }
 
     //
-    static auto emplace(auto&& r, auto&& ...a)
+    static auto emplace(auto& r, auto&& ...a)
     {
       node* q;
       bool s{}; // success
