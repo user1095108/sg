@@ -74,6 +74,9 @@ public:
   // member access
   auto operator->() const noexcept { return &n_->kv_; }
   auto& operator*() const noexcept { return n_->kv_; }
+
+  //
+  auto node() const noexcept { return n_; }
 };
 
 #endif // SG_MAPITERATOR_HPP

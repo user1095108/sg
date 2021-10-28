@@ -329,9 +329,7 @@ constexpr auto erase_if(auto& c, auto pred) requires(
 {
   std::size_t r{};
 
-  auto const end(c.end());
-
-  for (auto i(c.begin()); end != i;)
+  for (auto i(c.begin()); i.node();)
   {
     i = pred(*i) ? (++r, c.erase(i)) : std::next(i);
   }
