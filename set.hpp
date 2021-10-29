@@ -169,9 +169,16 @@ private:
 
 public:
   set() = default;
-  set(std::initializer_list<Key> const il) { *this = il; }
 
-  set(set const& o) requires(std::is_copy_assignable_v<mapped_type>)
+  set(std::initializer_list<Key> const il)
+    noexcept(noexcept(*this = il))
+  {
+    *this = il;
+  }
+
+  set(set const& o) 
+    noexcept(noexcept(*this = o))
+    requires(std::is_copy_assignable_v<mapped_type>)
   {
     *this = o;
   }

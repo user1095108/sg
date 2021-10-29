@@ -440,10 +440,16 @@ private:
 
 public:
   intervalmap() = default;
-  intervalmap(std::initializer_list<value_type> const il) { *this = il; }
 
-  intervalmap(intervalmap const& o) requires(
-    std::is_copy_assignable_v<mapped_type>)
+  intervalmap(std::initializer_list<value_type> const il)
+    noexcept(noexcept(*this = il))
+  {
+    *this = il;
+  }
+
+  intervalmap(intervalmap const& o)
+    noexcept(noexcept(*this = o))
+    requires(std::is_copy_assignable_v<mapped_type>)
   {
     *this = o;
   }

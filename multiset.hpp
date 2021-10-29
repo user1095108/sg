@@ -234,9 +234,16 @@ private:
 
 public:
   multiset() = default;
-  multiset(std::initializer_list<value_type> const il) { *this = il; }
 
-  multiset(multiset const& o) requires(std::is_copy_assignable_v<mapped_type>)
+  multiset(std::initializer_list<value_type> const il)
+    noexcept(noexcept(*this = il))
+  {
+    *this = il;
+  }
+
+  multiset(multiset const& o)
+    requires(std::is_copy_assignable_v<mapped_type>)
+    noexcept(noexcept(*this = o))
   {
     *this = o;
   }

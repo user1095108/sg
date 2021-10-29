@@ -239,10 +239,16 @@ private:
 
 public:
   multimap() = default;
-  multimap(std::initializer_list<value_type> const il) { *this = il; }
 
-  multimap(multimap const& o) requires(
-    std::is_copy_assignable_v<mapped_type>)
+  multimap(std::initializer_list<value_type> const il)
+    noexcept(noexcept(*this = il))
+  {
+    *this = il;
+  }
+
+  multimap(multimap const& o)
+    noexcept(noexcept(*this = o))
+    requires(std::is_copy_assignable_v<mapped_type>)
   {
     *this = o;
   }

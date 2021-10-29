@@ -189,9 +189,15 @@ private:
 
 public:
   map() = default;
-  map(std::initializer_list<value_type> const il) { *this = il; }
 
-  map(map const& o) requires(std::is_copy_assignable_v<mapped_type>)
+  map(std::initializer_list<value_type> const il)
+    noexcept(noexcept(*this = il))
+  {
+    *this = il;
+  }
+
+  map(map const& o)
+    requires(std::is_copy_assignable_v<mapped_type>)
   {
     *this = o;
   }
