@@ -1,5 +1,6 @@
 //
-auto& operator=(this_class const& o)
+auto& operator=(this_class const& o) requires(
+  std::is_copy_assignable_v<mapped_type>)
 {
   if (this != &o)
   {

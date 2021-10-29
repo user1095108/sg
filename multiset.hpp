@@ -19,6 +19,7 @@ public:
   struct node;
 
   using key_type = Key;
+  using mapped_type = Key;
   using value_type = Key;
 
   using difference_type = std::ptrdiff_t;
