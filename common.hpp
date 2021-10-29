@@ -1,6 +1,6 @@
 //
-auto& operator=(this_class const& o) requires(
-  std::is_copy_assignable_v<mapped_type>)
+auto& operator=(this_class const& o)
+  requires(std::is_copy_assignable_v<mapped_type>)
 {
   if (this != &o)
   {
@@ -11,7 +11,8 @@ auto& operator=(this_class const& o) requires(
   return *this;
 }
 
-auto& operator=(this_class&& o) noexcept(noexcept(delete root_))
+auto& operator=(this_class&& o)
+  noexcept(noexcept(delete root_))
 {
   if (this != &o)
   {
