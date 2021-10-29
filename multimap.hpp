@@ -240,8 +240,18 @@ private:
 public:
   multimap() = default;
   multimap(std::initializer_list<value_type> const il) { *this = il; }
-  multimap(multimap const& o) { *this = o; }
-  multimap(multimap&&) = default;
+
+  multimap(multimap const& o) requires(
+    std::is_copy_assignable_v<mapped_type>)
+  {
+    *this = o;
+  }
+
+  multimap(multimap&& o) noexcept
+  {
+    *this = std::move(o);
+  }
+
   multimap(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~multimap() noexcept(noexcept(root_->~node())) { delete root_; }

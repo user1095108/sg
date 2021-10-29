@@ -170,8 +170,17 @@ private:
 public:
   set() = default;
   set(std::initializer_list<Key> const il) { *this = il; }
-  set(set const& o) { *this = o; }
-  set(set&&) = default;
+
+  set(set const& o) requires(std::is_copy_assignable_v<mapped_type>)
+  {
+    *this = o;
+  }
+
+  set(set&& o) noexcept
+  {
+    *this = std::move(o);
+  }
+
   set(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~set() noexcept(noexcept(root_->~node())) { delete root_; }

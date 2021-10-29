@@ -441,8 +441,18 @@ private:
 public:
   intervalmap() = default;
   intervalmap(std::initializer_list<value_type> const il) { *this = il; }
-  intervalmap(intervalmap const& o) { *this = o; }
-  intervalmap(intervalmap&&) = default;
+
+  intervalmap(intervalmap const& o) requires(
+    std::is_copy_assignable_v<mapped_type>)
+  {
+    *this = o;
+  }
+
+  intervalmap(intervalmap&& o) noexcept
+  {
+    *this = std::move(o);
+  }
+
   intervalmap(std::input_iterator auto const i, decltype(i) j){insert(i, j);}
 
   ~intervalmap() noexcept(noexcept(root_->~node())) { delete root_; }

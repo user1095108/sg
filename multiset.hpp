@@ -235,8 +235,17 @@ private:
 public:
   multiset() = default;
   multiset(std::initializer_list<value_type> const il) { *this = il; }
-  multiset(multiset const& o) { *this = o; }
-  multiset(multiset&&) = default;
+
+  multiset(multiset const& o) requires(std::is_copy_assignable_v<mapped_type>)
+  {
+    *this = o;
+  }
+
+  multiset(multiset&& o) noexcept
+  {
+    *this = std::move(o);
+  }
+
   multiset(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~multiset() noexcept(noexcept(root_->~node())) { delete root_; }

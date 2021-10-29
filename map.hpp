@@ -190,8 +190,17 @@ private:
 public:
   map() = default;
   map(std::initializer_list<value_type> const il) { *this = il; }
-  map(map const& o) { *this = o; }
-  map(map&&) = default;
+
+  map(map const& o) requires(std::is_copy_assignable_v<mapped_type>)
+  {
+    *this = o;
+  }
+
+  map(map&& o)
+  {
+    *this = std::move(o);
+  }
+
   map(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
 
   ~map() noexcept(noexcept(root_->~node())) { delete root_; }
