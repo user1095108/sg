@@ -16,7 +16,7 @@ auto& operator=(this_class&& o)
 {
   if (this != &o)
   {
-    clear();
+    delete root_;
 
     root_ = o.root_;
     o.root_ = {};
@@ -25,7 +25,7 @@ auto& operator=(this_class&& o)
   return *this;
 }
 
-auto& operator=(std::initializer_list<value_type> const il)
+auto& operator=(std::initializer_list<value_type> il)
 {
   clear();
   insert(il.begin(), il.end());
