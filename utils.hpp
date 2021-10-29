@@ -337,6 +337,14 @@ constexpr auto erase_if(auto& c, auto pred) requires(
   return r;
 }
 
+constexpr void swap(auto& lhs, decltype(lhs) rhs) noexcept requires(
+  requires{lhs.begin(); lhs.end();
+  &std::remove_cvref_t<decltype(lhs)>::node::cmp;} &&
+  !std::is_const_v<std::remove_cvref_t<decltype(lhs)>>)
+{
+  lhs.swap(rhs);
+}
+
 }
 
 #endif // SG_UTILS_HPP

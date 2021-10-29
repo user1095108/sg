@@ -1,13 +1,27 @@
 //
 auto& operator=(this_class const& o)
 {
-  clear();
-  insert(o.begin(), o.end());
+  if (this != &o)
+  {
+    clear();
+    insert(o.begin(), o.end());
+  }
 
   return *this;
 }
 
-this_class& operator=(this_class&& o) noexcept = default;
+auto& operator=(this_class&& o) noexcept(noexcept(delete root_))
+{
+  if (this != &o)
+  {
+    clear();
+
+    root_ = o.root_;
+    o.root_ = {};
+  }
+
+  return *this;
+}
 
 auto& operator=(std::initializer_list<value_type> const il)
 {
@@ -16,6 +30,8 @@ auto& operator=(std::initializer_list<value_type> const il)
 
   return *this;
 }
+
+void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
 
 //
 friend bool operator!=(this_class const&, this_class const&) = default;
@@ -91,7 +107,7 @@ const_reverse_iterator crend() const noexcept
 auto root() const noexcept { return root_; }
 
 //
-void clear() { delete root_; root_ = {}; }
+void clear() noexcept(noexcept(delete root_)) { delete root_; root_ = {}; }
 auto empty() const noexcept { return !size(); }
 auto max_size() const noexcept { return ~size_type{} / 3; }
 
