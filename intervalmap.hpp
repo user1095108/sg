@@ -443,25 +443,31 @@ public:
 
   intervalmap(std::initializer_list<value_type> const il)
     noexcept(noexcept(*this = il))
+    requires(std::is_copy_constructible_v<value_type>)
   {
     *this = il;
   }
 
   intervalmap(intervalmap const& o)
     noexcept(noexcept(*this = o))
-    requires(std::is_copy_assignable_v<mapped_type>)
+    requires(std::is_copy_constructible_v<value_type>)
   {
     *this = o;
   }
 
-  intervalmap(intervalmap&& o) noexcept
+  intervalmap(intervalmap&& o)
+    noexcept(noexcept(*this = std::move(o)))
   {
     *this = std::move(o);
   }
 
-  intervalmap(std::input_iterator auto const i, decltype(i) j){insert(i, j);}
+  intervalmap(std::input_iterator auto const i, decltype(i) j)
+    requires(std::is_constructible_v<value_type, decltype(*i)>)
+  {
+    insert(i, j);
+  }
 
-  ~intervalmap() noexcept(noexcept(root_->~node())) { delete root_; }
+  ~intervalmap() noexcept(noexcept(delete root_)) { delete root_; }
 
 # include "common.hpp"
 

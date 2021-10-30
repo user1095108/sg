@@ -170,15 +170,16 @@ private:
 public:
   set() = default;
 
-  set(std::initializer_list<Key> const il)
+  set(std::initializer_list<Key> il)
     noexcept(noexcept(*this = il))
+    requires(std::is_copy_constructible_v<Key>)
   {
     *this = il;
   }
 
   set(set const& o) 
     noexcept(noexcept(*this = o))
-    requires(std::is_copy_assignable_v<mapped_type>)
+    requires(std::is_copy_constructible_v<Key>)
   {
     *this = o;
   }
@@ -188,9 +189,13 @@ public:
     *this = std::move(o);
   }
 
-  set(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
+  set(std::input_iterator auto const i, decltype(i) j)
+    requires(std::is_constructible_v<Key, decltype(*i)>)
+  {
+    insert(i, j);
+  }
 
-  ~set() noexcept(noexcept(root_->~node())) { delete root_; }
+  ~set() noexcept(noexcept(delete root_)) { delete root_; }
 
 # include "common.hpp"
 
