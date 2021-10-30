@@ -115,17 +115,17 @@ auto empty() const noexcept { return !size(); }
 auto max_size() const noexcept { return ~size_type{} / 3; }
 
 //
-bool contains(Key const& k) const
+bool contains(Key const& k) const noexcept
 {
-  return bool(sg::detail::find(root_, k));
+  return sg::detail::find(root_, k);
 }
 
-bool contains(auto&& k) const
+bool contains(auto&& k) const noexcept
 {
-  return bool(sg::detail::find(root_, std::forward<decltype(k)>(k)));
+  return sg::detail::find(root_, std::forward<decltype(k)>(k));
 }
 
-//
+// these may always throw
 iterator erase(const_iterator a, const_iterator const b)
 {
   iterator i(b);
@@ -135,7 +135,7 @@ iterator erase(const_iterator a, const_iterator const b)
   return i;
 }
 
-iterator erase(std::initializer_list<const_iterator> const il)
+iterator erase(std::initializer_list<const_iterator> il)
 {
   iterator r;
 
@@ -156,7 +156,7 @@ const_iterator find(Key const& k) const noexcept
   return const_iterator(root_, sg::detail::find(root_, k));
 }
 
-//
+// these may always throw
 void insert(std::initializer_list<value_type> il)
   requires(std::is_copy_constructible_v<value_type>)
 {
