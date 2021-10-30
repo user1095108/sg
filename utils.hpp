@@ -244,7 +244,6 @@ inline void move(auto& n, auto const ...d)
 }
 
 inline auto erase(auto& r0, auto&& k)
-  noexcept(noexcept(delete r0))
 {
   using pointer = std::remove_cvref_t<decltype(r0)>;
   using node = std::remove_pointer_t<pointer>;
@@ -320,7 +319,6 @@ constexpr auto operator<=>(T const& lhs, T const& rhs) noexcept
 }
 
 constexpr auto erase(auto& c, auto const& k)
-  noexcept(noexcept(c.erase(k)))
   requires(
     requires{
       c.begin(); c.end();
@@ -333,7 +331,6 @@ constexpr auto erase(auto& c, auto const& k)
 }
 
 constexpr auto erase_if(auto& c, auto pred)
-  noexcept(noexcept(c.erase(c.begin())))
   requires(
     requires{
       c.begin(); c.end();

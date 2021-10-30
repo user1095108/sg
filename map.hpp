@@ -304,13 +304,11 @@ public:
 
   //
   iterator erase(const_iterator const i)
-    noexcept(noexcept(delete root_))
   {
     return {root_, sg::detail::erase(root_, std::get<0>(*i))};
   }
 
   size_type erase(Key const& k)
-    noexcept(noexcept(delete root_))
   {
     return bool(sg::detail::erase(root_, k));
   }
