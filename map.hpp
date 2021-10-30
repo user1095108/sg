@@ -243,12 +243,12 @@ public:
     );
   }
 
-  auto& at(Key const& k)
+  auto& at(Key const& k) noexcept
   {
     return std::get<1>(sg::detail::find(root_, k)->kv_);
   }
 
-  auto const& at(Key const& k) const
+  auto const& at(Key const& k) const noexcept
   {
     return std::get<1>(sg::detail::find(root_, k)->kv_);
   }
@@ -304,11 +304,13 @@ public:
 
   //
   iterator erase(const_iterator const i)
+    noexcept(noexcept(delete root_))
   {
     return {root_, sg::detail::erase(root_, std::get<0>(*i))};
   }
 
   size_type erase(Key const& k)
+    noexcept(noexcept(delete root_))
   {
     return bool(sg::detail::erase(root_, k));
   }

@@ -244,6 +244,7 @@ inline void move(auto& n, auto const ...d)
 }
 
 inline auto erase(auto& r0, auto&& k)
+  noexcept(noexcept(delete r0))
 {
   using pointer = std::remove_cvref_t<decltype(r0)>;
   using node = std::remove_pointer_t<pointer>;
@@ -289,8 +290,10 @@ inline auto erase(auto& r0, auto&& k)
 
 }
 
-template <typename T> requires(
-  requires(T c){c.begin(); c.end(); &T::node::cmp;})
+template <typename T>
+  requires(
+    requires(T c){c.begin(); c.end(); &T::node::cmp;}
+  )
 constexpr bool operator==(T const& lhs, T const& rhs) noexcept
 {
   return std::equal(
@@ -303,8 +306,10 @@ constexpr bool operator==(T const& lhs, T const& rhs) noexcept
   );
 }
 
-template <typename T> requires(
-  requires(T c){c.begin(); c.end(); &T::node::cmp;})
+template <typename T>
+  requires(
+    requires(T c){c.begin(); c.end(); &T::node::cmp;}
+  )
 constexpr auto operator<=>(T const& lhs, T const& rhs) noexcept
 {
   return std::lexicographical_compare_three_way(
@@ -314,18 +319,24 @@ constexpr auto operator<=>(T const& lhs, T const& rhs) noexcept
   );
 }
 
-constexpr auto erase(auto& c, auto const& k) requires(
-  requires{c.begin(); c.end();
-  &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
-  !std::is_const_v<std::remove_cvref_t<decltype(c)>>)
+constexpr auto erase(auto& c, auto const& k)
+  noexcept(noexcept(c.erase(k)))
+  requires(
+    requires{c.begin(); c.end();
+    &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
+    !std::is_const_v<std::remove_cvref_t<decltype(c)>>
+  )
 {
   return c.erase(k);
 }
 
-constexpr auto erase_if(auto& c, auto pred) requires(
-  requires{c.begin(); c.end();
-  &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
-  !std::is_const_v<std::remove_cvref_t<decltype(c)>>)
+constexpr auto erase_if(auto& c, auto pred)
+  noexcept(noexcept(c.erase(c.begin())))
+  requires(
+    requires{c.begin(); c.end();
+    &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
+    !std::is_const_v<std::remove_cvref_t<decltype(c)>>
+  )
 {
   std::size_t r{};
 
@@ -337,10 +348,12 @@ constexpr auto erase_if(auto& c, auto pred) requires(
   return r;
 }
 
-constexpr void swap(auto& lhs, decltype(lhs) rhs) noexcept requires(
-  requires{lhs.begin(); lhs.end();
-  &std::remove_cvref_t<decltype(lhs)>::node::cmp;} &&
-  !std::is_const_v<std::remove_cvref_t<decltype(lhs)>>)
+constexpr void swap(auto& lhs, decltype(lhs) rhs) noexcept
+  requires(
+    requires{lhs.begin(); lhs.end();
+    &std::remove_cvref_t<decltype(lhs)>::node::cmp;} &&
+    !std::is_const_v<std::remove_cvref_t<decltype(lhs)>>
+  )
 {
   lhs.swap(rhs);
 }
