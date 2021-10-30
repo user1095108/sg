@@ -119,7 +119,7 @@ bool contains(auto&& k) const noexcept
   return sg::detail::find(root_, std::forward<decltype(k)>(k));
 }
 
-// these may always throw
+// these may always throw, because of tree rebalancing
 iterator erase(const_iterator a, const_iterator const b)
 {
   iterator i(b);
