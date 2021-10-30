@@ -241,8 +241,8 @@ public:
   }
 
   multiset(multiset const& o)
-    requires(std::is_copy_constructible_v<value_type>)
     noexcept(noexcept(*this = o))
+    requires(std::is_copy_constructible_v<value_type>)
   {
     *this = o;
   }
@@ -254,8 +254,8 @@ public:
   }
 
   multiset(std::input_iterator auto const i, decltype(i) j)
-    requires(std::is_constructible_v<value_type, decltype(*i)>)
     noexcept(noexcept(insert(i, j)))
+    requires(std::is_constructible_v<value_type, decltype(*i)>)
   {
     insert(i, j);
   }
