@@ -322,8 +322,10 @@ constexpr auto operator<=>(T const& lhs, T const& rhs) noexcept
 constexpr auto erase(auto& c, auto const& k)
   noexcept(noexcept(c.erase(k)))
   requires(
-    requires{c.begin(); c.end();
-    &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
+    requires{
+      c.begin(); c.end();
+      &std::remove_cvref_t<decltype(c)>::node::cmp;
+    } &&
     !std::is_const_v<std::remove_cvref_t<decltype(c)>>
   )
 {
@@ -333,8 +335,10 @@ constexpr auto erase(auto& c, auto const& k)
 constexpr auto erase_if(auto& c, auto pred)
   noexcept(noexcept(c.erase(c.begin())))
   requires(
-    requires{c.begin(); c.end();
-    &std::remove_cvref_t<decltype(c)>::node::cmp;} &&
+    requires{
+      c.begin(); c.end();
+      &std::remove_cvref_t<decltype(c)>::node::cmp;
+    } &&
     !std::is_const_v<std::remove_cvref_t<decltype(c)>>
   )
 {
@@ -350,8 +354,10 @@ constexpr auto erase_if(auto& c, auto pred)
 
 constexpr void swap(auto& lhs, decltype(lhs) rhs) noexcept
   requires(
-    requires{lhs.begin(); lhs.end();
-    &std::remove_cvref_t<decltype(lhs)>::node::cmp;} &&
+    requires{
+      lhs.begin(); lhs.end();
+      &std::remove_cvref_t<decltype(lhs)>::node::cmp;
+    } &&
     !std::is_const_v<std::remove_cvref_t<decltype(lhs)>>
   )
 {
