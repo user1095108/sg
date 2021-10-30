@@ -289,32 +289,38 @@ inline auto erase(auto& r0, auto&& k)
 
 }
 
-template <typename T>
+constexpr bool operator==(auto const& lhs, decltype(lhs) rhs) noexcept
   requires(
-    requires(T c){c.begin(); c.end(); &T::node::cmp;}
+    requires{
+      lhs.begin(); lhs.end();
+      &std::remove_cvref_t<decltype(lhs)>::node::cmp;
+    } &&
+    !std::is_const_v<std::remove_reference_t<decltype(lhs)>>
   )
-constexpr bool operator==(T const& lhs, T const& rhs) noexcept
 {
   return std::equal(
     lhs.begin(), lhs.end(),
     rhs.begin(), rhs.end(),
     [](auto&& a, auto && b) noexcept
     {
-      return T::node::cmp(a, b) == 0;
+      return std::remove_cvref_t<decltype(lhs)>::node::cmp(a, b) == 0;
     }
   );
 }
 
-template <typename T>
+constexpr auto operator<=>(auto const& lhs, decltype(lhs) rhs) noexcept
   requires(
-    requires(T c){c.begin(); c.end(); &T::node::cmp;}
+    requires{
+      lhs.begin(); lhs.end();
+      &std::remove_cvref_t<decltype(lhs)>::node::cmp;
+    } &&
+    !std::is_const_v<std::remove_reference_t<decltype(lhs)>>
   )
-constexpr auto operator<=>(T const& lhs, T const& rhs) noexcept
 {
   return std::lexicographical_compare_three_way(
     lhs.begin(), lhs.end(),
     rhs.begin(), rhs.end(),
-    T::node::cmp
+    std::remove_cvref_t<decltype(lhs)>::node::cmp
   );
 }
 
@@ -324,7 +330,7 @@ constexpr auto erase(auto& c, auto const& k)
       c.begin(); c.end();
       &std::remove_cvref_t<decltype(c)>::node::cmp;
     } &&
-    !std::is_const_v<std::remove_cvref_t<decltype(c)>>
+    !std::is_const_v<std::remove_reference_t<decltype(c)>>
   )
 {
   return c.erase(k);
@@ -336,7 +342,7 @@ constexpr auto erase_if(auto& c, auto pred)
       c.begin(); c.end();
       &std::remove_cvref_t<decltype(c)>::node::cmp;
     } &&
-    !std::is_const_v<std::remove_cvref_t<decltype(c)>>
+    !std::is_const_v<std::remove_reference_t<decltype(c)>>
   )
 {
   std::size_t r{};
@@ -355,7 +361,7 @@ constexpr void swap(auto& lhs, decltype(lhs) rhs) noexcept
       lhs.begin(); lhs.end();
       &std::remove_cvref_t<decltype(lhs)>::node::cmp;
     } &&
-    !std::is_const_v<std::remove_cvref_t<decltype(lhs)>>
+    !std::is_const_v<std::remove_reference_t<decltype(lhs)>>
   )
 {
   lhs.swap(rhs);
