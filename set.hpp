@@ -18,7 +18,6 @@ public:
   struct node;
 
   using key_type = Key;
-  using mapped_type = Key;
   using value_type = Key;
 
   using difference_type = std::ptrdiff_t;
@@ -184,12 +183,14 @@ public:
     *this = o;
   }
 
-  set(set&& o) noexcept
+  set(set&& o)
+    noexcept(noexcept(*this = std::move(o)))
   {
     *this = std::move(o);
   }
 
   set(std::input_iterator auto const i, decltype(i) j)
+    noexcept(noexcept(insert(i, j)))
     requires(std::is_constructible_v<Key, decltype(*i)>)
   {
     insert(i, j);

@@ -19,7 +19,6 @@ public:
   struct node;
 
   using key_type = Key;
-  using mapped_type = Key;
   using value_type = Key;
 
   using difference_type = std::ptrdiff_t;
@@ -235,27 +234,33 @@ private:
 public:
   multiset() = default;
 
-  multiset(std::initializer_list<value_type> const il)
+  multiset(std::initializer_list<value_type> il)
     noexcept(noexcept(*this = il))
   {
     *this = il;
   }
 
   multiset(multiset const& o)
-    requires(std::is_copy_assignable_v<mapped_type>)
+    requires(std::is_copy_constructible_v<value_type>)
     noexcept(noexcept(*this = o))
   {
     *this = o;
   }
 
-  multiset(multiset&& o) noexcept
+  multiset(multiset&& o)
+    noexcept(noexcept(*this = std::move(o)))
   {
     *this = std::move(o);
   }
 
-  multiset(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
+  multiset(std::input_iterator auto const i, decltype(i) j)
+    requires(std::is_constructible_v<value_type, decltype(*i)>)
+    noexcept(noexcept(insert(i, j)))
+  {
+    insert(i, j);
+  }
 
-  ~multiset() noexcept(noexcept(root_->~node())) { delete root_; }
+  ~multiset() noexcept(noexcept(delete root_)) { delete root_; }
 
 # include "common.hpp"
 

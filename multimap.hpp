@@ -240,27 +240,34 @@ private:
 public:
   multimap() = default;
 
-  multimap(std::initializer_list<value_type> const il)
+  multimap(std::initializer_list<value_type> il)
     noexcept(noexcept(*this = il))
+    requires(std::is_copy_constructible_v<value_type>)
   {
     *this = il;
   }
 
   multimap(multimap const& o)
     noexcept(noexcept(*this = o))
-    requires(std::is_copy_assignable_v<mapped_type>)
+    requires(std::is_copy_constructible_v<value_type>)
   {
     *this = o;
   }
 
-  multimap(multimap&& o) noexcept
+  multimap(multimap&& o)
+    noexcept(noexcept(*this = std::move(o)))
   {
     *this = std::move(o);
   }
 
-  multimap(std::input_iterator auto const i, decltype(i) j) { insert(i, j); }
+  multimap(std::input_iterator auto const i, decltype(i) j)
+    noexcept(noexcept(insert(i, j)))
+    requires(std::is_constructible_v<value_type, decltype(*i)>)
+  {
+    insert(i, j);
+  }
 
-  ~multimap() noexcept(noexcept(root_->~node())) { delete root_; }
+  ~multimap() noexcept(noexcept(delete root_)) { delete root_; }
 
 # include "common.hpp"
 

@@ -462,6 +462,7 @@ public:
   }
 
   intervalmap(std::input_iterator auto const i, decltype(i) j)
+    noexcept(noexcept(insert(i, j)))
     requires(std::is_constructible_v<value_type, decltype(*i)>)
   {
     insert(i, j);

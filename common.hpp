@@ -1,6 +1,6 @@
 //
 auto& operator=(this_class const& o)
-  requires(std::is_copy_constructible_v<mapped_type>)
+  requires(std::is_copy_constructible_v<value_type>)
 {
   if (this != &o)
   {
@@ -26,7 +26,7 @@ auto& operator=(this_class&& o)
 }
 
 auto& operator=(std::initializer_list<value_type> il)
-  requires(std::is_copy_constructible_v<mapped_type>)
+  requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
   insert(il.begin(), il.end());
@@ -157,8 +157,8 @@ const_iterator find(Key const& k) const noexcept
 }
 
 //
-void insert(std::initializer_list<value_type> const il)
-  requires(std::is_copy_constructible_v<mapped_type>)
+void insert(std::initializer_list<value_type> il)
+  requires(std::is_copy_constructible_v<value_type>)
 {
   insert(il.begin(), il.end());
 }
