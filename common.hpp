@@ -1,12 +1,9 @@
-//
+// self-assign neglected
 auto& operator=(this_class const& o)
   requires(std::is_copy_constructible_v<value_type>)
 {
-  if (this != &o)
-  {
-    clear();
-    insert(o.begin(), o.end());
-  }
+  clear();
+  insert(o.begin(), o.end());
 
   return *this;
 }
@@ -14,13 +11,10 @@ auto& operator=(this_class const& o)
 auto& operator=(this_class&& o)
   noexcept(noexcept(delete root_))
 {
-  if (this != &o)
-  {
-    delete root_;
+  delete root_;
 
-    root_ = o.root_;
-    o.root_ = {};
-  }
+  root_ = o.root_;
+  o.root_ = {};
 
   return *this;
 }
