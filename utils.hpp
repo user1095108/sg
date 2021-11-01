@@ -164,7 +164,9 @@ inline auto equal_range(auto n, auto&& k) noexcept
     {
       if (auto const r(right_node(n)); r)
       {
-        g = first_node(r);
+        auto const fr(first_node(r));
+
+        g = fr ? fr : r;
       }
 
       break;
