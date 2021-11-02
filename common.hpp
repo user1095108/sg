@@ -41,7 +41,7 @@ friend bool operator>=(this_class const&, this_class const&) = default;
 iterator begin() noexcept
 {
   return root_ ?
-    iterator(root_, sg::detail::first_node(root_)) :
+    iterator(root_, detail::first_node(root_)) :
     iterator();
 }
 
@@ -51,7 +51,7 @@ iterator end() noexcept { return {root_}; }
 const_iterator begin() const noexcept
 {
   return root_ ?
-    const_iterator(root_, sg::detail::first_node(root_)) :
+    const_iterator(root_, detail::first_node(root_)) :
     const_iterator();
 }
 
@@ -60,7 +60,7 @@ const_iterator end() const noexcept { return {root_}; }
 const_iterator cbegin() const noexcept
 {
   return root_ ?
-    const_iterator(root_, sg::detail::first_node(root_)) :
+    const_iterator(root_, detail::first_node(root_)) :
     const_iterator();
 }
 
@@ -78,7 +78,7 @@ reverse_iterator rend() noexcept
 {
   return root_ ?
     reverse_iterator(
-      iterator{root_, sg::detail::first_node(root_)}
+      iterator{root_, detail::first_node(root_)}
     ) :
     reverse_iterator();
 }
@@ -95,7 +95,7 @@ const_reverse_iterator crend() const noexcept
 {
   return root_ ?
     const_reverse_iterator(
-      const_iterator{root_, sg::detail::first_node(root_)}
+      const_iterator{root_, detail::first_node(root_)}
     ) :
     const_reverse_iterator();
 }
@@ -111,12 +111,12 @@ auto max_size() const noexcept { return ~size_type{} / 3; }
 //
 bool contains(Key const& k) const noexcept
 {
-  return sg::detail::find(root_, k);
+  return detail::find(root_, k);
 }
 
 bool contains(auto&& k) const noexcept
 {
-  return sg::detail::find(root_, std::forward<decltype(k)>(k));
+  return detail::find(root_, std::forward<decltype(k)>(k));
 }
 
 // these may always throw, because of tree rebalancing
@@ -142,12 +142,12 @@ iterator erase(std::initializer_list<const_iterator> il)
 //
 iterator find(Key const& k) noexcept
 {
-  return iterator(root_, sg::detail::find(root_, k));
+  return iterator(root_, detail::find(root_, k));
 }
 
 const_iterator find(Key const& k) const noexcept
 {
-  return const_iterator(root_, sg::detail::find(root_, k));
+  return const_iterator(root_, detail::find(root_, k));
 }
 
 // these may always throw
@@ -160,25 +160,25 @@ void insert(std::initializer_list<value_type> il)
 //
 iterator lower_bound(Key const& k) noexcept
 {
-  auto const [e, g](sg::detail::equal_range(root_, k));
+  auto const [e, g](detail::equal_range(root_, k));
   return {root_, e ? e : g};
 }
 
 const_iterator lower_bound(Key const& k) const noexcept
 {
-  auto const [e, g](sg::detail::equal_range(root_, k));
+  auto const [e, g](detail::equal_range(root_, k));
   return {root_, e ? e : g};
 }
 
 iterator lower_bound(auto const& k) noexcept
 {
-  auto const [e, g](sg::detail::equal_range(root_, k));
+  auto const [e, g](detail::equal_range(root_, k));
   return {root_, e ? e : g};
 }
 
 const_iterator lower_bound(auto const& k) const noexcept
 {
-  auto const [e, g](sg::detail::equal_range(root_, k));
+  auto const [e, g](detail::equal_range(root_, k));
   return {root_, e ? e : g};
 }
 
@@ -187,7 +187,7 @@ iterator upper_bound(Key const& k) noexcept
 {
   return {
     root_,
-    std::get<1>(sg::detail::equal_range(root_, k))
+    std::get<1>(detail::equal_range(root_, k))
   };
 }
 
@@ -195,7 +195,7 @@ const_iterator upper_bound(Key const& k) const noexcept
 {
   return {
     root_,
-    std::get<1>(sg::detail::equal_range(root_, k))
+    std::get<1>(detail::equal_range(root_, k))
   };
 }
 
@@ -203,7 +203,7 @@ iterator upper_bound(auto const& k) noexcept
 {
   return {
     root_,
-    std::get<1>(sg::detail::equal_range(root_, k))
+    std::get<1>(detail::equal_range(root_, k))
   };
 }
 
@@ -211,6 +211,6 @@ const_iterator upper_bound(auto const& k) const noexcept
 {
   return {
     root_,
-    std::get<1>(sg::detail::equal_range(root_, k))
+    std::get<1>(detail::equal_range(root_, k))
   };
 }
