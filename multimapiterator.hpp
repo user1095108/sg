@@ -6,6 +6,9 @@
 
 #include <type_traits>
 
+namespace sg
+{
+
 template <typename T>
 class multimapiterator
 {
@@ -134,5 +137,7 @@ public:
   auto& iterator() const noexcept { return i_; }
   auto node() const noexcept { return n_; }
 };
+
+}
 
 #endif // SG_MULTIMAPITERATOR_HPP

@@ -6,6 +6,9 @@
 
 #include <type_traits>
 
+namespace sg
+{
+
 template <typename T>
 class mapiterator
 {
@@ -78,5 +81,7 @@ public:
   //
   auto node() const noexcept { return n_; }
 };
+
+}
 
 #endif // SG_MAPITERATOR_HPP
