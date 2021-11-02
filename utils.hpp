@@ -33,7 +33,7 @@ inline auto last_node(auto n) noexcept
 }
 
 //
-inline auto parent_node(auto r0, auto n) noexcept
+inline auto parent_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
@@ -58,13 +58,13 @@ inline auto parent_node(auto r0, auto n) noexcept
   }
 }
 
-inline auto next_node(auto r0, auto n) noexcept
+inline auto next_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (decltype(n) p(right_node(n)); p)
+  if (decltype(n) rn(right_node(n)); rn)
   {
-    return first_node(p);
+    return first_node(rn);
   }
   else
   {
@@ -89,7 +89,7 @@ inline auto next_node(auto r0, auto n) noexcept
   }
 }
 
-inline auto prev_node(auto r0, auto n) noexcept
+inline auto prev_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
@@ -97,9 +97,9 @@ inline auto prev_node(auto r0, auto n) noexcept
   {
     return last_node(r0);
   }
-  else if (decltype(n) p(left_node(n)); p)
+  else if (decltype(n) ln(left_node(n)); ln)
   {
-    return last_node(p);
+    return last_node(ln);
   }
   else
   {
