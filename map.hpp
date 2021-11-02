@@ -100,7 +100,7 @@ public:
               return 0;
             }
 
-            sr = sg::detail::size(n->r_);
+            sr = detail::size(n->r_);
           }
           else if (c > 0)
           {
@@ -109,7 +109,7 @@ public:
               return 0;
             }
 
-            sl = sg::detail::size(n->l_);
+            sl = detail::size(n->l_);
           }
           else
           {
@@ -136,13 +136,13 @@ public:
       l.reserve(1024);
 
       {
-        auto n(sg::detail::first_node(this));
+        auto n(detail::first_node(this));
 
         do
         {
           l.emplace_back(n);
         }
-        while ((n = sg::detail::next_node(this, n)));
+        while ((n = detail::next_node(this, n)));
       }
 
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
@@ -222,7 +222,7 @@ public:
 # include "common.hpp"
 
   //
-  auto size() const noexcept { return sg::detail::size(root_); }
+  auto size() const noexcept { return detail::size(root_); }
 
   //
   auto& operator[](Key const& k)
@@ -245,18 +245,18 @@ public:
 
   auto& at(Key const& k) noexcept
   {
-    return std::get<1>(sg::detail::find(root_, k)->kv_);
+    return std::get<1>(detail::find(root_, k)->kv_);
   }
 
   auto const& at(Key const& k) const noexcept
   {
-    return std::get<1>(sg::detail::find(root_, k)->kv_);
+    return std::get<1>(detail::find(root_, k)->kv_);
   }
 
   //
   size_type count(Key const& k) const noexcept
   {
-    return bool(sg::detail::find(root_, k));
+    return bool(detail::find(root_, k));
   }
 
   //
@@ -270,14 +270,14 @@ public:
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
       const_iterator(root_, e ? e : g),
@@ -287,14 +287,14 @@ public:
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
       const_iterator(root_, e ? e : g),
@@ -305,12 +305,12 @@ public:
   //
   iterator erase(const_iterator const i)
   {
-    return {root_, sg::detail::erase(root_, std::get<0>(*i))};
+    return {root_, detail::erase(root_, std::get<0>(*i))};
   }
 
   size_type erase(Key const& k)
   {
-    return bool(sg::detail::erase(root_, k));
+    return bool(detail::erase(root_, k));
   }
 
   //
