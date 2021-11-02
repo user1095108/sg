@@ -20,14 +20,14 @@ inline auto right_node(auto const n) noexcept { return n->r_; }
 
 inline auto first_node(auto n) noexcept
 {
-  for (decltype(n) p; (p = left_node(n)); n = p);
+  for (decltype(n) l; (l = left_node(n)); n = l);
 
   return n;
 }
 
 inline auto last_node(auto n) noexcept
 {
-  for (decltype(n) p; (p = right_node(n)); n = p);
+  for (decltype(n) r; (r = right_node(n)); n = r);
 
   return n;
 }
@@ -62,11 +62,9 @@ inline auto next_node(auto r0, auto n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (auto const p(right_node(n)); p)
+  if (decltype(n) p(right_node(n)); p)
   {
-    decltype(n) const f(first_node(p));
-
-    return f ? f : p;
+    return first_node(p);
   }
   else
   {
@@ -99,11 +97,9 @@ inline auto prev_node(auto r0, auto n) noexcept
   {
     return last_node(r0);
   }
-  else if (auto const p(left_node(n)); p)
+  else if (decltype(n) p(left_node(n)); p)
   {
-    decltype(n) const l(last_node(p));
-
-    return l ? l : p;
+    return last_node(p);
   }
   else
   {
@@ -164,9 +160,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
     {
       if (auto const r(right_node(n)); r)
       {
-        auto const fr(first_node(r));
-
-        g = fr ? fr : r;
+        g = first_node(r);
       }
 
       break;
