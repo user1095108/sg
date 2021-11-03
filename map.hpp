@@ -70,7 +70,7 @@ public:
 
       key_type k(std::forward<decltype(a)>(a));
 
-      auto const f([&](auto&& f, auto& n) noexcept -> size_type
+      auto const f([&](auto&& f, auto& n) -> size_type
         {
           if (!n)
           {

@@ -77,7 +77,7 @@ public:
 
       node* q;
 
-      auto const f([&](auto&& f, auto& n) noexcept -> size_type
+      auto const f([&](auto&& f, auto& n) -> size_type
         {
           if (!n)
           {
