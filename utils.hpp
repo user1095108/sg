@@ -246,7 +246,7 @@ inline auto erase(auto& r0, auto&& k)
 
   if (r0)
   {
-    for (auto q(&r0);;)
+    for (auto q(&r0); *q;)
     {
       auto const n(*q);
 
