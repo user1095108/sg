@@ -23,7 +23,7 @@ class mapiterator
   using node_t = std::remove_const_t<T>;
 
   node_t** r_{};
-  node_t* n_{};
+  T* n_{};
 
 public:
   using iterator_category = std::bidirectional_iterator_tag;
