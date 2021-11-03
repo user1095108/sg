@@ -96,7 +96,7 @@ inline auto prev_node(auto r0, auto n) noexcept
 
   if (!n)
   {
-    return pointer(last_node(r0));
+    return last_node(pointer(r0));
   }
   else if (decltype(n) ln(left_node(n)); ln)
   {
