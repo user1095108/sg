@@ -244,39 +244,36 @@ inline auto erase(auto& r0, auto&& k)
   using pointer = std::remove_cvref_t<decltype(r0)>;
   using node = std::remove_pointer_t<pointer>;
 
-  if (r0)
+  for (auto q(&r0); *q;)
   {
-    for (auto q(&r0); *q;)
-    {
-      auto const n(*q);
+    auto const n(*q);
 
-      if (auto const c(node::cmp(k, n->key())); c < 0)
+    if (auto const c(node::cmp(k, n->key())); c < 0)
+    {
+      q = &n->l_;
+    }
+    else if (c > 0)
+    {
+      q = &n->r_;
+    }
+    else
+    {
+      auto const nxt(next_node(r0, n));
+
+      if (auto const l(n->l_), r(n->r_); l && r)
       {
-        q = &n->l_;
-      }
-      else if (c > 0)
-      {
-        q = &n->r_;
+        *q = {};
+        sg::detail::move(r0, l, r);
       }
       else
       {
-        auto const nxt(next_node(r0, n));
-
-        if (auto const l(n->l_), r(n->r_); l && r)
-        {
-          *q = {};
-          sg::detail::move(r0, l, r);
-        }
-        else
-        {
-          *q = l ? l : r;
-        }
-
-        n->l_ = n->r_ = {};
-        delete n;
-
-        return nxt;
+        *q = l ? l : r;
       }
+
+      n->l_ = n->r_ = {};
+      delete n;
+
+      return nxt;
     }
   }
 
