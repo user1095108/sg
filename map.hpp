@@ -74,17 +74,17 @@ public:
         {
           if (!n)
           {
-            if constexpr(!std::is_same_v<decltype(v), empty_t&&>)
+            if constexpr(std::is_same_v<decltype(v), empty_t&&>)
+            {
+              s = (n = q = new node(std::move(k)));
+            }
+            else
             {
               s = (n = q = new node(
                   std::move(k),
                   std::forward<decltype(v)>(v)
                 )
               );
-            }
-            else
-            {
-              s = (n = q = new node(std::move(k)));
             }
 
             return 1;
@@ -159,10 +159,10 @@ public:
 
             case 1:
               {
-                auto const p(l[b]);
+                auto const nb(l[b]);
 
-                p->l_ = p->r_ = n->l_ = {};
-                n->r_ = p;
+                nb->l_ = nb->r_ = n->l_ = {};
+                n->r_ = nb;
 
                 break;
               }
