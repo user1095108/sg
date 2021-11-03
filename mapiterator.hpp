@@ -20,8 +20,10 @@ class mapiterator
 
   friend inverse_const_t;
 
-  T* r_{};
-  T* n_{};
+  using node_t = std::remove_const_t<T>;
+
+  node_t** r_{};
+  node_t* n_{};
 
 public:
   using iterator_category = std::bidirectional_iterator_tag;
@@ -38,8 +40,8 @@ public:
 public:
   mapiterator() = default;
 
-  mapiterator(T* const r, T* const n = {}) noexcept:
-    r_(r),
+  mapiterator(auto const r, node_t* const n = {}) noexcept:
+    r_(const_cast<node_t**>(r)),
     n_(n)
   {
   }
@@ -63,12 +65,12 @@ public:
   // increment, decrement
   auto& operator++() noexcept
   {
-    n_ = sg::detail::next_node(r_, n_); return *this;
+    n_ = sg::detail::next_node(*r_, n_); return *this;
   }
 
   auto& operator--() noexcept
   {
-    n_ = sg::detail::prev_node(r_, n_); return *this;
+    n_ = sg::detail::prev_node(*r_, n_); return *this;
   }
 
   auto operator++(int) noexcept { auto const r(*this); ++*this; return r; }

@@ -214,7 +214,7 @@ public:
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
-    return std::tuple(iterator(root_, n), s);
+    return std::tuple(iterator(&root_, n), s);
   }
 
   //
@@ -223,8 +223,8 @@ public:
     auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
-      iterator(root_, e ? e : g),
-      iterator(root_, g)
+      iterator(&root_, e ? e : g),
+      iterator(&root_, g)
     );
   }
 
@@ -233,8 +233,8 @@ public:
     auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_, e ? e : g),
-      const_iterator(root_, g)
+      const_iterator(&root_, e ? e : g),
+      const_iterator(&root_, g)
     );
   }
 
@@ -243,8 +243,8 @@ public:
     auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
-      iterator(root_, e ? e : g),
-      iterator(root_, g)
+      iterator(&root_, e ? e : g),
+      iterator(&root_, g)
     );
   }
 
@@ -253,8 +253,8 @@ public:
     auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_, e ? e : g),
-      const_iterator(root_, g)
+      const_iterator(&root_, e ? e : g),
+      const_iterator(&root_, g)
     );
   }
 
@@ -266,7 +266,7 @@ public:
 
   iterator erase(const_iterator const i)
   {
-    return {root_, detail::erase(root_, *i)};
+    return {&root_, detail::erase(root_, *i)};
   }
 
   //
@@ -274,14 +274,14 @@ public:
   {
     auto const [n, s](node::emplace(root_, v));
 
-    return std::tuple(iterator(root_, n), s);
+    return std::tuple(iterator(&root_, n), s);
   }
 
   auto insert(value_type&& v)
   {
     auto const [n, s](node::emplace(root_, std::move(v)));
 
-    return std::tuple(iterator(root_, n), s);
+    return std::tuple(iterator(&root_, n), s);
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)

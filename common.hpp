@@ -41,36 +41,36 @@ friend bool operator>=(this_class const&, this_class const&) = default;
 iterator begin() noexcept
 {
   return root_ ?
-    iterator(root_, detail::first_node(root_)) :
+    iterator(&root_, detail::first_node(root_)) :
     iterator();
 }
 
-iterator end() noexcept { return {root_}; }
+iterator end() noexcept { return {&root_}; }
 
 // const iterators
 const_iterator begin() const noexcept
 {
   return root_ ?
-    const_iterator(root_, detail::first_node(root_)) :
+    const_iterator(&root_, detail::first_node(root_)) :
     const_iterator();
 }
 
-const_iterator end() const noexcept { return {root_}; }
+const_iterator end() const noexcept { return {&root_}; }
 
 const_iterator cbegin() const noexcept
 {
   return root_ ?
-    const_iterator(root_, detail::first_node(root_)) :
+    const_iterator(&root_, detail::first_node(root_)) :
     const_iterator();
 }
 
-const_iterator cend() const noexcept { return {root_}; }
+const_iterator cend() const noexcept { return {&root_}; }
 
 // reverse iterators
 reverse_iterator rbegin() noexcept
 {
   return root_ ?
-    reverse_iterator(iterator(root_)) :
+    reverse_iterator(iterator(&root_)) :
     reverse_iterator();
 }
 
@@ -78,7 +78,7 @@ reverse_iterator rend() noexcept
 {
   return root_ ?
     reverse_iterator(
-      iterator{root_, detail::first_node(root_)}
+      iterator{&root_, detail::first_node(root_)}
     ) :
     reverse_iterator();
 }
@@ -87,7 +87,7 @@ reverse_iterator rend() noexcept
 const_reverse_iterator crbegin() const noexcept
 {
   return root_ ?
-    const_reverse_iterator(const_iterator(root_)) :
+    const_reverse_iterator(const_iterator(&root_)) :
     const_reverse_iterator();
 }
 
@@ -95,7 +95,7 @@ const_reverse_iterator crend() const noexcept
 {
   return root_ ?
     const_reverse_iterator(
-      const_iterator{root_, detail::first_node(root_)}
+      const_iterator{&root_, detail::first_node(root_)}
     ) :
     const_reverse_iterator();
 }

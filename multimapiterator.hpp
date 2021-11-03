@@ -22,7 +22,7 @@ class multimapiterator
 
   using node_t = std::remove_const_t<T>;
 
-  node_t* r_{};
+  node_t** r_{};
   node_t* n_{};
 
 public:
@@ -47,13 +47,13 @@ private:
 public:
   multimapiterator() = default;
 
-  multimapiterator(node_t* const r) noexcept:
-    r_(r)
+  multimapiterator(auto const r) noexcept:
+    r_(const_cast<node_t**>(r))
   {
   }
 
-  multimapiterator(node_t* const r, node_t* const n) noexcept:
-    r_(r),
+  multimapiterator(auto const r, node_t* const n) noexcept:
+    r_(const_cast<node_t**>(r)),
     n_(n)
   {
     if (n)
@@ -69,9 +69,9 @@ public:
     }
   }
 
-  multimapiterator(node_t* const r, node_t* const n,
+  multimapiterator(auto const r, node_t* const n,
     decltype(i_) const i) noexcept:
-    r_(r),
+    r_(const_cast<node_t**>(r)),
     n_(n),
     i_(i)
   {
@@ -104,7 +104,7 @@ public:
   {
     if (i_ = std::next(i_); n_->v_.end() == i_)
     {
-      n_ = sg::detail::next_node(r_, n_);
+      n_ = sg::detail::next_node(*r_, n_);
       i_ = n_ ? n_->v_.begin() : decltype(i_){};
     }
 
@@ -115,7 +115,7 @@ public:
   {
     if (!n_ || (n_->v_.begin() == i_))
     {
-      n_ = sg::detail::prev_node(r_, n_);
+      n_ = sg::detail::prev_node(*r_, n_);
       i_ = n_ ? std::prev(n_->v_.end()) : decltype(i_){};
     }
     else

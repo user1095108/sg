@@ -113,7 +113,7 @@ public:
     {
       if (auto const n(i.node()); 1 == n->v_.size())
       {
-        return {r, std::get<0>(node::erase(r, n->key()))};
+        return {&r, std::get<0>(node::erase(r, n->key()))};
       }
       else if (auto const it(i.iterator()); std::next(it) == n->v_.end())
       {
@@ -121,11 +121,11 @@ public:
 
         n->v_.erase(it);
 
-        return {r, nn};
+        return {&r, nn};
       }
       else
       {
-        return {r, n, n->v_.erase(it)};
+        return {&r, n, n->v_.erase(it)};
       }
     }
 
@@ -305,7 +305,7 @@ public:
   //
   iterator emplace(auto&& k)
   {
-    return {root_, node::emplace(root_, std::forward<decltype(k)>(k))};
+    return {&root_, node::emplace(root_, std::forward<decltype(k)>(k))};
   }
 
   //
@@ -314,8 +314,8 @@ public:
     auto const [e, g](sg::detail::equal_range(root_, k));
 
     return std::pair(
-      iterator(root_, e ? e : g),
-      iterator(root_, g)
+      iterator(&root_, e ? e : g),
+      iterator(&root_, g)
     );
   }
 
@@ -324,8 +324,8 @@ public:
     auto const [e, g](sg::detail::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_, e ? e : g),
-      const_iterator(root_, g)
+      const_iterator(&root_, e ? e : g),
+      const_iterator(&root_, g)
     );
   }
 
@@ -334,8 +334,8 @@ public:
     auto const [e, g](sg::detail::equal_range(root_, k));
 
     return std::pair(
-      iterator(root_, e ? e : g),
-      iterator(root_, g)
+      iterator(&root_, e ? e : g),
+      iterator(&root_, g)
     );
   }
 
@@ -344,8 +344,8 @@ public:
     auto const [e, g](sg::detail::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_, e ? e : g),
-      const_iterator(root_, g)
+      const_iterator(&root_, e ? e : g),
+      const_iterator(&root_, g)
     );
   }
 
@@ -363,12 +363,12 @@ public:
   //
   iterator insert(value_type const& v)
   {
-    return {root_, node::emplace(root_, v.first)};
+    return {&root_, node::emplace(root_, v.first)};
   }
 
   iterator insert(value_type&& v)
   {
-    return {root_, node::emplace(root_, std::move(v))};
+    return {&root_, node::emplace(root_, std::move(v))};
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)

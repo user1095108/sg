@@ -165,7 +165,7 @@ public:
     {
       if (auto const n(i.node()); 1 == n->v_.size())
       {
-        return {r, std::get<0>(node::erase(r, std::get<0>(*i)))};
+        return {&r, std::get<0>(node::erase(r, std::get<0>(*i)))};
       }
       else if (auto const it(i.iterator()); std::next(it) == n->v_.end())
       {
@@ -173,11 +173,11 @@ public:
 
         n->v_.erase(it);
 
-        return {r, nn};
+        return {&r, nn};
       }
       else
       {
-        return {r, n, n->v_.erase(it)};
+        return {&r, n, n->v_.erase(it)};
       }
     }
 
@@ -524,7 +524,7 @@ public:
   iterator emplace(auto&& ...a)
   {
     return {
-      root_,
+      &root_,
       node::emplace(root_, std::forward<decltype(a)>(a)...)
     };
   }
@@ -534,7 +534,7 @@ public:
   {
     auto const [e, g](node::equal_range(root_, k));
 
-    return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
+    return std::pair(iterator(&root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(Key const& k) const noexcept
@@ -542,8 +542,8 @@ public:
     auto const [e, g](node::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_, e ? e : g),
-      const_iterator(root_, g)
+      const_iterator(&root_, e ? e : g),
+      const_iterator(&root_, g)
     );
   }
 
@@ -551,7 +551,7 @@ public:
   {
     auto const [e, g](node::equal_range(root_, k));
 
-    return std::pair(iterator(root_, e ? e : g), iterator(root_, g));
+    return std::pair(iterator(&root_, e ? e : g), iterator(root_, g));
   }
 
   auto equal_range(auto const& k) const noexcept
@@ -559,8 +559,8 @@ public:
     auto const [e, g](node::equal_range(root_, k));
 
     return std::pair(
-      const_iterator(root_, e ? e : g),
-      const_iterator(root_, g)
+      const_iterator(&root_, e ? e : g),
+      const_iterator(&root_, g)
     );
   }
 
@@ -579,7 +579,7 @@ public:
   iterator insert(value_type const& v)
   {
     return {
-      root_,
+      &root_,
       node::emplace(root_, std::get<0>(v), std::get<1>(v))
     };
   }
@@ -587,7 +587,7 @@ public:
   iterator insert(value_type&& v)
   {
     return {
-      root_,
+      &root_,
       node::emplace(root_, std::get<0>(v), std::get<1>(v))
     };
   }
