@@ -99,7 +99,7 @@ public:
               return 0;
             }
 
-            sr = sg::detail::size(n->r_);
+            sr = detail::size(n->r_);
           }
           else if (c > 0)
           {
@@ -108,7 +108,7 @@ public:
               return 0;
             }
 
-            sl = sg::detail::size(n->l_);
+            sl = detail::size(n->l_);
           }
           else
           {
@@ -224,7 +224,7 @@ public:
             }
             else
             {
-              auto const nxt(sg::detail::next_node(r0, n));
+              auto const nxt(detail::next_node(r0, n));
 
               if (auto const l(n->l_), r(n->r_); l && r)
               {
@@ -267,7 +267,7 @@ public:
           {
             n = d;
 
-            return sg::detail::size(d);
+            return detail::size(d);
           }
 
           //
@@ -283,7 +283,7 @@ public:
               return 0;
             }
 
-            sr = sg::detail::size(n->r_);
+            sr = detail::size(n->r_);
           }
           else
           {
@@ -292,7 +292,7 @@ public:
               return 0;
             }
 
-            sl = sg::detail::size(n->l_);
+            sl = detail::size(n->l_);
           }
 
           //
@@ -376,13 +376,13 @@ public:
       l.reserve(1024);
 
       {
-        auto n(sg::detail::first_node(this));
+        auto n(detail::first_node(this));
 
         do
         {
           l.emplace_back(n);
         }
-        while ((n = sg::detail::next_node(this, n)));
+        while ((n = detail::next_node(this, n)));
       }
 
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
@@ -496,11 +496,11 @@ public:
         {
           if (auto const c(node::cmp(mink, n->key())); c < 0)
           {
-            n = sg::detail::left_node(n);
+            n = detail::left_node(n);
           }
           else if (c > 0)
           {
-            n = sg::detail::right_node(n);
+            n = detail::right_node(n);
           }
           else
           {

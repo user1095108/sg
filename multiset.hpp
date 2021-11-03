@@ -79,7 +79,7 @@ public:
               return 0;
             }
 
-            sr = sg::detail::size(n->r_);
+            sr = detail::size(n->r_);
           }
           else if (c > 0)
           {
@@ -88,7 +88,7 @@ public:
               return 0;
             }
 
-            sl = sg::detail::size(n->l_);
+            sl = detail::size(n->l_);
           }
           else
           {
@@ -150,13 +150,13 @@ public:
           }
           else
           {
-            auto const nxt(sg::detail::next_node(r0, n));
+            auto const nxt(detail::next_node(r0, n));
             auto const s(n->v_.size());
 
             if (auto const l(n->l_), r(n->r_); l && r)
             {
               *q = {};
-              sg::detail::move(r0, l, r);
+              detail::move(r0, l, r);
             }
             else
             {
@@ -180,13 +180,13 @@ public:
       l.reserve(1024);
 
       {
-        auto n(sg::detail::first_node(this));
+        auto n(detail::first_node(this));
 
         do
         {
           l.emplace_back(n);
         }
-        while ((n = sg::detail::next_node(this, n)));
+        while ((n = detail::next_node(this, n)));
       }
 
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
@@ -286,11 +286,11 @@ public:
       {
         if (auto const c(node::cmp(k, n->key())); c < 0)
         {
-          n = sg::detail::left_node(n);
+          n = detail::left_node(n);
         }
         else if (c > 0)
         {
-          n = sg::detail::right_node(n);
+          n = detail::right_node(n);
         }
         else
         {
@@ -311,7 +311,7 @@ public:
   //
   auto equal_range(Key const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
       iterator(&root_, e ? e : g),
@@ -321,7 +321,7 @@ public:
 
   auto equal_range(Key const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
       const_iterator(&root_, e ? e : g),
@@ -331,7 +331,7 @@ public:
 
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
       iterator(&root_, e ? e : g),
@@ -341,7 +341,7 @@ public:
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](sg::detail::equal_range(root_, k));
+    auto const [e, g](detail::equal_range(root_, k));
 
     return std::pair(
       const_iterator(&root_, e ? e : g),
