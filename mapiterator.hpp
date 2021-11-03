@@ -20,9 +20,7 @@ class mapiterator
 
   friend inverse_const_t;
 
-  using node_t = std::remove_const_t<T>;
-
-  node_t** r_{};
+  T* const* r_{};
   T* n_{};
 
 public:
@@ -40,8 +38,8 @@ public:
 public:
   mapiterator() = default;
 
-  mapiterator(auto const r, node_t* const n = {}) noexcept:
-    r_(const_cast<node_t**>(r)),
+  mapiterator(T* const* const r, T* const n = {}) noexcept:
+    r_(r),
     n_(n)
   {
   }
