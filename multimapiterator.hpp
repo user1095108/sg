@@ -22,9 +22,6 @@ class multimapiterator
 
   using node_t = std::remove_const_t<T>;
 
-  node_t** r_{};
-  node_t* n_{};
-
 public:
   using iterator_category = std::bidirectional_iterator_tag;
   using difference_type = std::ptrdiff_t;
@@ -38,23 +35,25 @@ public:
   using reference = value_type&;
 
 private:
+  node_t* n_{};
   std::conditional_t<
     std::is_const_v<T>,
     typename std::list<std::remove_const_t<value_type>>::const_iterator,
     typename std::list<std::remove_const_t<value_type>>::iterator
   > i_{};
+  node_t* const* r_{};
 
 public:
   multimapiterator() = default;
 
-  multimapiterator(auto const r) noexcept:
-    r_(const_cast<node_t**>(r))
+  multimapiterator(node_t* const* const r) noexcept:
+    r_(r)
   {
   }
 
-  multimapiterator(auto const r, node_t* const n) noexcept:
-    r_(const_cast<node_t**>(r)),
-    n_(n)
+  multimapiterator(node_t* const* const r, node_t* const n) noexcept:
+    n_(n),
+    r_(r)
   {
     if (n)
     {
@@ -69,11 +68,11 @@ public:
     }
   }
 
-  multimapiterator(auto const r, node_t* const n,
+  multimapiterator(node_t* const* const r, node_t* const n,
     decltype(i_) const i) noexcept:
-    r_(const_cast<node_t**>(r)),
     n_(n),
-    i_(i)
+    i_(i),
+    r_(r)
   {
   }
 
@@ -82,9 +81,9 @@ public:
 
   multimapiterator(inverse_const_t const& o) noexcept
     requires(std::is_const_v<T>):
-    r_(o.r_),
     n_(o.n_),
-    i_(o.i_)
+    i_(o.i_),
+    r_(o.r_)
   {
   }
 

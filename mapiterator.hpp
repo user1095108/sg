@@ -20,8 +20,8 @@ class mapiterator
 
   friend inverse_const_t;
 
-  T* const* r_{};
   T* n_{};
+  T* const* r_{};
 
 public:
   using iterator_category = std::bidirectional_iterator_tag;
@@ -39,8 +39,8 @@ public:
   mapiterator() = default;
 
   mapiterator(T* const* const r, T* const n = {}) noexcept:
-    r_(r),
-    n_(n)
+    n_(n),
+    r_(r)
   {
   }
 
@@ -48,8 +48,8 @@ public:
   mapiterator(mapiterator&&) = default;
 
   mapiterator(inverse_const_t const& o) noexcept requires(std::is_const_v<T>):
-    r_(o.r_),
-    n_(o.n_)
+    n_(o.n_),
+    r_(o.r_)
   {
   }
 
