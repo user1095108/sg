@@ -162,7 +162,7 @@ public:
                 *q = fnn;
                 fnn->l_ = l;
 
-                if (n != fnp)
+                if (r != fnn)
                 {
                   fnp->l_ = fnn->r_;
                   fnn->r_ = r;
@@ -175,7 +175,7 @@ public:
                 *q = lnn;
                 lnn->r_ = r;
 
-                if (n != lnp)
+                if (l != lnn)
                 {
                   lnp->r_ = lnn->l_;
                   lnn->l_ = l;
@@ -195,7 +195,7 @@ public:
         }
       }
 
-      return std::tuple(pointer{}, size_type{});
+      return std::tuple(pointer{}, std::size_t{});
     }
 
     auto rebuild()

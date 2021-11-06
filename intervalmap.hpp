@@ -208,85 +208,69 @@ public:
           }
           else
           {
-            auto const s0(n->v_.size());
+            auto const nxt(detail::next_node(r0, n));
+            auto const s(n->v_.size());
 
-            std::erase_if(
-              n->v_,
-              [&](auto&& v) noexcept
-              {
-                return cmp(std::get<0>(v), k) == 0;
-              }
-            );
-
-            if (auto const s1(n->v_.size()); s1)
+            if (auto const l(n->l_), r(n->r_); l && r)
             {
-              return std::tuple(n, s0 - s1);
-            }
-            else
-            {
-              auto const nxt(detail::next_node(r0, n));
-
-              if (auto const l(n->l_), r(n->r_); l && r)
+              if (detail::size(r) > detail::size(l))
               {
-                if (detail::size(r) > detail::size(l))
+                auto const [fnn, fnp](detail::first_node2(r, n));
+
+                *q = fnn;
+                fnn->l_ = l;
+
+                if (r == fnn)
                 {
-                  auto const [fnn, fnp](detail::first_node2(r, n));
-
-                  *q = fnn;
-                  fnn->l_ = l;
-
-                  if (n == fnp)
-                  {
-                    node::reset_max(r0, fnn->key());
-                  }
-                  else
-                  {
-                    fnp->l_ = fnn->r_;
-                    fnn->r_ = r;
-
-                    node::reset_max(r0, fnp->key());
-                  }
+                  node::reset_max(r0, fnn->key());
                 }
                 else
                 {
-                  auto const [lnn, lnp](detail::last_node2(l, n));
+                  fnp->l_ = fnn->r_;
+                  fnn->r_ = r;
 
-                  *q = lnn;
-                  lnn->r_ = r;
-
-                  if (n == lnp)
-                  {
-                    node::reset_max(r0, lnn->key());
-                  }
-                  else
-                  {
-                    lnp->r_ = lnn->l_;
-                    lnn->l_ = l;
-
-                    node::reset_max(r0, lnp->key());
-                  }
+                  node::reset_max(r0, fnp->key());
                 }
               }
               else
               {
-                *q = l ? l : r;
+                auto const [lnn, lnp](detail::last_node2(l, n));
 
-                if (p)
+                *q = lnn;
+                lnn->r_ = r;
+
+                if (l == lnn)
                 {
-                  node::reset_max(r0, p->key());
+                  node::reset_max(r0, lnn->key());
+                }
+                else
+                {
+                  lnp->r_ = lnn->l_;
+                  lnn->l_ = l;
+
+                  node::reset_max(r0, lnp->key());
                 }
               }
-
-              n->l_ = n->r_ = {};
-              delete n;
-
-              return std::tuple(nxt, s0);
             }
+            else
+            {
+              *q = l ? l : r;
+
+              if (p)
+              {
+                node::reset_max(r0, p->key());
+              }
+            }
+
+            n->l_ = n->r_ = {};
+            delete n;
+
+            return std::tuple(nxt, s);
           }
         }
       }
 
-      return std::tuple(pointer{}, size_type{});
+      return std::tuple(pointer{}, std::size_t{});
     }
 
     static decltype(node::m_) node_max(auto const n) noexcept
