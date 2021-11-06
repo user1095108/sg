@@ -235,10 +235,16 @@ public:
                   *q = fnn;
                   fnn->l_ = l;
 
-                  if (n != fnp)
+                  if (n == fnp)
+                  {
+                    node::reset_max(r0, fnn->key());
+                  }
+                  else
                   {
                     fnp->l_ = fnn->r_;
                     fnn->r_ = r;
+
+                    node::reset_max(r0, fnp->key());
                   }
                 }
                 else
@@ -258,11 +264,11 @@ public:
               else
               {
                 *q = l ? l : r;
-              }
 
-              if (p)
-              {
-                node::reset_max(r0, p->key());
+                if (p)
+                {
+                  node::reset_max(r0, p->key());
+                }
               }
 
               n->l_ = n->r_ = {};
