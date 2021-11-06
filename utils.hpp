@@ -32,6 +32,20 @@ inline auto last_node(auto n) noexcept
   return n;
 }
 
+inline auto first_node2(auto n, decltype(n) p) noexcept
+{
+  for (decltype(n) l; (l = left_node(n)); p = n, n = l);
+
+  return std::tuple(n, p);
+}
+
+inline auto last_node2(auto n, decltype(n) p) noexcept
+{
+  for (decltype(n) r; (r = right_node(n)); p = n, n = r);
+
+  return std::tuple(n, p);
+}
+
 //
 inline auto parent_node(auto r0, decltype(r0) n) noexcept
 {
@@ -193,52 +207,6 @@ inline auto find(auto n, auto&& k) noexcept
   return n;
 }
 
-inline void move(auto& n, auto const ...d)
-{
-  using pointer = std::remove_cvref_t<decltype(n)>;
-  using node = std::remove_pointer_t<pointer>;
-
-  auto const f([&](auto&& f, auto& n, auto const d) noexcept -> std::size_t
-    {
-      if (!n)
-      {
-        n = d;
-
-        return size(d);
-      }
-
-      //
-      std::size_t sl, sr;
-
-      if (auto const c(node::cmp(d->key(), n->key())); c < 0)
-      {
-        if (sl = f(f, n->l_, d); !sl)
-        {
-          return 0;
-        }
-
-        sr = size(n->r_);
-      }
-      else
-      {
-        if (sr = f(f, n->r_, d); !sr)
-        {
-          return 0;
-        }
-
-        sl = size(n->l_);
-      }
-
-      //
-      auto const s(1 + sl + sr), S(2 * s);
-
-      return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
-    }
-  );
-
-  (f(f, n, d), ...);
-}
-
 inline auto erase(auto& r0, auto&& k)
 {
   using pointer = std::remove_cvref_t<decltype(r0)>;
@@ -262,8 +230,44 @@ inline auto erase(auto& r0, auto&& k)
 
       if (auto const l(n->l_), r(n->r_); l && r)
       {
-        *q = {};
-        sg::detail::move(r0, l, r);
+        if (size(r) > size(l))
+        {
+          auto const [fnn, fnp](first_node2(r, n));
+
+          *q = fnn;
+          fnn->l_ = l;
+
+          if (n != fnp)
+          {
+            if (fnp->l_ == fnn)
+            {
+              fnp->l_ = {};
+            }
+            else
+            {
+              fnp->r_ = {};
+            }
+          }
+        }
+        else
+        {
+          auto const [lnn, lnp](last_node2(l, n));
+
+          *q = lnn;
+          lnn->r_ = r;
+
+          if (n != lnp)
+          {
+            if (lnp->l_ == lnn)
+            {
+              lnp->l_ = {};
+            }
+            else
+            {
+              lnp->r_ = {};
+            }
+          }
+        }
       }
       else
       {
