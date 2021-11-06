@@ -237,7 +237,7 @@ inline auto erase(auto& r0, auto&& k)
           *q = fnn;
           fnn->l_ = l;
 
-          if (n != fnp)
+          if (r != fnn)
           {
             fnp->l_ = fnn->r_;
             fnn->r_ = r;
@@ -250,7 +250,7 @@ inline auto erase(auto& r0, auto&& k)
           *q = lnn;
           lnn->r_ = r;
 
-          if (n != lnp)
+          if (l != lnn)
           {
             lnp->r_ = lnn->l_;
             lnn->l_ = l;
