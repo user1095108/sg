@@ -239,14 +239,8 @@ inline auto erase(auto& r0, auto&& k)
 
           if (n != fnp)
           {
-            if (fnp->l_ == fnn)
-            {
-              fnp->l_ = {};
-            }
-            else
-            {
-              fnp->r_ = {};
-            }
+            fnp->l_ = fnn->r_;
+            fnn->r_ = r;
           }
         }
         else
@@ -258,14 +252,8 @@ inline auto erase(auto& r0, auto&& k)
 
           if (n != lnp)
           {
-            if (lnp->l_ == lnn)
-            {
-              lnp->l_ = {};
-            }
-            else
-            {
-              lnp->r_ = {};
-            }
+            lnp->r_ = lnn->l_;
+            lnn->l_ = l;
           }
         }
       }
