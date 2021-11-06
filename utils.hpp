@@ -230,7 +230,7 @@ inline auto erase(auto& r0, auto&& k)
 
       if (auto const l(n->l_), r(n->r_); l && r)
       {
-        if (size(r) > size(l))
+        if (size(l) < size(r))
         {
           auto const [fnn, fnp](first_node2(r, n));
 

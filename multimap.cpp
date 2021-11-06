@@ -62,6 +62,8 @@ int main()
 
   sg::erase(st, 1);
 
+  dump(st.root());
+
   std::for_each(
     st.begin(),
     st.end(),
