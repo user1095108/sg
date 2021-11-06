@@ -213,7 +213,7 @@ public:
 
             if (auto const l(n->l_), r(n->r_); l && r)
             {
-              if (detail::size(r) > detail::size(l))
+              if (detail::size(l) < detail::size(r))
               {
                 auto const [fnn, fnp](detail::first_node2(r, n));
 
