@@ -235,7 +235,44 @@ public:
                   node::reset_max(r0, p->key());
                 }
 
-                node::move(r0, l, r);
+                if (detail::size(r) > detail::size(l))
+                {
+                  auto const [fnn, fnp](detail::first_node2(r, n));
+
+                  *q = fnn;
+                  fnn->l_ = l;
+
+                  if (n != fnp)
+                  {
+                    if (fnp->l_ == fnn)
+                    {
+                      fnp->l_ = {};
+                    }
+                    else
+                    {
+                      fnp->r_ = {};
+                    }
+                  }
+                }
+                else
+                {
+                  auto const [lnn, lnp](detail::last_node2(l, n));
+
+                  *q = lnn;
+                  lnn->r_ = r;
+
+                  if (n != lnp)
+                  {
+                    if (lnp->l_ == lnn)
+                    {
+                      lnp->l_ = {};
+                    }
+                    else
+                    {
+                      lnp->r_ = {};
+                    }
+                  }
+                }
               }
               else
               {
