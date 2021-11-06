@@ -254,10 +254,16 @@ public:
                   *q = lnn;
                   lnn->r_ = r;
 
-                  if (n != lnp)
+                  if (n == lnp)
+                  {
+                    node::reset_max(r0, lnn->key());
+                  }
+                  else
                   {
                     lnp->r_ = lnn->l_;
                     lnn->l_ = l;
+
+                    node::reset_max(r0, lnp->key());
                   }
                 }
               }
