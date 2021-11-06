@@ -228,13 +228,6 @@ public:
 
               if (auto const l(n->l_), r(n->r_); l && r)
               {
-                *q = {};
-
-                if (p)
-                {
-                  node::reset_max(r0, p->key());
-                }
-
                 if (detail::size(r) > detail::size(l))
                 {
                   auto const [fnn, fnp](detail::first_node2(r, n));
@@ -265,11 +258,11 @@ public:
               else
               {
                 *q = l ? l : r;
+              }
 
-                if (p)
-                {
-                  node::reset_max(r0, p->key());
-                }
+              if (p)
+              {
+                node::reset_max(r0, p->key());
               }
 
               n->l_ = n->r_ = {};
@@ -282,52 +275,6 @@ public:
       }
 
       return std::tuple(pointer{}, size_type{});
-    }
-
-    static void move(auto& n, auto const ...d)
-    {
-      auto const f([&](auto&& f, auto& n, auto const d) noexcept -> size_type
-        {
-          if (!n)
-          {
-            n = d;
-
-            return detail::size(d);
-          }
-
-          //
-          n->m_ = cmp(n->m_, d->m_) < 0 ? d->m_ : n->m_;
-
-          //
-          size_type sl, sr;
-
-          if (auto const c(cmp(d->key(), n->key())); c < 0)
-          {
-            if (sl = f(f, n->l_, d); !sl)
-            {
-              return 0;
-            }
-
-            sr = detail::size(n->r_);
-          }
-          else
-          {
-            if (sr = f(f, n->r_, d); !sr)
-            {
-              return 0;
-            }
-
-            sl = detail::size(n->l_);
-          }
-
-          //
-          auto const s(1 + sl + sr), S(2 * s);
-
-          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
-        }
-      );
-
-      (f(f, n, d), ...);
     }
 
     static decltype(node::m_) node_max(auto const n) noexcept
