@@ -103,7 +103,7 @@ public:
   {
     if (i_ = std::next(i_); n_->v_.end() == i_)
     {
-      n_ = sg::detail::next_node(*r_, n_);
+      n_ = detail::next_node(*r_, n_);
       i_ = n_ ? n_->v_.begin() : decltype(i_){};
     }
 
@@ -114,7 +114,7 @@ public:
   {
     if (!n_ || (n_->v_.begin() == i_))
     {
-      n_ = sg::detail::prev_node(*r_, n_);
+      n_ = detail::prev_node(*r_, n_);
       i_ = n_ ? std::prev(n_->v_.end()) : decltype(i_){};
     }
     else
