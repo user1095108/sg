@@ -142,9 +142,9 @@ public:
   // member access
   auto& operator->() const noexcept
   {
-    if constexpr(is_const_v<T>)
+    if constexpr(std::is_const_v<T>)
     {
-      return decltype(n_->v_)::const_iterator(i_);
+      return std::remove_cvref_t<decltype(n_->v_)>::const_iterator(i_);
     }
     else
     {
@@ -154,7 +154,7 @@ public:
 
   auto& operator*() const noexcept
   {
-    if constexpr(is_const_v<T>)
+    if constexpr(std::is_const_v<T>)
     {
       return std::as_const(*i_);
     }
