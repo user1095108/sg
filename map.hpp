@@ -97,7 +97,7 @@ public:
           {
             if (sl = f(f, n->l_); !sl)
             {
-              return 0;
+              return {};
             }
 
             sr = detail::size(n->r_);
@@ -106,7 +106,7 @@ public:
           {
             if (sr = f(f, n->r_); !sr)
             {
-              return 0;
+              return {};
             }
 
             sl = detail::size(n->l_);
@@ -115,7 +115,7 @@ public:
           {
             q = n;
 
-            return 0;
+            return {};
           }
 
           //
