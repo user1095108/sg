@@ -63,12 +63,18 @@ public:
   // increment, decrement
   auto& operator++() noexcept
   {
-    n_ = sg::detail::next_node(*r_, n_); return *this;
+    n_ = sg::detail::next_node(*r_, n_);
+
+    return *this;
   }
 
   auto& operator--() noexcept
   {
-    n_ = sg::detail::prev_node(*r_, n_); return *this;
+    n_ = n_ ?
+      sg::detail::prev_node(*r_, n_) :
+      sg::detail::last_node(*r_);
+
+    return *this;
   }
 
   auto operator++(int) noexcept { auto const r(*this); ++*this; return r; }
