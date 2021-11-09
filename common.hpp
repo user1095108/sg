@@ -159,12 +159,12 @@ iterator erase(std::initializer_list<const_iterator> il)
 //
 iterator find(Key const& k) noexcept
 {
-  return iterator(root_, detail::find(root_, k));
+  return {&root_, detail::find(root_, k)};
 }
 
 const_iterator find(Key const& k) const noexcept
 {
-  return const_iterator(root_, detail::find(root_, k));
+  return const_iterator(&root_, detail::find(root_, k));
 }
 
 // these may always throw
@@ -178,32 +178,32 @@ void insert(std::initializer_list<value_type> il)
 iterator lower_bound(Key const& k) noexcept
 {
   auto const [e, g](detail::equal_range(root_, k));
-  return {root_, e ? e : g};
+  return {&root_, e ? e : g};
 }
 
 const_iterator lower_bound(Key const& k) const noexcept
 {
   auto const [e, g](detail::equal_range(root_, k));
-  return {root_, e ? e : g};
+  return {&root_, e ? e : g};
 }
 
 iterator lower_bound(auto const& k) noexcept
 {
   auto const [e, g](detail::equal_range(root_, k));
-  return {root_, e ? e : g};
+  return {&root_, e ? e : g};
 }
 
 const_iterator lower_bound(auto const& k) const noexcept
 {
   auto const [e, g](detail::equal_range(root_, k));
-  return {root_, e ? e : g};
+  return {&root_, e ? e : g};
 }
 
 //
 iterator upper_bound(Key const& k) noexcept
 {
   return {
-    root_,
+    &root_,
     std::get<1>(detail::equal_range(root_, k))
   };
 }
@@ -211,7 +211,7 @@ iterator upper_bound(Key const& k) noexcept
 const_iterator upper_bound(Key const& k) const noexcept
 {
   return {
-    root_,
+    &root_,
     std::get<1>(detail::equal_range(root_, k))
   };
 }
@@ -219,7 +219,7 @@ const_iterator upper_bound(Key const& k) const noexcept
 iterator upper_bound(auto const& k) noexcept
 {
   return {
-    root_,
+    &root_,
     std::get<1>(detail::equal_range(root_, k))
   };
 }
@@ -227,7 +227,7 @@ iterator upper_bound(auto const& k) noexcept
 const_iterator upper_bound(auto const& k) const noexcept
 {
   return {
-    root_,
+    &root_,
     std::get<1>(detail::equal_range(root_, k))
   };
 }
