@@ -491,10 +491,7 @@ public:
   //
   iterator emplace(auto&& ...a)
   {
-    return {
-      &root_,
-      node::emplace(root_, std::forward<decltype(a)>(a)...)
-    };
+    return {&root_, node::emplace(root_, std::forward<decltype(a)>(a)...)};
   }
 
   //
