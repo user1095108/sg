@@ -55,8 +55,8 @@ public:
     //
     static auto emplace(auto& r, auto&& ...a)
     {
-      node* q;
       bool s{}; // success
+      node* q;
 
       key_type k(std::forward<decltype(a)>(a)...);
 
