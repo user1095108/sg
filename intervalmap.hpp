@@ -381,9 +381,9 @@ public:
               {
                 auto const nb(n->r_ = l[b]);
 
-                n->l_ = p->l_ = p->r_ = {};
+                n->l_ = nb->l_ = nb->r_ = {};
 
-                n->m_ = std::max(node_max(n), p->m_ = node_max(p),
+                n->m_ = std::max(node_max(n), nb->m_ = node_max(nb),
                   [](auto&& a, auto&& b)noexcept{return node::cmp(a, b) < 0;}
                 );
 
