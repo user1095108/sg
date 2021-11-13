@@ -5,8 +5,9 @@
 #include <cassert>
 
 #include <algorithm>
-
 #include <compare>
+
+#include <utility>
 
 namespace sg
 {
@@ -36,14 +37,14 @@ inline auto first_node2(auto n, decltype(n) p) noexcept
 {
   for (decltype(n) l; (l = left_node(n)); p = n, n = l);
 
-  return std::tuple(n, p);
+  return std::pair(n, p);
 }
 
 inline auto last_node2(auto n, decltype(n) p) noexcept
 {
   for (decltype(n) r; (r = right_node(n)); p = n, n = r);
 
-  return std::tuple(n, p);
+  return std::pair(n, p);
 }
 
 //
@@ -177,7 +178,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
     }
   }
 
-  return std::tuple(n, g);
+  return std::pair(n, g);
 }
 
 inline auto find(auto n, auto&& k) noexcept
