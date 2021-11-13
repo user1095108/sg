@@ -148,10 +148,9 @@ public:
 
             case 1:
               {
-                auto const p(l[b]);
+                auto const nb(n->r_ = l[b]);
 
-                p->l_ = p->r_ = n->l_ = {};
-                n->r_ = p;
+                nb->l_ = nb->r_ = n->l_ = {};
 
                 break;
               }
