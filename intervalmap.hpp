@@ -344,13 +344,23 @@ public:
       l.reserve(1024);
 
       {
-        auto n(detail::first_node(this));
+        auto const f([&](auto&& f, auto const n) -> void
+          {
+            if (auto const l(detail::left_node(n)); l)
+            {
+              f(f, l);
+            }
 
-        do
-        {
-          l.emplace_back(n);
-        }
-        while ((n = detail::next_node(this, n)));
+            l.emplace_back(n);
+
+            if (auto const r(detail::right_node(n)); r)
+            {
+              f(f, r);
+            }
+          }
+        );
+
+        f(f, this);
       }
 
       auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
