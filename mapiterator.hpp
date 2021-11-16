@@ -20,8 +20,8 @@ class mapiterator
 
   friend inverse_const_t;
 
-  T* n_{};
-  T* const* r_{};
+  T* n_;
+  T* const* r_;
 
 public:
   using iterator_category = std::bidirectional_iterator_tag;
