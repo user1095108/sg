@@ -71,18 +71,20 @@ iterator end() noexcept { return {&root_}; }
 // const iterators
 const_iterator begin() const noexcept
 {
-  return root_ ?
-    const_iterator(&root_, detail::first_node(root_)) :
-    const_iterator();
+  return {
+    &root_,
+    root_ ? detail::first_node(root_) : nullptr
+  };
 }
 
 const_iterator end() const noexcept { return {&root_}; }
 
 const_iterator cbegin() const noexcept
 {
-  return root_ ?
-    const_iterator(&root_, detail::first_node(root_)) :
-    const_iterator();
+  return {
+    &root_,
+    root_ ? detail::first_node(root_) : nullptr
+  };
 }
 
 const_iterator cend() const noexcept { return {&root_}; }
@@ -95,11 +97,9 @@ reverse_iterator rbegin() noexcept
 
 reverse_iterator rend() noexcept
 {
-  return root_ ?
-    reverse_iterator(
-      iterator{&root_, detail::first_node(root_)}
-    ) :
-    reverse_iterator();
+  return reverse_iterator(
+    iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
+  );
 }
 
 // const reverse iterators
@@ -110,11 +110,9 @@ const_reverse_iterator crbegin() const noexcept
 
 const_reverse_iterator crend() const noexcept
 {
-  return root_ ?
-    const_reverse_iterator(
-      const_iterator{&root_, detail::first_node(root_)}
-    ) :
-    const_reverse_iterator();
+  return const_reverse_iterator(
+    const_iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
+  );
 }
 
 //

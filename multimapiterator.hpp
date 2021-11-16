@@ -40,8 +40,8 @@ private:
     std::is_const_v<T>,
     typename std::list<std::remove_const_t<value_type>>::const_iterator,
     typename std::list<std::remove_const_t<value_type>>::iterator
-  > i_{};
-  node_t* const* r_{};
+  > i_;
+  node_t* const* r_;
 
 public:
   multimapiterator() = default;
