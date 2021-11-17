@@ -55,7 +55,6 @@ public:
 
   multimapiterator(node_t* const* const r, node_t* const n) noexcept:
     n_(n),
-    i_{},
     r_(r)
   {
     if (n)
@@ -109,6 +108,10 @@ public:
       if (auto const n(detail::next_node(*r_, n_)); (n_ = n))
       {
         i_ = n->v_.begin();
+      }
+      else
+      {
+        i_ = {};
       }
     }
 
