@@ -105,14 +105,8 @@ public:
   {
     if (i_ = std::next(i_); n_->v_.end() == i_)
     {
-      if (auto const n(detail::next_node(*r_, n_)); (n_ = n))
-      {
-        i_ = n->v_.begin();
-      }
-      else
-      {
-        i_ = {};
-      }
+      auto const n(n_ = detail::next_node(*r_, n_));
+      i_ = n ? n->v_.begin() : decltype(i_){};
     }
 
     return *this;
