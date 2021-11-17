@@ -47,8 +47,8 @@ public:
   multimapiterator() = default;
 
   multimapiterator(node_t* const* const r) noexcept:
-    n_{},
-    i_{},
+    n_(),
+    i_(),
     r_(r)
   {
   }
