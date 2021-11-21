@@ -216,32 +216,20 @@ const_iterator lower_bound(auto const& k) const noexcept
 //
 iterator upper_bound(Key const& k) noexcept
 {
-  return {
-    &root_,
-    std::get<1>(detail::equal_range(root_, k))
-  };
+  return {&root_, std::get<1>(detail::equal_range(root_, k))};
 }
 
 const_iterator upper_bound(Key const& k) const noexcept
 {
-  return {
-    &root_,
-    std::get<1>(detail::equal_range(root_, k))
-  };
+  return {&root_, std::get<1>(detail::equal_range(root_, k))};
 }
 
 iterator upper_bound(auto const& k) noexcept
 {
-  return {
-    &root_,
-    std::get<1>(detail::equal_range(root_, k))
-  };
+  return {&root_, std::get<1>(detail::equal_range(root_, k))};
 }
 
 const_iterator upper_bound(auto const& k) const noexcept
 {
-  return {
-    &root_,
-    std::get<1>(detail::equal_range(root_, k))
-  };
+  return {&root_, std::get<1>(detail::equal_range(root_, k))};
 }
