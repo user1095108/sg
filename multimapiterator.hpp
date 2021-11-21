@@ -46,14 +46,13 @@ private:
 public:
   multimapiterator() = default;
 
-  multimapiterator(node_t* const* const r) noexcept:
+  multimapiterator(decltype(r_) const r) noexcept:
     n_(),
-    i_(),
     r_(r)
   {
   }
 
-  multimapiterator(node_t* const* const r, node_t* const n) noexcept:
+  multimapiterator(decltype(r_) const r, decltype(n_) const n) noexcept:
     n_(n),
     r_(r)
   {
@@ -70,7 +69,7 @@ public:
     }
   }
 
-  multimapiterator(node_t* const* const r, node_t* const n,
+  multimapiterator(decltype(r_) const r, decltype(n_) const n,
     decltype(i_) const i) noexcept:
     n_(n),
     i_(i),
