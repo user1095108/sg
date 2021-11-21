@@ -205,8 +205,8 @@ public:
           }
           else
           {
-            auto const nxt(detail::next_node(r0, n));
             auto const s(n->v_.size());
+            auto const nxt(detail::next_node(r0, n));
 
             if (auto const l(n->l_), r(n->r_); l && r)
             {
@@ -266,7 +266,7 @@ public:
       return std::pair(pointer{}, std::size_t{});
     }
 
-    static decltype(node::m_) node_max(auto const n) noexcept
+    static auto node_max(auto const n) noexcept
     {
       decltype(node::m_) m(n->key());
 
