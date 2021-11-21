@@ -218,13 +218,13 @@ public:
 
                 if (r == fnn)
                 {
-                  node::reset_max(r0, r->key());
+                  reset_max(r0, r->key());
                 }
                 else
                 {
                   detail::assign(fnp->l_, fnn->r_)(fnn->r_, r);
 
-                  node::reset_max(r0, fnp->key());
+                  reset_max(r0, fnp->key());
                 }
               }
               else
@@ -235,13 +235,13 @@ public:
 
                 if (l == lnn)
                 {
-                  node::reset_max(r0, l->key());
+                  reset_max(r0, l->key());
                 }
                 else
                 {
                   detail::assign(lnp->r_, lnn->l_)(lnn->l_, l);
 
-                  node::reset_max(r0, lnp->key());
+                  reset_max(r0, lnp->key());
                 }
               }
             }
@@ -251,7 +251,7 @@ public:
 
               if (p)
               {
-                node::reset_max(r0, p->key());
+                reset_max(r0, p->key());
               }
             }
 
