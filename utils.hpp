@@ -16,6 +16,12 @@ namespace detail
 {
 
 //
+constexpr auto assign(auto& ...a) noexcept
+{ // assign idiom
+  return [&](auto const ...v) noexcept { ((a = v), ...); };
+}
+
+//
 inline auto left_node(auto const n) noexcept { return n->l_; }
 inline auto right_node(auto const n) noexcept { return n->r_; }
 
@@ -35,14 +41,14 @@ inline auto last_node(auto n) noexcept
 
 inline auto first_node2(auto n, decltype(n) p) noexcept
 {
-  for (decltype(n) l; (l = left_node(n)); p = n, n = l);
+  for (decltype(n) l; (l = left_node(n)); assign(p, n)(n, l));
 
   return std::pair(n, p);
 }
 
 inline auto last_node2(auto n, decltype(n) p) noexcept
 {
-  for (decltype(n) r; (r = right_node(n)); p = n, n = r);
+  for (decltype(n) r; (r = right_node(n)); assign(p, n)(n, r));
 
   return std::pair(n, p);
 }
@@ -58,13 +64,11 @@ inline auto parent_node(auto r0, decltype(r0) n) noexcept
   {
     if (auto const c(node::cmp(key, r0->key())); c < 0)
     {
-      n = r0;
-      r0 = left_node(r0);
+      assign(n, r0)(r0, left_node(r0));
     }
     else if (c > 0)
     {
-      n = r0;
-      r0 = right_node(r0);
+      assign(n, r0)(r0, right_node(r0));
     }
     else
     {
@@ -89,8 +93,7 @@ inline auto next_node(auto r0, decltype(r0) n) noexcept
     {
       if (auto const c(node::cmp(key, r0->key())); c < 0)
       {
-        n = r0;
-        r0 = left_node(r0); // deepest parent greater than us
+        assign(n, r0)(r0, left_node(r0)); // deepest parent greater than us
       }
       else if (c > 0)
       {
@@ -124,8 +127,7 @@ inline auto prev_node(auto r0, decltype(r0) n) noexcept
       }
       else if (c > 0)
       {
-        n = r0;
-        r0 = right_node(r0); // deepest parent less than us
+        assign(n, r0)(r0, right_node(r0)); // deepest parent less than us
       }
       else
       {
@@ -160,8 +162,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
   {
     if (auto const c(node::cmp(k, n->key())); c < 0)
     {
-      g = n;
-      n = left_node(n);
+      assign(g, n)(n, left_node(n));
     }
     else if (c > 0)
     {
@@ -231,26 +232,22 @@ inline auto erase(auto& r0, auto&& k)
         {
           auto const [fnn, fnp](first_node2(r, n));
 
-          *q = fnn;
-          fnn->l_ = l;
+          assign(*q, fnn->l_)(fnn, l);
 
           if (r != fnn)
           {
-            fnp->l_ = fnn->r_;
-            fnn->r_ = r;
+            assign(fnp->l_, fnn->r_)(fnn->r_, r);
           }
         }
         else
         {
           auto const [lnn, lnp](last_node2(l, n));
 
-          *q = lnn;
-          lnn->r_ = r;
+          assign(*q, lnn->r_)(lnn, r);
 
           if (l != lnn)
           {
-            lnp->r_ = lnn->l_;
-            lnn->l_ = l;
+            assign(lnp->r_, lnn->l_)(lnn->l_, l);
           }
         }
       }
