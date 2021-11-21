@@ -73,5 +73,12 @@ int main()
     }
   );
 
+  std::srand(time(nullptr));
+
+  while (st.size())
+  {
+    st.erase(std::next(st.begin(), std::rand() % st.size()));
+  }
+
   return 0;
 }
