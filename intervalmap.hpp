@@ -249,7 +249,10 @@ public:
             {
               *q = l ? l : r;
 
-              reset_max(r0, p->key());
+              if (p)
+              {
+                reset_max(r0, p->key());
+              }
             }
 
             n->l_ = n->r_ = {};
