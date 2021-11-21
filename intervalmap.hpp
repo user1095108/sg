@@ -525,10 +525,7 @@ public:
   {
     auto const [e, g](node::equal_range(root_, k));
 
-    return std::pair(
-      const_iterator(&root_, e ? e : g),
-      const_iterator(&root_, g)
-    );
+    return std::pair(const_iterator(&root_, e), const_iterator(&root_, g));
   }
 
   //
