@@ -140,8 +140,7 @@ public:
       {
         if (auto const c(cmp(mink, n->key())); c < 0)
         {
-          g = n;
-          n = left_node(n);
+          detail::assign(g, n)(n, left_node(n));
         }
         else if (c > 0)
         {
@@ -158,18 +157,18 @@ public:
         }
       }
 
-      return std::tuple(n, g);
+      return std::pair(n, g);
     }
 
     static iterator erase(auto& r, const_iterator const i)
     {
-      if (auto const n(i.node()); 1 == n->v_.size())
+      if (auto const n(i.n()); 1 == n->v_.size())
       {
         return {&r, std::get<0>(node::erase(r, std::get<0>(*i)))};
       }
-      else if (auto const it(i.iterator()); std::next(it) == n->v_.end())
+      else if (auto const it(i.i()); std::next(it) == n->v_.end())
       {
-        auto const nn(std::next(i).node());
+        auto const nn(std::next(i).n());
 
         n->v_.erase(it);
 
@@ -198,13 +197,11 @@ public:
 
           if (auto const c(node::cmp(mink, n->key())); c < 0)
           {
-            p = n;
-            q = &n->l_;
+            detail::assign(p, q)(n, &n->l_);
           }
           else if (c > 0)
           {
-            p = n;
-            q = &n->r_;
+            detail::assign(p, q)(n, &n->r_);
           }
           else
           {
@@ -217,8 +214,7 @@ public:
               {
                 auto const [fnn, fnp](detail::first_node2(r, n));
 
-                *q = fnn;
-                fnn->l_ = l;
+                detail::assign(*q, fnn->l_)(fnn, l);
 
                 if (r == fnn)
                 {
@@ -226,8 +222,7 @@ public:
                 }
                 else
                 {
-                  fnp->l_ = fnn->r_;
-                  fnn->r_ = r;
+                  detail::assign(fnp->l_, fnn->r_)(fnn->r_, r);
 
                   node::reset_max(r0, fnp->key());
                 }
@@ -236,8 +231,7 @@ public:
               {
                 auto const [lnn, lnp](detail::last_node2(l, n));
 
-                *q = lnn;
-                lnn->r_ = r;
+                detail::assign(*q, lnn->r_)(lnn, r);
 
                 if (l == lnn)
                 {
@@ -245,8 +239,7 @@ public:
                 }
                 else
                 {
-                  lnp->r_ = lnn->l_;
-                  lnn->l_ = l;
+                  detail::assign(lnp->r_, lnn->l_)(lnn->l_, l);
 
                   node::reset_max(r0, lnp->key());
                 }
@@ -265,12 +258,12 @@ public:
             n->l_ = n->r_ = {};
             delete n;
 
-            return std::tuple(nxt, s);
+            return std::pair(nxt, s);
           }
         }
       }
 
-      return std::tuple(pointer{}, std::size_t{});
+      return std::pair(pointer{}, std::size_t{});
     }
 
     static decltype(node::m_) node_max(auto const n) noexcept

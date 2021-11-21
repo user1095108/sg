@@ -143,8 +143,8 @@ public:
   auto& operator*() const noexcept { return *i_; }
 
   //
-  auto& iterator() const noexcept { return i_; }
-  auto node() const noexcept { return n_; }
+  auto& i() const noexcept { return i_; }
+  auto n() const noexcept { return n_; }
 };
 
 }
