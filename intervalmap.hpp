@@ -218,7 +218,7 @@ public:
 
                 if (r == fnn)
                 {
-                  node::reset_max(r0, fnn->key());
+                  node::reset_max(r0, r->key());
                 }
                 else
                 {
@@ -235,7 +235,7 @@ public:
 
                 if (l == lnn)
                 {
-                  node::reset_max(r0, lnn->key());
+                  node::reset_max(r0, l->key());
                 }
                 else
                 {
