@@ -41,14 +41,14 @@ inline auto last_node(auto n) noexcept
 
 inline auto first_node2(auto n, decltype(n) p) noexcept
 {
-  for (decltype(n) l; (l = left_node(n)); assign(p, n)(n, l));
+  for (decltype(n) l; (l = left_node(n)); assign(n, p)(l, n));
 
   return std::pair(n, p);
 }
 
 inline auto last_node2(auto n, decltype(n) p) noexcept
 {
-  for (decltype(n) r; (r = right_node(n)); assign(p, n)(n, r));
+  for (decltype(n) r; (r = right_node(n)); assign(n, p)(r, n));
 
   return std::pair(n, p);
 }
