@@ -117,16 +117,13 @@ public:
       {
         auto const f([&](auto&& f, auto const n) -> void
           {
-            if (auto const l(detail::left_node(n)); l)
+            if (n)
             {
-              f(f, l);
-            }
+              f(f, detail::left_node(n));
 
-            l.emplace_back(n);
+              l.emplace_back(n);
 
-            if (auto const r(detail::right_node(n)); r)
-            {
-              f(f, r);
+              f(f, detail::right_node(n));
             }
           }
         );
