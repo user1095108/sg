@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 
 #include "map.hpp"
@@ -49,13 +50,6 @@ int main()
   st.insert({"e", 3});
   st["f"s] = 4;
 
-  /*
-  for (std::size_t i{}; 1000 != i; ++i)
-  {
-    st.emplace(std::string(rand() % 9 + 1, 48 + rand() % (123 - 48)), i);
-  }
-  */
-
   dump(st.root());
 
   std::cout << "height: " << sg::detail::height(st.root()) << std::endl;
@@ -75,10 +69,23 @@ int main()
 
   srandom(time(nullptr));
 
+	using timer_t = std::chrono::high_resolution_clock;
+
+  auto const t0(timer_t::now());
+
+  for (std::size_t i{}; 10000 != i; ++i)
+  {
+    st.emplace(std::string(rand() % 9 + 1, 48 + rand() % (123 - 48)), i);
+  }
+
   while (st.size())
   {
     st.erase(std::next(st.begin(), random() % st.size()));
   }
+
+  std::chrono::nanoseconds const d(timer_t::now() - t0);
+
+  std::cout << d.count() << std::endl;
 
   return 0;
 }
