@@ -35,7 +35,7 @@ public:
   {
     using value_type = multiset::value_type;
 
-    static constinit inline auto const cmp{Compare{}};
+    static constinit inline Compare const cmp{};
 
     node* l_{}, *r_{};
     std::list<value_type> v_;
