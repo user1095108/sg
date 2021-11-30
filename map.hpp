@@ -2,7 +2,7 @@
 # define SG_MAP_HPP
 # pragma once
 
-#include <vector>
+#include <memory>
 
 #include "utils.hpp"
 
@@ -121,7 +121,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(s), 0) : s;
         }
       );
 
@@ -130,19 +130,20 @@ public:
       return std::pair(q, s);
     }
 
-    auto rebuild()
+    auto rebuild(size_type const sz)
     {
-      std::vector<node*> l;
-      l.reserve(1024);
+      auto const l(std::make_unique<node*[]>(sz));
 
       {
+        size_type i{};
+
         auto const f([&](auto&& f, auto const n) -> void
           {
             if (n)
             {
               f(f, detail::left_node(n));
 
-              l.emplace_back(n);
+              l[i++] = n;
 
               f(f, detail::right_node(n));
             }
@@ -185,7 +186,7 @@ public:
       );
 
       //
-      return f(f, 0, l.size() - 1);
+      return f(f, 0, sz - 1);
     }
   };
 
