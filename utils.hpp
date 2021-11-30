@@ -2,6 +2,8 @@
 #define SG_UTILS_HPP
 # pragma once
 
+#include <cassert>
+
 #include <algorithm>
 #include <compare>
 

@@ -123,7 +123,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(), 0) : s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(s), 0) : s;
         }
       );
 
@@ -331,19 +331,20 @@ public:
       f(f, n);
     }
 
-    auto rebuild()
+    auto rebuild(size_type const sz)
     {
-      std::vector<node*> l;
-      l.reserve(1024);
+//    auto const l(std::make_unique<node*[]>(sz)); // good way
+      node* vla[sz]; // bad way
 
       {
-        auto const f([&](auto&& f, auto const n) -> void
+        auto f([i(size_type{}), l(&*vla)](auto&& f, auto const n)
+          mutable noexcept -> void
           {
             if (n)
             {
               f(f, detail::left_node(n));
 
-              l.emplace_back(n);
+              l[i++] = n;
 
               f(f, detail::right_node(n));
             }
@@ -353,7 +354,8 @@ public:
         f(f, this);
       }
 
-      auto const f([&](auto&& f, auto const a, auto const b) noexcept -> node*
+      auto const f([l(&*vla)](auto&& f, size_type const a, decltype(a) b)
+        noexcept -> node*
         {
           auto const i((a + b) / 2);
           auto const n(l[i]);
@@ -397,7 +399,7 @@ public:
         }
       );
 
-      return f(f, 0, l.size() - 1);
+      return f(f, 0, sz - 1);
     }
   };
 
