@@ -127,7 +127,7 @@ public:
 
       f(f, r);
 
-      return std::tuple(q, s);
+      return std::pair(q, s);
     }
 
     auto rebuild()

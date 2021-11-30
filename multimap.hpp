@@ -196,12 +196,12 @@ public:
             n->l_ = n->r_ = {};
             delete n;
 
-            return std::tuple(nxt, s);
+            return std::pair(nxt, s);
           }
         }
       }
 
-      return std::tuple(pointer{}, std::size_t{});
+      return std::pair(pointer{}, std::size_t{});
     }
 
     auto rebuild()
