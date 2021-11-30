@@ -9,13 +9,9 @@
 
 #include <utility>
 
-namespace sg
+namespace sg::detail
 {
 
-namespace detail
-{
-
-//
 constexpr auto assign(auto& ...a) noexcept
 { // assign idiom
   return [&](auto const ...v) noexcept { ((a = v), ...); };
@@ -264,51 +260,6 @@ inline auto erase(auto& r0, auto&& k)
   }
 
   return pointer{};
-}
-
-}
-
-constexpr auto erase(auto& c, auto const& k)
-  requires(
-    requires{
-      c.begin(); c.end();
-      &std::remove_cvref_t<decltype(c)>::node::cmp;
-    } &&
-    !std::is_const_v<std::remove_reference_t<decltype(c)>>
-  )
-{
-  return c.erase(k);
-}
-
-constexpr auto erase_if(auto& c, auto pred)
-  requires(
-    requires{
-      c.begin(); c.end();
-      &std::remove_cvref_t<decltype(c)>::node::cmp;
-    } &&
-    !std::is_const_v<std::remove_reference_t<decltype(c)>>
-  )
-{
-  std::size_t r{};
-
-  for (auto i(c.begin()); i.node();)
-  {
-    i = pred(*i) ? (++r, c.erase(i)) : std::next(i);
-  }
-
-  return r;
-}
-
-constexpr void swap(auto& lhs, decltype(lhs) rhs) noexcept
-  requires(
-    requires{
-      lhs.begin(); lhs.end();
-      &std::remove_cvref_t<decltype(lhs)>::node::cmp;
-    } &&
-    !std::is_const_v<std::remove_reference_t<decltype(lhs)>>
-  )
-{
-  lhs.swap(rhs);
 }
 
 }
