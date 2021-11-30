@@ -148,7 +148,7 @@ inline std::size_t height(auto const n) noexcept
 
 inline std::size_t size(auto const n) noexcept
 {
-  return n ? 1 + size(n->l_) + size(n->r_) : 0;
+  return n ? 1 + size(n->l_) + size(n->r_) : std::size_t{};
 }
 
 //
