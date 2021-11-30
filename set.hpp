@@ -112,7 +112,7 @@ public:
     auto rebuild(size_type const sz)
     {
 //    auto const l(std::make_unique<node*[]>(sz)); // good way
-      node* vla[sz]; // bad way
+      decltype(this) vla[sz]; // bad way
 
       {
         auto f([l(&*vla)](auto&& f, auto const n) mutable noexcept -> void
@@ -131,8 +131,8 @@ public:
         f(f, this);
       }
 
-      auto const f([l(&*vla)](auto&& f, size_type const a, decltype(a) b)
-        noexcept -> node*
+      auto const f([l(&*vla)](auto&& f,
+        size_type const a, decltype(a) b) noexcept -> node*
         {
           auto const i((a + b) / 2);
           auto const n(l[i]);
@@ -165,7 +165,7 @@ public:
       );
 
       //
-      return f(f, 0, sz - 1);
+      return f(f, {}, sz - 1);
     }
   };
 
