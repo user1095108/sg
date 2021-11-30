@@ -111,7 +111,9 @@ public:
 
     auto rebuild(size_type const sz)
     {
-      auto const l(std::make_unique<node*[]>(sz));
+//    auto const l(std::make_unique<node*[]>(sz)); // good way
+      node* vla[sz];
+      auto const l(&*vla); // bad way
 
       {
         size_type i{};
