@@ -136,14 +136,13 @@ public:
       node* vla[sz]; // bad way
 
       {
-        auto f([i(size_type{}), l(&*vla)](auto&& f, auto const n)
-          mutable noexcept -> void
+        auto f([l(&*vla)](auto&& f, auto const n) mutable noexcept -> void
           {
             if (n)
             {
               f(f, detail::left_node(n));
 
-              l[i++] = n;
+              *l++ = n;
 
               f(f, detail::right_node(n));
             }
