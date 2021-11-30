@@ -153,7 +153,7 @@ public:
         f(f, this);
       }
 
-      auto const f([l(&*vla)](auto&& f, auto const a, auto const b)
+      auto const f([l(&*vla)](auto&& f, size_type const a, decltype(a) b)
         noexcept -> node*
         {
           auto const i((a + b) / 2);
