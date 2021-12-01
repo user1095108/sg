@@ -2,8 +2,6 @@
 # define SG_SET_HPP
 # pragma once
 
-#include <memory>
-
 #include "utils.hpp"
 
 #include "mapiterator.hpp"

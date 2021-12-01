@@ -2,9 +2,6 @@
 # define SG_INTERVALMAP_HPP
 # pragma once
 
-#include <list>
-#include <vector>
-
 #include "utils.hpp"
 
 #include "multimapiterator.hpp"
