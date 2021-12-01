@@ -254,7 +254,7 @@ public:
       );
 
       //
-      return f(f, {}, l.size() - 1);
+      return f(f, {}, sz - 1);
     }
   };
 

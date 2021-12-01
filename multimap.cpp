@@ -60,7 +60,7 @@ int main()
     }
   );
 
-  sg::erase(st, 1);
+  erase(st, 1);
 
   dump(st.root());
 
