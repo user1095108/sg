@@ -379,16 +379,12 @@ public:
               }
 
             default:
-              {
-                auto const l(n->l_ = f(f, a, i - 1));
-                auto const r(n->r_ = f(f, i + 1, b));
+              auto const l(n->l_ = f(f, a, i - 1));
+              auto const r(n->r_ = f(f, i + 1, b));
 
-                n->m_ = std::max({node_max(n), l->m_, r->m_},
-                  [](auto&& a, auto&& b)noexcept{return node::cmp(a, b) < 0;}
-                );
-
-                break;
-              }
+              n->m_ = std::max({node_max(n), l->m_, r->m_},
+                [](auto&& a, auto&& b)noexcept{return node::cmp(a, b) < 0;}
+              );
           }
 
           return n;

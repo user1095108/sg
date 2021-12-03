@@ -154,8 +154,6 @@ public:
             default:
               n->l_ = f(f, a, i - 1);
               n->r_ = f(f, i + 1, b);
-
-              break;
           }
 
           return n;

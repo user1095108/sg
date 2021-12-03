@@ -232,9 +232,9 @@ public:
 
             case 1:
               {
-                auto const p(n->r_ = l[b]);
+                auto const nb(n->r_ = l[b]);
 
-                p->l_ = p->r_ = n->l_ = {};
+                nb->l_ = nb->r_ = n->l_ = {};
 
                 break;
               }
@@ -242,8 +242,6 @@ public:
             default:
               n->l_ = f(f, a, i - 1);
               n->r_ = f(f, i + 1, b);
-
-              break;
           }
 
           return n;
