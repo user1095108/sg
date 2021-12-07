@@ -150,7 +150,7 @@ public:
         f(f, this);
       }
 
-      auto const f([&](auto&& f,
+      auto const f([l](auto&& f,
         size_type const a, decltype(a) b) noexcept -> node*
         {
           auto const i((a + b) / 2);
@@ -173,8 +173,7 @@ public:
               }
 
             default:
-              n->l_ = f(f, a, i - 1);
-              n->r_ = f(f, i + 1, b);
+              detail::assign(n->l_, n->r_)(f(f, a, i - 1), f(f, i + 1, b));
           }
 
           return n;

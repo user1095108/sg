@@ -350,7 +350,7 @@ public:
         f(f, this);
       }
 
-      auto const f([&](auto&& f,
+      auto const f([l](auto&& f,
         size_type const a, decltype(a) b) noexcept -> node*
         {
           auto const i((a + b) / 2);
@@ -379,8 +379,8 @@ public:
               }
 
             default:
-              auto const l(n->l_ = f(f, a, i - 1));
-              auto const r(n->r_ = f(f, i + 1, b));
+              auto const l(f(f, a, i - 1)), r(f(f, i + 1, b));
+              detail::assign(n->l_, n->r_)(l, r);
 
               n->m_ = std::max({node_max(n), l->m_, r->m_},
                 [](auto&& a, auto&& b)noexcept{return node::cmp(a, b) < 0;}
