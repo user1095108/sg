@@ -203,8 +203,7 @@ public:
 
     auto rebuild(size_type const sz)
     {
-//    auto const l(std::make_unique<node*[]>(sz)); // good way
-      auto const l(static_cast<node**>(ALLOCA(sizeof(this) * sz))); // bad way
+      auto const l(static_cast<node**>(ALLOCA(sizeof(this) * sz)));
 
       {
         auto f([l(l)](auto&& f, auto const n) mutable noexcept -> void

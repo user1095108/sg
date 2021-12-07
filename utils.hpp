@@ -18,8 +18,6 @@
 #include <algorithm>
 #include <compare>
 
-#include <memory>
-
 #include <utility>
 
 namespace sg::detail
