@@ -287,10 +287,7 @@ public:
     std::for_each(
       i,
       j,
-      [&](auto&& v)
-      {
-        emplace(std::forward<decltype(v)>(v));
-      }
+      [&](auto&& v){ emplace(std::forward<decltype(v)>(v)); }
     );
   }
 };
