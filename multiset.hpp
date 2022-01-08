@@ -355,7 +355,8 @@ public:
   }
 
   //
-  size_type erase(Key const& k)
+  size_type erase(auto const& k)
+    requires(!std::is_convertible_v<decltype(k), const_iterator>)
   {
     return std::get<1>(node::erase(root_, k));
   }
@@ -368,12 +369,18 @@ public:
   //
   iterator insert(value_type const& v)
   {
-    return {&root_, node::emplace(root_, v.first)};
+    return {
+      &root_,
+      node::emplace(root_, v.first)
+    };
   }
 
   iterator insert(value_type&& v)
   {
-    return {&root_, node::emplace(root_, std::move(v))};
+    return {
+      &root_,
+      node::emplace(root_, std::move(v))
+    };
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
