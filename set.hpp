@@ -239,15 +239,15 @@ public:
   }
 
   //
+  iterator erase(const_iterator const i)
+  {
+    return {&root_, detail::erase(root_, *i)};
+  }
+
   size_type erase(auto const& k)
     requires(!std::is_convertible_v<decltype(k), const_iterator>)
   {
     return bool(detail::erase(root_, k));
-  }
-
-  iterator erase(const_iterator const i)
-  {
-    return {&root_, detail::erase(root_, *i)};
   }
 
   //
