@@ -401,11 +401,11 @@ private:
 public:
   intervalmap() = default;
 
-  intervalmap(std::initializer_list<value_type> const il)
-    noexcept(noexcept(*this = il))
+  intervalmap(std::initializer_list<value_type> const l)
+    noexcept(noexcept(*this = l))
     requires(std::is_copy_constructible_v<value_type>)
   {
-    *this = il;
+    *this = l;
   }
 
   intervalmap(intervalmap const& o)
