@@ -268,18 +268,6 @@ public:
   }
 
   //
-  auto equal_range(Key const& k) noexcept
-  {
-    auto const [e, g](detail::equal_range(root_, k));
-    return std::pair(iterator(&root_, e), iterator(&root_, g));
-  }
-
-  auto equal_range(Key const& k) const noexcept
-  {
-    auto const [e, g](detail::equal_range(root_, k));
-    return std::pair(const_iterator(&root_, e), const_iterator(&root_, g));
-  }
-
   auto equal_range(auto const& k) noexcept
   {
     auto const [e, g](detail::equal_range(root_, k));
@@ -293,14 +281,14 @@ public:
   }
 
   //
-  iterator erase(const_iterator const i)
-  {
-    return {&root_, detail::erase(root_, std::get<0>(*i))};
-  }
-
   size_type erase(Key const& k)
   {
     return bool(detail::erase(root_, k));
+  }
+
+  iterator erase(const_iterator const i)
+  {
+    return {&root_, detail::erase(root_, std::get<0>(*i))};
   }
 
   //

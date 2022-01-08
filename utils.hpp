@@ -210,6 +210,7 @@ inline auto find(auto n, auto&& k) noexcept
 }
 
 inline auto erase(auto& r0, auto&& k)
+  noexcept(noexcept(delete r0))
 {
   using pointer = std::remove_cvref_t<decltype(r0)>;
   using node = std::remove_pointer_t<pointer>;

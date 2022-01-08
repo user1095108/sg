@@ -218,26 +218,6 @@ public:
   }
 
   //
-  auto equal_range(Key const& k) noexcept
-  {
-    auto const [e, g](detail::equal_range(root_, k));
-
-    return std::pair(
-      iterator(&root_, e ? e : g),
-      iterator(&root_, g)
-    );
-  }
-
-  auto equal_range(Key const& k) const noexcept
-  {
-    auto const [e, g](detail::equal_range(root_, k));
-
-    return std::pair(
-      const_iterator(&root_, e ? e : g),
-      const_iterator(&root_, g)
-    );
-  }
-
   auto equal_range(auto const& k) noexcept
   {
     auto const [e, g](detail::equal_range(root_, k));
