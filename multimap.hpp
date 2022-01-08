@@ -309,7 +309,7 @@ public:
   }
 
   //
-  size_type count(Key const& k) const noexcept
+  size_type count(auto const& k) const noexcept
   {
     if (auto n(root_); n)
     {

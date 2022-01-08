@@ -446,33 +446,32 @@ public:
   }
 
   //
-  size_type count(Key const& k) const noexcept
+  size_type count(auto const& k) const noexcept
   {
-    if (auto n(root_); n)
+    auto& [mink, maxk](k);
+
+    for (decltype(root_) p{}, n(root_); n;)
     {
-      for (auto& [mink, maxk](k);;)
+      if (node::cmp(mink, n->m_) < 0)
       {
-        if (node::cmp(mink, n->m_) < 0)
+        if (auto const c(node::cmp(mink, n->key())); c < 0)
         {
-          if (auto const c(node::cmp(mink, n->key())); c < 0)
-          {
-            n = detail::left_node(n);
-          }
-          else if (c > 0)
-          {
-            n = detail::right_node(n);
-          }
-          else
-          {
-            return std::count(
-              n->v_.cbegin(),
-              n->v_.cend(),
-              [&](auto&& p) noexcept
-              {
-                return node::cmp(k, std::get<0>(p)) == 0;
-              }
-            );
-          }
+          n = detail::left_node(n);
+        }
+        else if (c > 0)
+        {
+          n = detail::right_node(n);
+        }
+        else
+        {
+          return std::count_if(
+            n->v_.cbegin(),
+            n->v_.cend(),
+            [&](auto&& p) noexcept
+            {
+              return node::cmp(k, std::get<0>(p)) == 0;
+            }
+          );
         }
       }
     }
@@ -483,7 +482,10 @@ public:
   //
   iterator emplace(auto&& ...a)
   {
-    return {&root_, node::emplace(root_, std::forward<decltype(a)>(a)...)};
+    return {
+      &root_,
+      node::emplace(root_, std::forward<decltype(a)>(a)...)
+    };
   }
 
   //
@@ -551,10 +553,7 @@ public:
     std::for_each(
       i,
       j,
-      [&](auto&& v)
-      {
-        emplace(std::get<0>(v), std::get<1>(v));
-      }
+      [&](auto&& v) { emplace(std::get<0>(v), std::get<1>(v)); }
     );
   }
 

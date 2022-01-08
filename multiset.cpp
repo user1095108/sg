@@ -46,7 +46,6 @@ int main()
   st.emplace(3);
   st.emplace(4);
 
-  //st.root().reset(st.root().release()->rebuild());
   dump(st.root());
 
   std::cout << "count: " << st.count(1) << std::endl;

@@ -258,10 +258,10 @@ private:
 public:
   multiset() = default;
 
-  multiset(std::initializer_list<value_type> il)
-    noexcept(noexcept(*this = il))
+  multiset(std::initializer_list<value_type> const l)
+    noexcept(noexcept(*this = l))
   {
-    *this = il;
+    *this = l;
   }
 
   multiset(multiset const& o)
@@ -302,7 +302,7 @@ public:
   }
 
   //
-  size_type count(Key const& k) const noexcept
+  size_type count(auto const& k) const noexcept
   {
     if (auto n(root_); n)
     {
