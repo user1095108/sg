@@ -32,6 +32,9 @@ public:
 
   struct node
   {
+    template <std::size_t I, typename ...T>
+    using at_t = std::tuple_element_t<I, std::tuple<T...>>;
+
     using value_type = map::value_type;
 
     struct empty_t{};
@@ -41,18 +44,19 @@ public:
     node* l_{}, *r_{};
     value_type kv_;
 
-    explicit node(auto&& k) noexcept(noexcept(Key())):
+    explicit node(auto&& k)
+      noexcept(noexcept(new value_type(std::forward<decltype(k)>(k), Value()))):
       kv_(std::forward<decltype(k)>(k), Value())
     {
     }
 
-    explicit node(auto&& k, auto&& v) noexcept(noexcept(Key(), Value())):
-      kv_(std::forward<decltype(k)>(k), std::forward<decltype(v)>(v))
+    explicit node(auto&& ...a)
+      noexcept(noexcept(value_type(std::forward<decltype(a)>(a)...))):
+      kv_(std::forward<decltype(a)>(a)...)
     {
     }
 
-    ~node() noexcept(noexcept(std::declval<Key>().~Key(),
-      std::declval<Value>().~Value()))
+    ~node() noexcept(std::is_nothrow_destructible_v<decltype(kv_)>)
     {
       delete l_; delete r_;
     }
@@ -61,7 +65,7 @@ public:
     auto&& key() const noexcept { return std::get<0>(kv_); }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& v)
+    static auto emplace(auto& r, auto&& a, auto&& ...v)
     {
       bool s{}; // success
       node* q;
@@ -72,7 +76,7 @@ public:
         {
           if (!n)
           {
-            if constexpr(std::is_same_v<decltype(v), empty_t&&>)
+            if constexpr(std::is_same_v<at_t<0, decltype(v)...>, empty_t&&>)
             {
               s = (n = q = new node(std::move(k)));
             }
@@ -80,7 +84,7 @@ public:
             {
               s = (n = q = new node(
                   std::move(k),
-                  std::forward<decltype(v)>(v)
+                  std::forward<decltype(v)>(v)...
                 )
               );
             }

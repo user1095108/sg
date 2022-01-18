@@ -40,12 +40,12 @@ public:
     std::list<value_type> v_;
 
     explicit node(auto&& ...a)
+      noexcept(noexcept(v_.emplace_back(std::forward<decltype(a)>(a)...)))
     {
       v_.emplace_back(std::forward<decltype(a)>(a)...);
     }
 
-    ~node() noexcept(noexcept(std::declval<Key>().~Key(),
-      std::declval<Value>().~Value()))
+    ~node() noexcept(std::is_nothrow_destructible_v<decltype(v_)>)
     {
       delete l_; delete r_;
     }
@@ -54,7 +54,7 @@ public:
     auto&& key() const noexcept { return std::get<0>(v_.front()); }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& v)
+    static auto emplace(auto& r, auto&& a, auto&& ...v)
     {
       node* q;
 
@@ -64,7 +64,7 @@ public:
         {
           if (!n)
           {
-            n = q = new node(std::move(k), std::forward<decltype(v)>(v));
+            n = q = new node(std::move(k), std::forward<decltype(v)>(v)...);
 
             return 1;
           }
@@ -94,7 +94,7 @@ public:
           {
             (q = n)->v_.emplace_back(
               std::move(k),
-              std::forward<decltype(v)>(v)
+              std::forward<decltype(v)>(v)...
             );
 
             return 0;

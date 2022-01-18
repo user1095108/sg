@@ -41,12 +41,10 @@ public:
     typename std::tuple_element_t<1, Key> m_;
     std::list<value_type> v_;
 
-    explicit node(auto&& k, auto&& v)
+    explicit node(auto&& ...a)
+      noexcept(noexcept(v_.emplace_back(std::forward<decltype(a)>(a)...)))
     {
-      v_.emplace_back(
-        std::forward<decltype(k)>(k),
-        std::forward<decltype(v)>(v)
-      );
+      v_.emplace_back(std::forward<decltype(a)>(a)...);
 
       assert(std::get<0>(std::get<0>(v_.back())) <=
         std::get<1>(std::get<0>(v_.back())));
@@ -54,8 +52,7 @@ public:
       m_ = std::get<1>(std::get<0>(v_.back()));
     }
 
-    ~node() noexcept(noexcept(std::declval<Key>().~Key(),
-      std::declval<Value>().~Value()))
+    ~node() noexcept(std::is_nothrow_destructible_v<decltype(v_)>)
     {
       delete l_; delete r_;
     }
@@ -67,7 +64,7 @@ public:
     }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& v)
+    static auto emplace(auto& r, auto&& a, auto&& ...v)
     {
       key_type k(std::forward<decltype(a)>(a));
       auto const& [mink, maxk](k);
@@ -78,7 +75,7 @@ public:
         {
           if (!n)
           {
-            n = q = new node(std::move(k), std::forward<decltype(v)>(v));
+            n = q = new node(std::move(k), std::forward<decltype(v)>(v)...);
 
             return 1;
           }
@@ -111,7 +108,7 @@ public:
           {
             (q = n)->v_.emplace_back(
               std::move(k),
-              std::forward<decltype(v)>(v)
+              std::forward<decltype(v)>(v)...
             );
 
             return {};

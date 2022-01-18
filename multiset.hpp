@@ -38,11 +38,12 @@ public:
     std::list<value_type> v_;
 
     explicit node(auto&& ...a)
+      noexcept(noexcept(v_.emplace_back(std::forward<decltype(a)>(a)...)))
     {
       v_.emplace_back(std::forward<decltype(a)>(a)...);
     }
 
-    ~node() noexcept(noexcept(std::declval<Key>().~Key()))
+    ~node() noexcept(std::is_nothrow_destructible_v<decltype(v_)>)
     {
       delete l_; delete r_;
     }

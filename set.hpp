@@ -37,12 +37,13 @@ public:
     node* l_{}, *r_{};
     Key const kv_;
 
-    explicit node(auto&& ...a) noexcept(noexcept(Key())):
+    explicit node(auto&& ...a)
+      noexcept(noexcept(Key(std::forward<decltype(a)>(a)...))):
       kv_(std::forward<decltype(a)>(a)...)
     {
     }
 
-    ~node() noexcept(noexcept(std::declval<Key>().~Key()))
+    ~node() noexcept(std::is_nothrow_destructible_v<decltype(kv_)>)
     {
       delete l_; delete r_;
     }
