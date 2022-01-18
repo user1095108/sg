@@ -271,6 +271,27 @@ public:
     return std::tuple(iterator(&root_, n), s);
   }
 
+  auto emplace(Key&& k, auto&& ...a)
+    noexcept(
+      noexcept(
+        node::emplace(
+          root_,
+          std::move(k),
+          std::forward<decltype(a)>(a)...
+        )
+      )
+    )
+  {
+    auto const [n, s](
+      node::emplace(
+        root_,
+        std::move(k),
+        std::forward<decltype(a)>(a)...
+      )
+    );
+    return std::tuple(iterator(&root_, n), s);
+  }
+
   //
   auto equal_range(auto const& k) noexcept
   {
