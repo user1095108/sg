@@ -265,12 +265,6 @@ public:
   }
 
   //
-  auto emplace(auto&& ...a)
-  {
-    auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
-    return std::tuple(iterator(&root_, n), s);
-  }
-
   auto emplace(Key&& k, auto&& ...a)
     noexcept(
       noexcept(
@@ -289,6 +283,15 @@ public:
         std::forward<decltype(a)>(a)...
       )
     );
+
+    return std::tuple(iterator(&root_, n), s);
+  }
+
+  auto emplace(auto&& ...a)
+    noexcept(noexcept(node::emplace(root_, std::forward<decltype(a)>(a)...)))
+  {
+    auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
+
     return std::tuple(iterator(&root_, n), s);
   }
 
