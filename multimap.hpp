@@ -39,10 +39,22 @@ public:
     node* l_{}, *r_{};
     std::list<value_type> v_;
 
-    explicit node(auto&& ...a)
-      noexcept(noexcept(v_.emplace_back(std::forward<decltype(a)>(a)...)))
+    explicit node(auto&& k, auto&& ...a)
+    noexcept(
+      noexcept(
+        v_.emplace_back(
+          std::piecewise_construct_t{},
+          std::forward_as_tuple(std::forward<decltype(k)>(k)),
+          std::forward_as_tuple(std::forward<decltype(a)>(a)...)
+        )
+      )
+    )
     {
-      v_.emplace_back(std::forward<decltype(a)>(a)...);
+      v_.emplace_back(
+        std::piecewise_construct_t{},
+        std::forward_as_tuple(std::forward<decltype(k)>(k)),
+        std::forward_as_tuple(std::forward<decltype(a)>(a)...)
+      );
     }
 
     ~node() noexcept(std::is_nothrow_destructible_v<decltype(v_)>)
@@ -93,8 +105,9 @@ public:
           else
           {
             (q = n)->v_.emplace_back(
-              std::move(k),
-              std::forward<decltype(v)>(v)...
+              std::piecewise_construct_t{},
+              std::forward_as_tuple(std::move(k)),
+              std::forward_as_tuple(std::forward<decltype(v)>(v)...)
             );
 
             return 0;
