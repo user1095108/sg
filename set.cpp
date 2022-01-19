@@ -21,7 +21,7 @@ int main()
 
   std::cout << "eq: " << (s == sg::set<int>{1, 2, 3, 4}) << std::endl;
 
-  s.erase(std::next(s.cbegin()))
+  s.erase(std::next(s.cbegin()));
   s.erase(std::prev(s.cend()));
 
   std::for_each(
