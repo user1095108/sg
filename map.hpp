@@ -63,8 +63,7 @@ public:
 
     //
     static auto emplace(auto& r, auto&& a, auto&& ...v)
-      noexcept(
-        noexcept(
+      noexcept(noexcept(
           new node(
             key_type(std::forward<decltype(a)>(a)),
             std::forward<decltype(v)>(v)...
@@ -77,7 +76,14 @@ public:
 
       key_type k(std::forward<decltype(a)>(a));
 
-      auto const f([&](auto&& f, auto& n) -> size_type
+      auto const f([&](auto&& f, auto& n)
+        noexcept(noexcept(
+            new node(
+              std::move(k),
+              std::forward<decltype(v)>(v)...
+            )
+          )
+        ) -> size_type
         {
           if (!n)
           {
