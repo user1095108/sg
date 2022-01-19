@@ -130,7 +130,7 @@ public:
       return std::pair(q, s);
     }
 
-    auto rebuild(size_type const sz)
+    auto rebuild(size_type const sz) noexcept
     {
       auto const l(static_cast<node**>(ALLOCA(sizeof(this) * sz)));
 
