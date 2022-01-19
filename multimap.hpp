@@ -40,15 +40,15 @@ public:
     std::list<value_type> v_;
 
     explicit node(auto&& k, auto&& ...a)
-    noexcept(
       noexcept(
-        v_.emplace_back(
-          std::piecewise_construct_t{},
-          std::forward_as_tuple(std::forward<decltype(k)>(k)),
-          std::forward_as_tuple(std::forward<decltype(a)>(a)...)
+        noexcept(
+          v_.emplace_back(
+            std::piecewise_construct_t{},
+            std::forward_as_tuple(std::forward<decltype(k)>(k)),
+            std::forward_as_tuple(std::forward<decltype(a)>(a)...)
+          )
         )
       )
-    )
     {
       v_.emplace_back(
         std::piecewise_construct_t{},
@@ -67,12 +67,23 @@ public:
 
     //
     static auto emplace(auto& r, auto&& a, auto&& ...v)
+      noexcept(
+        noexcept(
+          new node(
+            key_type(std::forward<decltype(a)>(a)),
+            std::forward<decltype(v)>(v)...
+          )
+        )
+      )
     {
       node* q;
 
       key_type k(std::forward<decltype(a)>(a));
 
-      auto const f([&](auto&& f, auto& n) -> size_type
+      auto const f([&](auto&& f, auto& n)
+        noexcept(
+          noexcept(new node(std::move(k), std::forward<decltype(v)>(v)...))
+        ) -> size_type
         {
           if (!n)
           {
