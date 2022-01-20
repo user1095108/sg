@@ -39,11 +39,11 @@ int main()
 {
   sg::intervalmap<std::pair<int, int>, int> st;
 
-  st.emplace(std::pair(-1, 0), -1);
-  st.insert({std::pair(0, 1), 0});
-  st.insert({{std::pair(1, 2), 1}, {std::pair(1, 4), 1}});
-  st.emplace(std::pair(2, 3), 2);
-  st.emplace(std::pair(3, 5), 3);
+  st.emplace({-1, 0}, -1);
+  st.insert({{0, 1}, 0});
+  st.insert({{{1, 2}, 1}, {std::pair(1, 4), 1}});
+  st.emplace({2, 3}, 2);
+  st.emplace({3, 5}, 3);
 
   //st.root().reset(st.root().release()->rebuild());
   dump(st.root());
@@ -62,7 +62,7 @@ int main()
   );
 
   st.all(
-    std::pair(2, 4),
+    {-1, 0},
     [](auto&& p)
     {
       std::cout << '(' << p.first.first << ',' << p.first.second << ") " <<

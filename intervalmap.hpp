@@ -606,7 +606,7 @@ public:
               }
             );
 
-            if (cg0)
+            if (cg0) // maxk > key
             {
               f(f, n->r_);
             }
