@@ -183,7 +183,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
     }
   }
 
-  return std::pair(n, g);
+  return std::pair(n ? n : g, g);
 }
 
 inline auto find(auto n, auto&& k) noexcept
