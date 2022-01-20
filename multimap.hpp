@@ -40,8 +40,7 @@ public:
     std::list<value_type> v_;
 
     explicit node(auto&& k, auto&& ...a)
-      noexcept(
-        noexcept(
+      noexcept(noexcept(
           v_.emplace_back(
             std::piecewise_construct_t{},
             std::forward_as_tuple(std::forward<decltype(k)>(k)),
