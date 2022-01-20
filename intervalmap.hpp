@@ -174,7 +174,7 @@ public:
         }
       }
 
-      return std::pair(n, g);
+      return std::pair(n ? n : g, g);
     }
 
     static iterator erase(auto& r, const_iterator const i)
@@ -529,22 +529,16 @@ public:
   //
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](node::equal_range(root_, k));
+    auto const [nl, g](node::equal_range(root_, k));
 
-    return std::pair(
-      iterator(&root_, e ? e : g),
-      iterator(&root_, g)
-    );
+    return std::pair(iterator(&root_, nl), iterator(&root_, g));
   }
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](node::equal_range(root_, k));
+    auto const [nl, g](node::equal_range(root_, k));
 
-    return std::pair(
-      const_iterator(&root_, e ? e : g),
-      const_iterator(&root_, g)
-    );
+    return std::pair(const_iterator(&root_, nl), const_iterator(&root_, g));
   }
 
   //

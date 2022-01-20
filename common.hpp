@@ -185,23 +185,23 @@ void insert(std::initializer_list<value_type> il)
 //
 iterator lower_bound(auto const& k) noexcept
 {
-  return {&root_, std::get<0>(detail::equal_range(root_, k))};
+  return std::get<0>(equal_range(k));
 }
 
 const_iterator lower_bound(auto const& k) const noexcept
 {
-  return {&root_, std::get<0>(detail::equal_range(root_, k))};
+  return std::get<0>(equal_range(k));
 }
 
 //
 iterator upper_bound(auto const& k) noexcept
 {
-  return {&root_, std::get<1>(detail::equal_range(root_, k))};
+  return std::get<1>(equal_range(k));
 }
 
 const_iterator upper_bound(auto const& k) const noexcept
 {
-  return {&root_, std::get<1>(detail::equal_range(root_, k))};
+  return std::get<1>(equal_range(k));
 }
 
 //
@@ -216,7 +216,7 @@ friend auto erase_if(this_class& c, auto pred)
 {
   size_type r{};
 
-  for (auto i(c.begin()); i.node();)
+  for (auto i(c.begin()); i.n();)
   {
     i = pred(*i) ? (++r, c.erase(i)) : std::next(i);
   }

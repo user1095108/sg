@@ -137,13 +137,13 @@ public:
 
     static iterator erase(auto& r, const_iterator const i)
     {
-      if (auto const n(i.node()); 1 == n->v_.size())
+      if (auto const n(i.n()); 1 == n->v_.size())
       {
         return {&r, std::get<0>(node::erase(r, n->key()))};
       }
       else if (auto const it(i.iterator()); std::next(it) == n->v_.end())
       {
-        auto const nn(std::next(i).node());
+        auto const nn(std::next(i).n());
 
         n->v_.erase(it);
 
@@ -387,22 +387,16 @@ public:
   //
   auto equal_range(auto const& k) noexcept
   {
-    auto const [e, g](detail::equal_range(root_, k));
+    auto const [nl, g](detail::equal_range(root_, k));
 
-    return std::pair(
-      iterator(&root_, e ? e : g),
-      iterator(&root_, g)
-    );
+    return std::pair(iterator(&root_, nl), iterator(&root_, g));
   }
 
   auto equal_range(auto const& k) const noexcept
   {
-    auto const [e, g](detail::equal_range(root_, k));
+    auto const [nl, g](detail::equal_range(root_, k));
 
-    return std::pair(
-      const_iterator(&root_, e ? e : g),
-      const_iterator(&root_, g)
-    );
+    return std::pair(const_iterator(&root_, nl), const_iterator(&root_, g));
   }
 
   //
