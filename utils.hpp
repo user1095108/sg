@@ -6,11 +6,11 @@
 
 #if defined(_WIN32)
 # include <malloc.h>
-# define ALLOCA(x) _alloca(x)
+# define SG_ALLOCA(x) _alloca(x)
 #else
 # include <stdlib.h>
-# define ALLOCA(x) alloca(x)
-#endif // ALLOCA
+# define SG_ALLOCA(x) alloca(x)
+#endif // SG_ALLOCA
 
 #include <algorithm>
 #include <compare>

@@ -226,7 +226,7 @@ public:
 
     auto rebuild(size_type const sz) noexcept
     {
-      auto const l(static_cast<node**>(ALLOCA(sizeof(this) * sz)));
+      auto const l(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
 
       {
         auto f([l(l)](auto&& f, auto const n) mutable noexcept -> void
