@@ -2,8 +2,6 @@
 #define SG_UTILS_HPP
 # pragma once
 
-#include <cassert>
-
 #if defined(_WIN32)
 # include <malloc.h>
 # define SG_ALLOCA(x) _alloca(x)
@@ -11,6 +9,9 @@
 # include <stdlib.h>
 # define SG_ALLOCA(x) alloca(x)
 #endif // SG_ALLOCA
+
+#include <cassert>
+#include <cstdint>
 
 #include <algorithm>
 #include <compare>
