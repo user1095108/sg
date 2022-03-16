@@ -212,7 +212,7 @@ friend auto erase_if(this_class& c, auto pred)
 
   for (auto i(c.begin()); i.n();)
   {
-    i = pred(*i) ? (++r, c.erase(i)) : std::next(i);
+    i = pred(*i) ? ++r, c.erase(i) : std::next(i);
   }
 
   return r;
