@@ -222,7 +222,7 @@ public:
           }
           else
           {
-            auto const s(n->v_.size());
+            size_type const s(n->v_.size());
             auto const nxt(detail::next_node(r0, n));
 
             if (auto const l(n->l_), r(n->r_); l && r)
@@ -280,7 +280,7 @@ public:
         }
       }
 
-      return std::pair(pointer{}, std::size_t{});
+      return std::pair(pointer{}, size_type{});
     }
 
     static auto node_max(auto const n) noexcept

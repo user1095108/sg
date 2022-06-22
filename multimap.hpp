@@ -177,7 +177,7 @@ public:
           else
           {
             auto const nxt(detail::next_node(r0, n));
-            auto const s(n->v_.size());
+            size_type const s(n->v_.size());
 
             if (auto const l(n->l_), r(n->r_); l && r)
             {
@@ -221,7 +221,7 @@ public:
         }
       }
 
-      return std::pair(pointer{}, std::size_t{});
+      return std::pair(pointer{}, size_type{});
     }
 
     auto rebuild(size_type const sz) noexcept
