@@ -19,11 +19,11 @@ auto& operator=(this_class&& o)
   return *this;
 }
 
-auto& operator=(std::initializer_list<value_type> il)
+auto& operator=(std::initializer_list<value_type> l)
   requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
-  insert(il.begin(), il.end());
+  insert(l.begin(), l.end());
 
   return *this;
 }
@@ -118,15 +118,8 @@ bool empty() const noexcept { return !root_; }
 void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
 
 //
-bool contains(Key const& k) const noexcept
-{
-  return detail::find(root_, k);
-}
-
-bool contains(auto const& k) const noexcept
-{
-  return detail::find(root_, k);
-}
+bool contains(Key const& k) const noexcept { return detail::find(root_, k); }
+bool contains(auto const& k) const noexcept { return detail::find(root_, k); }
 
 //
 iterator erase(const_iterator a, const_iterator const b)
@@ -170,10 +163,10 @@ const_iterator find(auto const& k) const noexcept
 }
 
 // these may always throw
-void insert(std::initializer_list<value_type> il)
+void insert(std::initializer_list<value_type> l)
   requires(std::is_copy_constructible_v<value_type>)
 {
-  insert(il.begin(), il.end());
+  insert(l.begin(), l.end());
 }
 
 //
