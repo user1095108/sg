@@ -22,7 +22,7 @@ void dump(auto n)
       }
       else
       {
-        std::cout << "(null)";
+        std::cout << "{null}";
       }
 
       std::cout << ' ';
