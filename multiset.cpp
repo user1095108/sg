@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 void dump(auto n)
 {
-  std::vector<decltype(n)> q{n};
+  std::list<decltype(n)> q{n};
 
   do
   {
@@ -53,8 +53,8 @@ int main()
   std::cout << "size: " << st.size() << std::endl;
 
   std::for_each(
-    st.begin(),
-    st.end(),
+    st.cbegin(),
+    st.cend(),
     [](auto&& k) noexcept
     {
       std::cout << '(' << k << ')' << std::endl;

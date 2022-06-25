@@ -65,12 +65,12 @@ public:
     auto&& key() const noexcept { return std::get<0>(v_.front()); }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& ...v)
+    static auto emplace(auto& r, auto&& a, auto&& ...b)
       noexcept(
         noexcept(
           new node(
             key_type(std::forward<decltype(a)>(a)),
-            std::forward<decltype(v)>(v)...
+            std::forward<decltype(b)>(b)...
           )
         )
       )
@@ -81,12 +81,12 @@ public:
 
       auto const f([&](auto&& f, auto& n)
         noexcept(
-          noexcept(new node(std::move(k), std::forward<decltype(v)>(v)...))
+          noexcept(new node(std::move(k), std::forward<decltype(b)>(b)...))
         ) -> size_type
         {
           if (!n)
           {
-            n = q = new node(std::move(k), std::forward<decltype(v)>(v)...);
+            n = q = new node(std::move(k), std::forward<decltype(b)>(b)...);
 
             return 1;
           }
@@ -117,7 +117,7 @@ public:
             (q = n)->v_.emplace_back(
               std::piecewise_construct_t{},
               std::forward_as_tuple(std::move(k)),
-              std::forward_as_tuple(std::forward<decltype(v)>(v)...)
+              std::forward_as_tuple(std::forward<decltype(b)>(b)...)
             );
 
             return 0;
@@ -287,7 +287,7 @@ private:
 public:
   multimap() = default;
 
-  multimap(std::initializer_list<value_type> const l)
+  multimap(std::initializer_list<value_type> l)
     noexcept(noexcept(*this = l))
     requires(std::is_copy_constructible_v<value_type>)
   {
@@ -319,7 +319,7 @@ public:
 # include "common.hpp"
 
   //
-  auto size() const noexcept
+  size_type size() const noexcept
   {
     static constinit auto const f(
       [](auto&& f, auto const n) noexcept -> size_type
@@ -433,10 +433,7 @@ public:
     std::for_each(
       i,
       j,
-      [&](auto&& v)
-      {
-        emplace(std::get<0>(v), std::get<1>(v));
-      }
+      [&](auto&& v) { emplace(std::get<0>(v), std::get<1>(v)); }
     );
   }
 };
