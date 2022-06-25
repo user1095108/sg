@@ -18,7 +18,7 @@ void dump(auto n)
       {
         q.insert(q.end(), {n->l_, n->r_});
 
-        std::cout << '(' << n->key() << ',' << n->v_.size() << ')';
+        std::cout << '{' << n->key() << ',' << n->v_.size() << '}';
       }
       else
       {
