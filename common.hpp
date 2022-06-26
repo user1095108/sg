@@ -1,5 +1,6 @@
 // self-assign neglected
 auto& operator=(this_class const& o)
+  noexcept(noexcept(clear()) && noexcept(insert(o.begin(), o.end())))
   requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
@@ -20,6 +21,7 @@ auto& operator=(this_class&& o)
 }
 
 auto& operator=(std::initializer_list<value_type> l)
+  noexcept(noexcept(clear()) && noexcept(insert(l.begin(), l.end())))
   requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
@@ -123,6 +125,7 @@ bool contains(auto const& k) const noexcept { return detail::find(root_, k); }
 
 //
 iterator erase(const_iterator a, const_iterator const b)
+  noexcept(noexcept(erase(a)))
 {
   iterator i(b);
 
@@ -131,12 +134,20 @@ iterator erase(const_iterator a, const_iterator const b)
   return i;
 }
 
-iterator erase(std::initializer_list<const_iterator> il)
+iterator erase(std::initializer_list<const_iterator> l)
+  noexcept(noexcept(erase(l.begin())))
 {
   iterator r;
 
   // must be sequential
-  std::for_each(il.begin(), il.end(), [&](auto const i) { r = erase(i); });
+  std::for_each(
+    l.begin(),
+    l.end(),
+    [&](auto const i) noexcept(noexcept(erase(i)))
+    {
+      r = erase(i);
+    }
+  );
 
   return r;
 }
@@ -164,6 +175,7 @@ const_iterator find(auto const& k) const noexcept
 
 // these may always throw
 void insert(std::initializer_list<value_type> l)
+  noexcept(noexcept(insert(l.begin(), l.end())))
   requires(std::is_copy_constructible_v<value_type>)
 {
   insert(l.begin(), l.end());
