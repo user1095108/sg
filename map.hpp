@@ -246,6 +246,7 @@ public:
 
   //
   auto& operator[](Key const& k)
+    noexcept(noexcept(node::emplace(root_, k, typename node::empty_t())))
   {
     return std::get<1>(
       std::get<0>(
@@ -255,6 +256,10 @@ public:
   }
 
   auto& operator[](Key&& k)
+    noexcept(noexcept(
+        node::emplace(root_, std::move(k), typename node::empty_t())
+      )
+    )
   {
     return std::get<1>(
       std::get<0>(
@@ -327,11 +332,13 @@ public:
 
   //
   iterator erase(const_iterator const i)
+    noexcept(noexcept(detail::erase(root_, std::get<0>(*i))))
   {
     return {&root_, detail::erase(root_, std::get<0>(*i))};
   }
 
   size_type erase(auto const& k)
+    noexcept(noexcept(detail::erase(root_, k)))
     requires(!std::is_convertible_v<decltype(k), const_iterator>)
   {
     return bool(detail::erase(root_, k));
@@ -339,6 +346,7 @@ public:
 
   //
   auto insert(value_type const& v)
+    noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
   {
     auto const [n, s](
       node::emplace(root_, std::get<0>(v), std::get<1>(v))
@@ -348,6 +356,7 @@ public:
   }
 
   auto insert(value_type&& v)
+    noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
   {
     auto const [n, s](
       node::emplace(root_, std::get<0>(v), std::get<1>(v))
@@ -357,11 +366,15 @@ public:
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
+    noexcept(noexcept(emplace(std::get<0>(*i), std::get<1>(*i))))
   {
     std::for_each(
       i,
       j,
-      [&](auto&& v)
+      [&](auto&& v) noexcept(noexcept(
+          emplace(std::get<0>(v), std::get<1>(v))
+        )
+      )
       {
         emplace(std::get<0>(v), std::get<1>(v));
       }
@@ -370,6 +383,7 @@ public:
 
   //
   auto insert_or_assign(key_type const& k, auto&& v)
+    noexcept(noexcept(node::emplace(root_, k, std::forward<decltype(v)>(v))))
   {
     auto const [n, s](
       node::emplace(root_, k, std::forward<decltype(v)>(v))
@@ -384,6 +398,10 @@ public:
   }
 
   auto insert_or_assign(key_type&& k, auto&& v)
+    noexcept(noexcept(
+        node::emplace(root_, std::move(k), std::forward<decltype(v)>(v))
+      )
+    )
   {
     auto const [n, s](
       node::emplace(root_, std::move(k), std::forward<decltype(v)>(v))
