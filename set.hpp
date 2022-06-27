@@ -255,9 +255,10 @@ public:
     return bool(detail::erase(root_, k));
   }
 
-  size_type erase(key_type const& k) noexcept(noexcept(erase(k)))
+  size_type erase(key_type const& k)
+    noexcept(noexcept(detail::erase(root_, k)))
   {
-    return erase(k);
+    return bool(detail::erase(root_, k));
   }
 
   //

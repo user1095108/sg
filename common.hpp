@@ -131,7 +131,10 @@ bool contains(auto&& k) const noexcept
   return detail::find(root_, std::forward<decltype(k)>(k));
 }
 
-bool contains(key_type const& k) const noexcept { return contains(k); }
+bool contains(key_type const& k) const noexcept
+{
+  return detail::find(root_, std::forward<decltype(k)>(k));
+}
 
 //
 iterator erase(const_iterator a, const_iterator const b)
@@ -185,8 +188,15 @@ const_iterator find(auto&& k) const noexcept
   return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
 }
 
-iterator find(key_type const& k) noexcept { return find(k); }
-const_iterator find(key_type const& k) const noexcept { return find(k); }
+iterator find(key_type const& k) noexcept
+{
+  return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
+}
+
+const_iterator find(key_type const& k) const noexcept
+{
+  return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
+}
 
 // these may always throw
 void insert(std::initializer_list<value_type> l)
