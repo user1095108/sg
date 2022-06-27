@@ -208,10 +208,12 @@ public:
   auto size() const noexcept { return detail::size(root_); }
 
   //
-  size_type count(auto const& k) const noexcept
+  size_type count(auto&& k, char = {}) const noexcept
   {
-    return bool(detail::find(root_, k));
+    return bool(detail::find(root_, std::forward<decltype(k)>(k)));
   }
+
+  size_type count(key_type const& k) const noexcept { return count(k, {}); }
 
   //
   auto emplace(auto&& ...a)
