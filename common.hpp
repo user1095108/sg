@@ -205,13 +205,13 @@ const_iterator upper_bound(auto const& k) const noexcept
 
 //
 friend auto erase(this_class& c, auto const& k)
-  noexcept(noexcept(delete root_))
+  noexcept(noexcept(node::erase(root_, k)))
 {
   return c.erase(k);
 }
 
 friend auto erase_if(this_class& c, auto pred)
-  noexcept(noexcept(delete root_))
+  noexcept(noexcept(node::erase(root_, c.begin())))
 {
   size_type r{};
 
