@@ -393,30 +393,64 @@ public:
   }
 
   //
-  auto equal_range(auto const& k) noexcept
+  auto equal_range(auto&& k, char = {}) noexcept
+    requires(
+      std::three_way_comparable_with<
+        key_type,
+        std::remove_cvref_t<decltype(k)>
+      >
+    )
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
     return std::pair(iterator(&root_, nl), iterator(&root_, g));
   }
 
-  auto equal_range(auto const& k) const noexcept
+  auto equal_range(auto&& k, char = {}) const noexcept
+    requires(
+      std::three_way_comparable_with<
+        key_type,
+        std::remove_cvref_t<decltype(k)>
+      >
+    )
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
     return std::pair(const_iterator(&root_, nl), const_iterator(&root_, g));
   }
 
+  auto equal_range(key_type const& k) noexcept
+  {
+    return equal_range(k, {});
+  }
+
+  auto equal_range(key_type const& k) const noexcept
+  {
+    return equal_range(k, {});
+  }
+
   //
   iterator erase(const_iterator const i)
+    noexcept(noexcept(node::erase(root_, i)))
   {
     return node::erase(root_, i);
   }
 
-  size_type erase(auto const& k)
-    requires(!std::is_convertible_v<decltype(k), const_iterator>)
+  size_type erase(auto&& k)
+    noexcept(noexcept(node::erase(root_, k)))
+    requires(
+      std::three_way_comparable_with<
+        key_type,
+        std::remove_cvref_t<decltype(k)>
+      >
+    )
   {
     return std::get<1>(node::erase(root_, k));
+  }
+
+  size_type erase(key_type const& k) noexcept(noexcept(erase(k, {})))
+  {
+    return erase(k, {});
   }
 
   //
