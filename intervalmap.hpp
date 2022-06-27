@@ -614,6 +614,7 @@ public:
 
   //
   void all(Key const& k, auto g) const
+    noexcept(noexcept(g(std::declval<value_type>())))
   {
     auto& [mink, maxk](k);
     auto const eq(node::cmp(mink, maxk) == 0);
