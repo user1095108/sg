@@ -120,7 +120,7 @@ bool empty() const noexcept { return !root_; }
 void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
 
 //
-bool contains(auto const& k) const noexcept { return detail::find(root_, k); }
+bool contains(Key const& k) const noexcept { return detail::find(root_, k); }
 
 //
 iterator erase(const_iterator a, const_iterator const b)
