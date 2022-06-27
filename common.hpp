@@ -120,7 +120,7 @@ bool empty() const noexcept { return !root_; }
 void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
 
 //
-bool contains(auto&& k) const noexcept
+bool contains(auto&& k, char = {}) const noexcept
   requires(
     std::three_way_comparable_with<
       key_type,
@@ -131,10 +131,7 @@ bool contains(auto&& k) const noexcept
   return detail::find(root_, std::forward<decltype(k)>(k));
 }
 
-bool contains(key_type const& k, char = {}) const noexcept
-{
-  return contains(k);
-}
+bool contains(key_type const& k) const noexcept { return contains(k, {}); }
 
 //
 iterator erase(const_iterator a, const_iterator const b)
@@ -166,7 +163,7 @@ iterator erase(std::initializer_list<const_iterator> l)
 }
 
 //
-iterator find(auto&& k) noexcept
+iterator find(auto&& k, char = {}) noexcept
   requires(
     std::three_way_comparable_with<
       key_type,
@@ -177,7 +174,7 @@ iterator find(auto&& k) noexcept
   return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
 }
 
-const_iterator find(auto&& k) const noexcept
+const_iterator find(auto&& k, char = {}) const noexcept
   requires(
     std::three_way_comparable_with<
       key_type,
@@ -188,12 +185,8 @@ const_iterator find(auto&& k) const noexcept
   return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
 }
 
-iterator find(key_type const& k, char = {}) noexcept { return find(k); }
-
-const_iterator find(key_type const& k, char = {}) const noexcept
-{
-  return find(k);
-}
+iterator find(key_type const& k) noexcept { return find(k, {}); }
+const_iterator find(key_type const& k) const noexcept { return find(k, {}); }
 
 //
 void insert(std::initializer_list<value_type> l)
