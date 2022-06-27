@@ -185,15 +185,8 @@ const_iterator find(auto&& k) const noexcept
   return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
 }
 
-iterator find(key_type const& k) noexcept
-{
-  return {&root_, detail::find(root_, k)};
-}
-
-const_iterator find(key_type const& k) const noexcept
-{
-  return {&root_, detail::find(root_, k)};
-}
+iterator find(key_type const& k) noexcept { return find(k); }
+const_iterator find(key_type const& k) const noexcept { return find(k); }
 
 // these may always throw
 void insert(std::initializer_list<value_type> l)
