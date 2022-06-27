@@ -243,10 +243,21 @@ public:
     return {&root_, detail::erase(root_, *i)};
   }
 
-  size_type erase(auto const& k)
-    requires(!std::is_convertible_v<decltype(k), const_iterator>)
+  size_type erase(auto&& k)
+    noexcept(noexcept(detail::erase(root_, k)))
+    requires(
+      std::three_way_comparable_with<
+        key_type,
+        std::remove_cvref_t<decltype(k)>
+      >
+    )
   {
     return bool(detail::erase(root_, k));
+  }
+
+  size_type erase(key_type const& k) noexcept(noexcept(erase(k)))
+  {
+    return erase(k);
   }
 
   //
