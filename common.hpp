@@ -131,9 +131,9 @@ bool contains(auto&& k) const noexcept
   return detail::find(root_, std::forward<decltype(k)>(k));
 }
 
-bool contains(key_type const& k) const noexcept
+bool contains(key_type const& k, char = {}) const noexcept
 {
-  return detail::find(root_, std::forward<decltype(k)>(k));
+  return contains(k);
 }
 
 //
@@ -188,17 +188,14 @@ const_iterator find(auto&& k) const noexcept
   return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
 }
 
-iterator find(key_type const& k) noexcept
+iterator find(key_type const& k, char = {}) noexcept { return find(k); }
+
+const_iterator find(key_type const& k, char = {}) const noexcept
 {
-  return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
+  return find(k);
 }
 
-const_iterator find(key_type const& k) const noexcept
-{
-  return {&root_, detail::find(root_, std::forward<decltype(k)>(k))};
-}
-
-// these may always throw
+//
 void insert(std::initializer_list<value_type> l)
   noexcept(noexcept(insert(l.begin(), l.end())))
   requires(std::is_copy_constructible_v<value_type>)
