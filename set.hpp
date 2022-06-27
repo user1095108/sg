@@ -274,6 +274,29 @@ public:
   }
 };
 
+//////////////////////////////////////////////////////////////////////////////
+inline auto erase(set& c, auto const& k)
+  noexcept(noexcept(c.erase(k)))
+{
+  return c.erase(k);
+}
+
+inline auto erase_if(set& c, auto pred)
+  noexcept(noexcept(c.erase(c.begin())))
+{
+  typename std::remove_reference_t<decltype(c)>::size_type r{};
+
+  for (auto i(c.begin()); i.n();)
+  {
+    i = pred(*i) ? ++r, c.erase(i) : std::next(i);
+  }
+
+  return r;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+inline void swap(set& l, decltype(l) r) noexcept { l.swap(r); }
+
 }
 
 #endif // SG_SET_HPP
