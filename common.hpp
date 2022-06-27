@@ -202,4 +202,3 @@ const_iterator upper_bound(auto const& k) const noexcept
 {
   return std::get<1>(equal_range(k));
 }
-
