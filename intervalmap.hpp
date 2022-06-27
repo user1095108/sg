@@ -500,8 +500,7 @@ public:
 
   //
   iterator emplace(Key&& k, auto&& ...a)
-    noexcept(
-      noexcept(
+    noexcept(noexcept(
         node::emplace(
           root_,
           std::move(k),
@@ -588,6 +587,7 @@ public:
 
   //
   iterator insert(value_type const& v)
+    noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
   {
     return {
       &root_,
@@ -596,6 +596,7 @@ public:
   }
 
   iterator insert(value_type&& v)
+    noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
   {
     return {
       &root_,
@@ -604,11 +605,18 @@ public:
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
+    noexcept(noexcept(emplace(std::get<0>(*i), std::get<1>(*i))))
   {
     std::for_each(
       i,
       j,
-      [&](auto&& v) { emplace(std::get<0>(v), std::get<1>(v)); }
+      [&](auto&& v) noexcept(noexcept(
+          emplace(std::get<0>(v), std::get<1>(v))
+        )
+      )
+      {
+        emplace(std::get<0>(v), std::get<1>(v));
+      }
     );
   }
 
