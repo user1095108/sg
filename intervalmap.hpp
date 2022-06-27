@@ -466,15 +466,19 @@ public:
   }
 
   //
-  size_type count(auto const& k) const noexcept
+  size_type count(auto&& k) const noexcept
+    requires(
+      std::three_way_comparable_with<
+        key_type,
+        std::remove_cvref_t<decltype(k)>
+      >
+    )
   {
-    auto& [mink, maxk](k);
-
-    for (decltype(root_) p{}, n(root_); n;)
+    if (auto n(root_); n)
     {
-      if (node::cmp(mink, n->m_) < 0)
+      for (;;)
       {
-        if (auto const c(node::cmp(mink, n->key())); c < 0)
+        if (auto const c(node::cmp(k, n->key())); c < 0)
         {
           n = detail::left_node(n);
         }
@@ -484,20 +488,15 @@ public:
         }
         else
         {
-          return std::count_if(
-            n->v_.cbegin(),
-            n->v_.cend(),
-            [&](auto&& p) noexcept
-            {
-              return node::cmp(k, std::get<0>(p)) == 0;
-            }
-          );
+          return n->v_.size();
         }
       }
     }
 
     return {};
   }
+
+  size_type count(key_type const& k) const noexcept { return count(k); }
 
   //
   iterator emplace(Key&& k, auto&& ...a)

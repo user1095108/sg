@@ -304,7 +304,13 @@ public:
   }
 
   //
-  size_type count(auto const& k) const noexcept
+  size_type count(auto&& k) const noexcept
+    requires(
+      std::three_way_comparable_with<
+        key_type,
+        std::remove_cvref_t<decltype(k)>
+      >
+    )
   {
     if (auto n(root_); n)
     {
@@ -327,6 +333,8 @@ public:
 
     return {};
   }
+
+  size_type count(key_type const& k) const noexcept { return count(k); }
 
   //
   iterator emplace(auto&& k)

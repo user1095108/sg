@@ -5,7 +5,7 @@
 //////////////////////////////////////////////////////////////////////////////
 void dump(auto n)
 {
-  std::vector<decltype(n)> q{n};
+  std::list<decltype(n)> q{n};
 
   do
   {
@@ -18,11 +18,11 @@ void dump(auto n)
       {
         q.insert(q.end(), {n->l_, n->r_});
 
-        std::cout << '(' << n->key() << ',' << n->m_ << ')';
+        std::cout << '{' << n->key() << ',' << n->m_ << '}';
       }
       else
       {
-        std::cout << "(null)";
+        std::cout << "{null}";
       }
 
       std::cout << ' ';
