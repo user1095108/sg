@@ -246,7 +246,10 @@ public:
 
   //
   auto& operator[](Key const& k)
-    noexcept(noexcept(node::emplace(root_, k, typename node::empty_t())))
+    noexcept(noexcept(
+        node::emplace(root_, k, typename node::empty_t())
+      )
+    )
   {
     return std::get<1>(
       std::get<0>(
@@ -294,8 +297,7 @@ public:
 
   //
   auto emplace(Key&& k, auto&& ...a)
-    noexcept(
-      noexcept(
+    noexcept(noexcept(
         node::emplace(
           root_,
           std::move(k),
@@ -316,7 +318,10 @@ public:
   }
 
   auto emplace(auto&& ...a)
-    noexcept(noexcept(node::emplace(root_, std::forward<decltype(a)>(a)...)))
+    noexcept(noexcept(
+        node::emplace(root_, std::forward<decltype(a)>(a)...)
+      )
+    )
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
