@@ -435,7 +435,7 @@ public:
     return node::erase(root_, i);
   }
 
-  size_type erase(auto&& k)
+  size_type erase(auto&& k, char = {})
     noexcept(noexcept(node::erase(root_, k)))
     requires(
       std::three_way_comparable_with<
