@@ -47,19 +47,19 @@ public:
     {
     }
 
-    explicit node(auto&& k, auto&& ...a)
+    explicit node(auto&& a, auto&& ...b)
       noexcept(noexcept(
           value_type(
             std::piecewise_construct_t{},
-            std::forward_as_tuple(std::forward<decltype(k)>(k)),
-            std::forward_as_tuple(std::forward<decltype(a)>(a)...)
+            std::forward_as_tuple(std::forward<decltype(a)>(a)),
+            std::forward_as_tuple(std::forward<decltype(b)>(b)...)
           )
         )
       ):
       kv_(
         std::piecewise_construct_t{},
-        std::forward_as_tuple(std::forward<decltype(k)>(k)),
-        std::forward_as_tuple(std::forward<decltype(a)>(a)...)
+        std::forward_as_tuple(std::forward<decltype(a)>(a)),
+        std::forward_as_tuple(std::forward<decltype(b)>(b)...)
       )
     {
     }
@@ -73,11 +73,11 @@ public:
     auto&& key() const noexcept { return std::get<0>(kv_); }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& ...v)
+    static auto emplace(auto& r, auto&& a, auto&& ...b)
       noexcept(noexcept(
           new node(
             key_type(std::forward<decltype(a)>(a)),
-            std::forward<decltype(v)>(v)...
+            std::forward<decltype(b)>(b)...
           )
         )
       )
@@ -91,7 +91,7 @@ public:
         noexcept(noexcept(
             new node(
               std::move(k),
-              std::forward<decltype(v)>(v)...
+              std::forward<decltype(b)>(b)...
             )
           )
         ) -> size_type
@@ -100,7 +100,7 @@ public:
           {
             s = (n = q = new node(
                 std::move(k),
-                std::forward<decltype(v)>(v)...
+                std::forward<decltype(b)>(b)...
               )
             );
 
