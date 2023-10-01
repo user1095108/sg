@@ -272,12 +272,7 @@ public:
   }
 
   auto& at(auto&& k, char = {}) noexcept
-    requires(
-      std::three_way_comparable_with<
-        key_type,
-        std::remove_cvref_t<decltype(k)>
-      >
-    )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     return detail::find(root_, k)->kv_;
   }
@@ -285,12 +280,7 @@ public:
   auto& at(key_type const& k) noexcept { return at(k, {}); }
 
   auto const& at(auto&& k, char = {}) const noexcept
-    requires(
-      std::three_way_comparable_with<
-        key_type,
-        std::remove_cvref_t<decltype(k)>
-      >
-    )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     return detail::find(root_, k)->kv_;
   }
@@ -299,12 +289,7 @@ public:
 
   //
   size_type count(auto&& k, char = {}) const noexcept
-    requires(
-      std::three_way_comparable_with<
-        key_type,
-        std::remove_cvref_t<decltype(k)>
-      >
-    )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     return bool(detail::find(root_, k));
   }
@@ -346,12 +331,7 @@ public:
 
   //
   auto equal_range(auto&& k, char = {}) noexcept
-    requires(
-      std::three_way_comparable_with<
-        key_type,
-        std::remove_cvref_t<decltype(k)>
-      >
-    )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -359,12 +339,7 @@ public:
   }
 
   auto equal_range(auto&& k, char = {}) const noexcept
-    requires(
-      std::three_way_comparable_with<
-        key_type,
-        std::remove_cvref_t<decltype(k)>
-      >
-    )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -390,12 +365,7 @@ public:
 
   size_type erase(auto&& k, char = {})
     noexcept(noexcept(detail::erase(root_, k)))
-    requires(
-      std::three_way_comparable_with<
-        key_type,
-        std::remove_cvref_t<decltype(k)>
-      >
-    )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     return bool(detail::erase(root_, k));
   }

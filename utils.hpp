@@ -25,7 +25,15 @@ namespace sg::detail
 using difference_type = std::intmax_t;
 using size_type = std::uintmax_t;
 
-constexpr auto assign(auto& ...a) noexcept
+template <class C, class U, class V>
+concept Comparable = requires(C&& c, U&& u, V&& v)
+{
+  {c(u, v) < 0} -> std::same_as<bool>;
+  {c(u, v) == 0} -> std::same_as<bool>;
+  {c(u, v) > 0} -> std::same_as<bool>;
+};
+
+inline auto assign(auto& ...a) noexcept
 { // assign idiom
   return [&](auto const ...v) noexcept { ((a = v), ...); };
 }
