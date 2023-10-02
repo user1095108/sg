@@ -292,36 +292,36 @@ public:
   size_type count(key_type const& k) const noexcept { return count(k, {}); }
 
   //
-  auto emplace(Key&& k, auto&& ...a)
+  template <int = 0>
+  auto emplace(auto&& k, auto&& ...b)
     noexcept(noexcept(
         node::emplace(
           root_,
-          std::move(k),
-          std::forward<decltype(a)>(a)...
+          std::forward<decltype(k)>(k),
+          std::forward<decltype(b)>(b)...
         )
       )
     )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     auto const [n, s](
       node::emplace(
         root_,
-        std::move(k),
-        std::forward<decltype(a)>(a)...
+        std::forward<decltype(k)>(k),
+        std::forward<decltype(b)>(b)...
       )
     );
 
     return std::tuple(iterator(&root_, n), s);
   }
 
-  auto emplace(auto&& ...a)
+  auto emplace(key_type&& k, auto&& ...b)
     noexcept(noexcept(
-        node::emplace(root_, std::forward<decltype(a)>(a)...)
+        emplace<0>(std::move(k), std::forward<decltype(b)>(b)...)
       )
     )
   {
-    auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
-
-    return std::tuple(iterator(&root_, n), s);
+    return emplace<0>(std::move(k), std::forward<decltype(b)>(b)...);
   }
 
   //
