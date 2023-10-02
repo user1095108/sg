@@ -245,30 +245,27 @@ public:
   auto size() const noexcept { return detail::size(root_); }
 
   //
-  auto& operator[](Key const& k)
+  template <int = 0>
+  auto& operator[](auto&& k)
     noexcept(noexcept(
-        node::emplace(root_, k, typename node::empty_t())
+        node::emplace(root_, std::forward<decltype(k)>(k),
+          typename node::empty_t())
       )
     )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     return std::get<1>(
         std::get<0>(
-          node::emplace(root_, k, typename node::empty_t())
+          node::emplace(root_, std::forward<decltype(k)>(k),
+            typename node::empty_t())
         )->kv_
       );
   }
 
-  auto& operator[](Key&& k)
-    noexcept(noexcept(
-        node::emplace(root_, std::move(k), typename node::empty_t())
-      )
-    )
+  auto& operator[](key_type const& k)
+    noexcept(noexcept(operator[]<0>(k)))
   {
-    return std::get<1>(
-        std::get<0>(
-          node::emplace(root_, std::move(k), typename node::empty_t())
-        )->kv_
-      );
+    return operator[]<0>(k);
   }
 
   auto& at(auto&& k, char = {}) noexcept
