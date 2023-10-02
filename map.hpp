@@ -73,10 +73,10 @@ public:
     auto&& key() const noexcept { return std::get<0>(kv_); }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& ...b)
+    static auto emplace(auto& r, auto&& k, auto&& ...b)
       noexcept(noexcept(
           new node(
-            key_type(std::forward<decltype(a)>(a)),
+            std::forward<decltype(k)>(k),
             std::forward<decltype(b)>(b)...
           )
         )
@@ -85,12 +85,10 @@ public:
       bool s{}; // success
       node* q;
 
-      key_type k(std::forward<decltype(a)>(a));
-
       auto const f([&](auto&& f, auto& n)
         noexcept(noexcept(
             new node(
-              std::move(k),
+              std::forward<decltype(k)>(k),
               std::forward<decltype(b)>(b)...
             )
           )
@@ -99,7 +97,7 @@ public:
           if (!n)
           {
             s = (n = q = new node(
-                std::move(k),
+                std::forward<decltype(k)>(k),
                 std::forward<decltype(b)>(b)...
               )
             );
@@ -262,10 +260,10 @@ public:
       );
   }
 
-  auto& operator[](key_type const& k)
-    noexcept(noexcept(operator[]<0>(k)))
+  auto& operator[](key_type k)
+    noexcept(noexcept(operator[]<0>(std::move(k))))
   {
-    return operator[]<0>(k);
+    return operator[]<0>(std::move(k));
   }
 
   auto& at(auto&& k, char = {}) noexcept
