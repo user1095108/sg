@@ -138,7 +138,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebuild(s), 0) : s;
+          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebalance(s), 0) : s;
         }
       );
 
@@ -147,7 +147,7 @@ public:
       return std::pair(q, s);
     }
 
-    auto rebuild(size_type const sz) noexcept
+    auto rebalance(size_type const sz) noexcept
     {
       auto const l(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
 
@@ -252,10 +252,10 @@ public:
     )
   {
     return std::get<1>(
-      std::get<0>(
-        node::emplace(root_, k, typename node::empty_t())
-      )->kv_
-    );
+        std::get<0>(
+          node::emplace(root_, k, typename node::empty_t())
+        )->kv_
+      );
   }
 
   auto& operator[](Key&& k)
@@ -265,10 +265,10 @@ public:
     )
   {
     return std::get<1>(
-      std::get<0>(
-        node::emplace(root_, std::move(k), typename node::empty_t())
-      )->kv_
-    );
+        std::get<0>(
+          node::emplace(root_, std::move(k), typename node::empty_t())
+        )->kv_
+      );
   }
 
   auto& at(auto&& k, char = {}) noexcept
