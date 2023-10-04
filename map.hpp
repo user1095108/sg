@@ -408,6 +408,7 @@ public:
   }
 
   //
+  template <int = 0>
   auto insert_or_assign(auto&& k, auto&& v)
     noexcept(noexcept(
         node::emplace(
@@ -417,6 +418,7 @@ public:
         )
       )
     )
+    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     auto const [n, s](
       node::emplace(
@@ -436,20 +438,11 @@ public:
 
   auto insert_or_assign(key_type&& k, auto&& v)
     noexcept(noexcept(
-        node::emplace(root_, std::move(k), std::forward<decltype(v)>(v))
+        insert_or_assign<0>(std::move(k), std::forward<decltype(v)>(v))
       )
     )
   {
-    auto const [n, s](
-      node::emplace(root_, std::move(k), std::forward<decltype(v)>(v))
-    );
-
-    if (!s)
-    {
-      std::get<1>(n->kv_) = std::forward<decltype(v)>(v);
-    }
-
-    return std::tuple(iterator(&root_, n), s);
+    return insert_or_assign<0>(std::move(k), std::forward<decltype(v)>(v));
   }
 };
 
