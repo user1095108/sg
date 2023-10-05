@@ -240,7 +240,6 @@ public:
 
   //
   auto equal_range(auto&& k, char = {}) noexcept
-    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -253,7 +252,6 @@ public:
   }
 
   auto equal_range(auto&& k, char = {}) const noexcept
-    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
