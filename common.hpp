@@ -137,17 +137,15 @@ void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
 
 //
 bool contains(auto&& k, char = {}) const noexcept
-  requires(
-    std::three_way_comparable_with<
-      key_type,
-      std::remove_cvref_t<decltype(k)>
-    >
-  )
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return detail::find(root_, k);
 }
 
-bool contains(key_type const& k) const noexcept { return contains(k, {}); }
+bool contains(key_type k) const noexcept
+{
+  return contains(std::move(k), {});
+}
 
 //
 iterator erase(const_iterator a, const_iterator const b)
@@ -180,29 +178,20 @@ iterator erase(std::initializer_list<const_iterator> l)
 
 //
 iterator find(auto&& k, char = {}) noexcept
-  requires(
-    std::three_way_comparable_with<
-      key_type,
-      std::remove_cvref_t<decltype(k)>
-    >
-  )
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return {&root_, detail::find(root_, k)};
 }
+
+auto find(key_type k) noexcept { return find(std::move(k), {}); }
 
 const_iterator find(auto&& k, char = {}) const noexcept
-  requires(
-    std::three_way_comparable_with<
-      key_type,
-      std::remove_cvref_t<decltype(k)>
-    >
-  )
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return {&root_, detail::find(root_, k)};
 }
 
-iterator find(key_type const& k) noexcept { return find(k, {}); }
-const_iterator find(key_type const& k) const noexcept { return find(k, {}); }
+auto find(key_type k) const noexcept { return find(std::move(k), {}); }
 
 //
 void insert(std::initializer_list<value_type> l)
@@ -213,23 +202,43 @@ void insert(std::initializer_list<value_type> l)
 }
 
 //
-iterator lower_bound(auto&& k) noexcept
+iterator lower_bound(auto&& k, char = {}) noexcept
 {
   return std::get<0>(equal_range(k));
 }
 
-const_iterator lower_bound(auto&& k) const noexcept
+auto lower_bound(key_type k) noexcept
+{
+  return lower_bound(std::move(k), {});
+}
+
+const_iterator lower_bound(auto&& k, char = {}) const noexcept
 {
   return std::get<0>(equal_range(k));
+}
+
+auto lower_bound(key_type k) const noexcept
+{
+  return lower_bound(std::move(k), {});
 }
 
 //
-iterator upper_bound(auto&& k) noexcept
+iterator upper_bound(auto&& k, char = {}) noexcept
 {
   return std::get<1>(equal_range(k));
 }
 
-const_iterator upper_bound(auto&& k) const noexcept
+auto upper_bound(key_type k) noexcept
+{
+  return upper_bound(std::move(k), {});
+}
+
+const_iterator upper_bound(auto&& k, char = {}) const noexcept
 {
   return std::get<1>(equal_range(k));
+}
+
+auto upper_bound(key_type k) const noexcept
+{
+  return upper_bound(std::move(k), {});
 }

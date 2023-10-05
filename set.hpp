@@ -52,20 +52,20 @@ public:
     auto&& key() const noexcept { return kv_; }
 
     //
-    static auto emplace(auto& r, auto&& ...a)
-      noexcept(noexcept(new node(key_type(std::forward<decltype(a)>(a)...))))
+    static auto emplace(auto& r, auto&& k)
+      noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
+      requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
       bool s{}; // success
       node* q;
 
-      key_type k(std::forward<decltype(a)>(a)...);
-
       auto const f([&](auto&& f, auto& n)
-        noexcept(noexcept(new node(std::move(k)))) -> size_type
+        noexcept(noexcept(new node(std::forward<decltype(k)>(k)))) ->
+        size_type
         {
           if (!n)
           {
-            s = (n = q = new node(std::move(k)));
+            s = (n = q = new node(std::forward<decltype(k)>(k)));
 
             return 1;
           }
@@ -73,7 +73,7 @@ public:
           //
           size_type sl, sr;
 
-          if (auto const c(cmp(k, n->key())); c < 0)
+          if (auto const c(cmp(k, n->key)); c < 0)
           {
             if (sl = f(f, n->l_); !sl)
             {
@@ -108,6 +108,19 @@ public:
       f(f, r);
 
       return std::pair(q, s);
+    }
+
+    static auto emplace(auto& r, auto&& ...a)
+      noexcept(noexcept(new node(key_type(std::forward<decltype(a)>(a)...))))
+      requires(
+        detail::Comparable<
+          Compare,
+          key_type(std::forward<decltype(a)>(a)...),
+          key_type
+        >
+      )
+    {
+      return emplace(r, key_type(std::forward<decltype(a)>(a)...));
     }
 
     auto rebalance(size_type const sz) noexcept
@@ -209,47 +222,62 @@ public:
 
   //
   size_type count(auto&& k, char = {}) const noexcept
-    requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     return bool(detail::find(root_, k));
   }
 
-  size_type count(key_type const& k) const noexcept { return count(k, {}); }
+  size_type count(key_type k) const noexcept
+  {
+    return count(std::move(k), {});
+  }
 
   //
+  template <int = 0>
   auto emplace(auto&& ...a)
-    noexcept(noexcept(node::emplace(root_, std::forward<decltype(a)>(a)...)))
+    noexcept(noexcept(
+        node::emplace(
+          root_,
+          std::forward<decltype(a)>(a)...
+        )
+      )
+    )
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
     return std::tuple(iterator(&root_, n), s);
   }
 
+  auto emplace(key_type k)
+    noexcept(noexcept(emplace<0>(root_, std::move(k))))
+  {
+    return emplace<0>(root_, std::move(k));
+  }
+
   //
   auto equal_range(auto&& k, char = {}) noexcept
-    requires(detail::Comparable<Compare, key_type, decltype(k)>)
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
     return std::pair(iterator(&root_, nl), iterator(&root_, g));
   }
 
+  auto equal_range(key_type k) noexcept
+  {
+    return equal_range(std::move(k), {});
+  }
+
   auto equal_range(auto&& k, char = {}) const noexcept
-    requires(detail::Comparable<Compare, key_type, decltype(k)>)
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
     return std::pair(const_iterator(&root_, nl), const_iterator(&root_, g));
   }
 
-  auto equal_range(key_type const& k) noexcept
+  auto equal_range(key_type k) const noexcept
   {
-    return equal_range(k, {});
-  }
-
-  auto equal_range(key_type const& k) const noexcept
-  {
-    return equal_range(k, {});
+    return equal_range(std::move(k), {});
   }
 
   //
@@ -261,14 +289,14 @@ public:
 
   size_type erase(auto&& k, char = {})
     noexcept(noexcept(detail::erase(root_, k)))
-    requires(detail::Comparable<Compare, key_type, decltype(k)>)
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return bool(detail::erase(root_, k));
   }
 
-  size_type erase(key_type const& k) noexcept(noexcept(erase(k, {})))
+  size_type erase(key_type k) noexcept(noexcept(erase(k, {})))
   {
-    return erase(k, {});
+    return erase(std::move(k), {});
   }
 
   //
@@ -304,10 +332,17 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 template <typename K, class C>
-inline auto erase(set<K, C>& c, auto const& k)
-  noexcept(noexcept(c.erase(k)))
+inline auto erase(set<K, C>& c, auto&& k, char = {})
+  noexcept(noexcept(c.erase(std::forward<decltype(k)>(k))))
 {
-  return c.erase(k);
+  return c.erase(std::forward<decltype(k)>(k));
+}
+
+template <typename K, class C>
+inline auto erase(set<K, C>& c, K k)
+  noexcept(noexcept(erase(c, std::move(k), {})))
+{
+  return erase(c, std::move(k), {});
 }
 
 template <typename K, class C>
