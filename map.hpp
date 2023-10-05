@@ -315,7 +315,7 @@ public:
     return std::tuple(iterator(&root_, n), s);
   }
 
-  auto emplace(key_type&& k, auto&& ...b)
+  auto emplace(key_type k, auto&& ...b)
     noexcept(noexcept(
         emplace<0>(std::move(k), std::forward<decltype(b)>(b)...)
       )
@@ -436,7 +436,7 @@ public:
     return std::tuple(iterator(&root_, n), s);
   }
 
-  auto insert_or_assign(key_type&& k, auto&& v)
+  auto insert_or_assign(key_type k, auto&& v)
     noexcept(noexcept(
         insert_or_assign<0>(std::move(k), std::forward<decltype(v)>(v))
       )
