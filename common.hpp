@@ -143,10 +143,7 @@ bool contains(auto&& k) const noexcept
   return detail::find(root_, k);
 }
 
-bool contains(key_type k) const noexcept
-{
-  return contains<0>(std::move(k));
-}
+auto contains(key_type k) const noexcept { return contains<0>(std::move(k)); }
 
 //
 iterator erase(const_iterator a, const_iterator const b)
