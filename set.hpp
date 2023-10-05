@@ -49,7 +49,7 @@ public:
     }
 
     //
-    auto&& key() const noexcept { return kv_; }
+    auto& key() const noexcept { return kv_; }
 
     //
     static auto emplace(auto& r, auto&& k)
@@ -73,7 +73,7 @@ public:
           //
           size_type sl, sr;
 
-          if (auto const c(cmp(k, n->key)); c < 0)
+          if (auto const c(cmp(k, n->key())); c < 0)
           {
             if (sl = f(f, n->l_); !sl)
             {
@@ -111,16 +111,16 @@ public:
     }
 
     static auto emplace(auto& r, auto&& ...a)
-      noexcept(noexcept(new node(key_type(std::forward<decltype(a)>(a)...))))
-      requires(
-        detail::Comparable<
-          Compare,
-          key_type(std::forward<decltype(a)>(a)...),
-          key_type
-        >
+      noexcept(noexcept(
+          node::emplace(
+            r,
+            key_type(std::forward<decltype(a)>(a)...)
+          )
+        )
       )
+      requires(std::constructible_from<key_type, decltype(a)...>)
     {
-      return emplace(r, key_type(std::forward<decltype(a)>(a)...));
+      return node::emplace(r, key_type(std::forward<decltype(a)>(a)...));
     }
 
     auto rebalance(size_type const sz) noexcept
@@ -232,25 +232,12 @@ public:
   }
 
   //
-  template <int = 0>
   auto emplace(auto&& ...a)
-    noexcept(noexcept(
-        node::emplace(
-          root_,
-          std::forward<decltype(a)>(a)...
-        )
-      )
-    )
+    noexcept(noexcept(node::emplace(root_, std::forward<decltype(a)>(a)...)))
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
     return std::tuple(iterator(&root_, n), s);
-  }
-
-  auto emplace(key_type k)
-    noexcept(noexcept(emplace<0>(root_, std::move(k))))
-  {
-    return emplace<0>(root_, std::move(k));
   }
 
   //
