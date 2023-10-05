@@ -273,16 +273,17 @@ public:
     return {&root_, detail::erase(root_, *i)};
   }
 
-  size_type erase(auto&& k, char = {})
+  template <int = 0>
+  size_type erase(auto&& k)
     noexcept(noexcept(detail::erase(root_, k)))
     requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return bool(detail::erase(root_, k));
   }
 
-  size_type erase(key_type k) noexcept(noexcept(erase(k, {})))
+  auto erase(key_type k) noexcept(noexcept(erase<0>(std::move(k))))
   {
-    return erase(std::move(k), {});
+    return erase<0>(std::move(k));
   }
 
   //
