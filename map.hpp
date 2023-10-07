@@ -324,7 +324,8 @@ public:
   }
 
   //
-  auto equal_range(auto&& k, char = {}) noexcept
+  template <int = 0>
+  auto equal_range(auto&& k) noexcept
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -333,10 +334,11 @@ public:
 
   auto equal_range(key_type k) noexcept
   {
-    return equal_range(std::move(k), {});
+    return equal_range<0>(std::move(k));
   }
 
-  auto equal_range(auto&& k, char = {}) const noexcept
+  template <int = 0>
+  auto equal_range(auto&& k) const noexcept
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -345,7 +347,7 @@ public:
 
   auto equal_range(key_type k) const noexcept
   {
-    return equal_range(std::move(k), {});
+    return equal_range<0>(std::move(k));
   }
 
   //
