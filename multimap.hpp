@@ -65,28 +65,32 @@ public:
     auto& key() const noexcept { return std::get<0>(v_.front()); }
 
     //
-    static auto emplace(auto& r, auto&& a, auto&& ...b)
-      noexcept(
-        noexcept(
+    static auto emplace(auto& r, auto&& k, auto&& ...a)
+      noexcept(noexcept(
           new node(
-            key_type(std::forward<decltype(a)>(a)),
-            std::forward<decltype(b)>(b)...
+            std::forward<decltype(k)>(k),
+            std::forward<decltype(a)>(a)...
           )
         )
       )
     {
       node* q;
 
-      key_type k(std::forward<decltype(a)>(a));
-
       auto const f([&](auto&& f, auto& n)
-        noexcept(
-          noexcept(new node(std::move(k), std::forward<decltype(b)>(b)...))
+        noexcept(noexcept(
+            new node(
+              std::forward<decltype(k)>(k),
+              std::forward<decltype(a)>(a)...
+            )
+          )
         ) -> size_type
         {
           if (!n)
           {
-            n = q = new node(std::move(k), std::forward<decltype(b)>(b)...);
+            n = q = new node(
+                std::forward<decltype(k)>(k),
+                std::forward<decltype(a)>(a)...
+              );
 
             return 1;
           }
@@ -116,8 +120,8 @@ public:
           {
             (q = n)->v_.emplace_back(
               std::piecewise_construct_t{},
-              std::forward_as_tuple(std::move(k)),
-              std::forward_as_tuple(std::forward<decltype(b)>(b)...)
+              std::forward_as_tuple(std::forward<decltype(k)>(k)),
+              std::forward_as_tuple(std::forward<decltype(a)>(a)...)
             );
 
             return 0;
@@ -361,30 +365,34 @@ public:
   auto count(key_type k) const noexcept { return count<0>(std::move(k)); }
 
   //
-  iterator emplace(Key&& k, auto&& ...a)
+  template <int = 0>
+  iterator emplace(auto&& k, auto&& ...a)
     noexcept(noexcept(
         node::emplace(
           root_,
-          std::move(k),
+          std::forward<decltype(k)>(k),
           std::forward<decltype(a)>(a)...
         )
       )
     )
   {
     return {
-      &root_,
-      node::emplace(
-        root_,
-        std::move(k),
-        std::forward<decltype(a)>(a)...
-      )
-    };
+        &root_,
+        node::emplace(
+          root_,
+          std::forward<decltype(k)>(k),
+          std::forward<decltype(a)>(a)...
+        )
+      };
   }
 
-  iterator emplace(auto&& ...a)
-    noexcept(noexcept(node::emplace(root_, std::forward<decltype(a)>(a)...)))
+  auto emplace(key_type k, auto&& ...a)
+    noexcept(noexcept(
+        emplace<0>(std::move(k), std::forward<decltype(a)>(a)...)
+      )
+    )
   {
-    return {&root_, node::emplace(root_, std::forward<decltype(a)>(a)...)};
+    return emplace<0>(std::move(k), std::forward<decltype(a)>(a)...);
   }
 
   //
@@ -462,12 +470,19 @@ public:
     std::for_each(
       i,
       j,
-      [&](auto&& v) noexcept(noexcept(
-          emplace(std::get<0>(v), std::get<1>(v))
+      [&](auto&& v)
+        noexcept(noexcept(
+            emplace(
+              std::get<0>(std::forward<decltype(v)>(v)),
+              std::get<1>(std::forward<decltype(v)>(v))
+            )
+          )
         )
-      )
       {
-        emplace(std::get<0>(v), std::get<1>(v));
+        emplace(
+          std::get<0>(std::forward<decltype(v)>(v)),
+          std::get<1>(std::forward<decltype(v)>(v))
+        );
       }
     );
   }
