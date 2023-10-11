@@ -83,7 +83,13 @@ public:
           )
         )
       )
-      requires(detail::Comparable<Compare, decltype(k), key_type>)
+      requires(
+        detail::Comparable<
+          Compare,
+          decltype(std::get<0>(k)),
+          decltype(node::m_)
+        >
+      )
     {
       auto const& [mink, maxk](k);
 
@@ -307,7 +313,7 @@ public:
     }
 
     static void reset_max(auto const n, auto&& k) noexcept
-      requires(detail::Comparable<Compare, decltype(k), decltype(n->key())>)
+      requires(detail::Comparable<Compare, decltype(k), decltype(node::m_)>)
     {
       auto const f([&](auto&& f, auto const n) noexcept -> decltype(node::m_)
         {
@@ -484,7 +490,13 @@ public:
   //
   template <int = 0>
   size_type count(auto&& k) const noexcept
-    requires(detail::Comparable<Compare, decltype(k), key_type>)
+    requires(
+      detail::Comparable<
+        Compare,
+        decltype(std::get<0>(k)),
+        decltype(node::m_)
+      >
+    )
   {
     if (auto n(root_); n)
     {
