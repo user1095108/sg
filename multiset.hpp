@@ -304,7 +304,8 @@ public:
   }
 
   //
-  size_type count(auto&& k, char = {}) const noexcept
+  template <int = 0>
+  size_type count(auto&& k) const noexcept
     requires(detail::Comparable<Compare, key_type, decltype(k)>)
   {
     if (auto n(root_); n)
@@ -329,7 +330,7 @@ public:
     return {};
   }
 
-  size_type count(key_type const& k) const noexcept { return count(k, {}); }
+  auto count(key_type k) const noexcept { return count<0>(std::move(k)); }
 
   //
   iterator emplace(auto&& k)
