@@ -439,18 +439,21 @@ public:
     noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
   {
     return {
-      &root_,
-      node::emplace(root_, std::get<0>(v), std::get<1>(v))
-    };
+        &root_,
+        node::emplace(root_, std::get<0>(v), std::get<1>(v))
+      };
   }
 
   iterator insert(value_type&& v)
-    noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
+    noexcept(noexcept(
+        node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v)))
+      )
+    )
   {
     return {
-      &root_,
-      node::emplace(root_, std::get<0>(v), std::get<1>(v))
-    };
+        &root_,
+        node::emplace(root_, std::get<0>(v), std::move(std::get<1>(v)))
+      };
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
