@@ -73,6 +73,7 @@ public:
           )
         )
       )
+      requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
       node* q;
 
@@ -102,7 +103,7 @@ public:
           {
             if (sl = f(f, n->l_); !sl)
             {
-              return 0;
+              return {};
             }
 
             sr = detail::size(n->r_);
@@ -111,7 +112,7 @@ public:
           {
             if (sr = f(f, n->r_); !sr)
             {
-              return 0;
+              return {};
             }
 
             sl = detail::size(n->l_);
@@ -124,7 +125,7 @@ public:
               std::forward_as_tuple(std::forward<decltype(a)>(a)...)
             );
 
-            return 0;
+            return {};
           }
 
           //
@@ -406,7 +407,7 @@ public:
 
   auto equal_range(key_type k) noexcept
   {
-    return equal_range(std::move(k));
+    return equal_range<0>(std::move(k));
   }
 
   template <int = 0>
@@ -419,7 +420,7 @@ public:
 
   auto equal_range(key_type k) const noexcept
   {
-    return equal_range(std::move(k));
+    return equal_range<0>(std::move(k));
   }
 
   //
