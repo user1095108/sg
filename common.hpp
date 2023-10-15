@@ -1,6 +1,6 @@
 // self-assign neglected
 auto& operator=(this_class const& o)
-  noexcept(noexcept(clear()) && noexcept(insert(o.begin(), o.end())))
+  noexcept(noexcept(clear(), insert(o.begin(), o.end())))
   requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
@@ -21,7 +21,7 @@ auto& operator=(this_class&& o)
 }
 
 auto& operator=(std::initializer_list<value_type> l)
-  noexcept(noexcept(clear()) && noexcept(insert(l.begin(), l.end())))
+  noexcept(noexcept(clear(), insert(l.begin(), l.end())))
   requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
