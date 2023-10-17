@@ -443,13 +443,6 @@ private:
 public:
   intervalmap() = default;
 
-  intervalmap(std::initializer_list<value_type> l)
-    noexcept(noexcept(*this = l))
-    requires(std::is_copy_constructible_v<value_type>)
-  {
-    *this = l;
-  }
-
   intervalmap(intervalmap const& o)
     noexcept(noexcept(*this = o))
     requires(std::is_copy_constructible_v<value_type>)
@@ -468,6 +461,13 @@ public:
     requires(std::is_constructible_v<value_type, decltype(*i)>)
   {
     insert(i, j);
+  }
+
+  intervalmap(std::initializer_list<value_type> l)
+    noexcept(noexcept(*this = l))
+    requires(std::is_copy_constructible_v<value_type>)
+  {
+    insert(l.begin(), l.end());
   }
 
   ~intervalmap() noexcept(noexcept(delete root_)) { delete root_; }

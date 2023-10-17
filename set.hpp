@@ -186,18 +186,11 @@ private:
 public:
   set() = default;
 
-  set(std::initializer_list<value_type> l)
-    noexcept(noexcept(*this = l))
-    requires(std::is_copy_constructible_v<value_type>)
-  {
-    *this = l;
-  }
-
   set(set const& o) 
     noexcept(noexcept(*this = o))
     requires(std::is_copy_constructible_v<value_type>)
   {
-    *this = o;
+    insert(o.begin(), o.end());
   }
 
   set(set&& o)
@@ -208,9 +201,14 @@ public:
 
   set(std::input_iterator auto const i, decltype(i) j)
     noexcept(noexcept(insert(i, j)))
-    requires(std::is_constructible_v<Key, decltype(*i)>)
   {
     insert(i, j);
+  }
+
+  set(std::initializer_list<value_type> l)
+    noexcept(noexcept(*this = l))
+  {
+    insert(l.begin(), l.end());
   }
 
   ~set() noexcept(noexcept(delete root_)) { delete root_; }

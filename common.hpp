@@ -22,7 +22,6 @@ auto& operator=(this_class&& o)
 
 auto& operator=(std::initializer_list<value_type> l)
   noexcept(noexcept(clear(), insert(l.begin(), l.end())))
-  requires(std::is_copy_constructible_v<value_type>)
 {
   clear();
   insert(l.begin(), l.end());
@@ -40,16 +39,14 @@ friend bool operator==(this_class const& l, this_class const& r)
 friend auto operator<=>(this_class const& l, this_class const& r)
   noexcept(noexcept(
       std::lexicographical_compare_three_way(
-        l.begin(), l.end(),
-        r.begin(), r.end()
+        l.begin(), l.end(), r.begin(), r.end()
       )
     )
   )
   requires(std::three_way_comparable<value_type>)
 {
   return std::lexicographical_compare_three_way(
-      l.begin(), l.end(),
-      r.begin(), r.end()
+      l.begin(), l.end(), r.begin(), r.end()
     );
 }
 

@@ -272,13 +272,6 @@ private:
 public:
   multiset() = default;
 
-  multiset(std::initializer_list<value_type> l)
-    noexcept(noexcept(*this = l))
-    requires(std::is_copy_constructible_v<value_type>)
-  {
-    *this = l;
-  }
-
   multiset(multiset const& o)
     noexcept(noexcept(*this = o))
     requires(std::is_copy_constructible_v<value_type>)
@@ -294,9 +287,14 @@ public:
 
   multiset(std::input_iterator auto const i, decltype(i) j)
     noexcept(noexcept(insert(i, j)))
-    requires(std::is_constructible_v<value_type, decltype(*i)>)
   {
     insert(i, j);
+  }
+
+  multiset(std::initializer_list<value_type> l)
+    noexcept(noexcept(*this = l))
+  {
+    insert(l.begin(), l.end());
   }
 
   ~multiset() noexcept(noexcept(delete root_)) { delete root_; }
