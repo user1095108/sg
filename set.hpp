@@ -187,7 +187,7 @@ public:
   set() = default;
 
   set(set const& o) 
-    noexcept(noexcept(*this = o))
+    noexcept(noexcept(insert(o.begin(), o.end())))
     requires(std::is_copy_constructible_v<value_type>)
   {
     insert(o.begin(), o.end());
@@ -206,7 +206,7 @@ public:
   }
 
   set(std::initializer_list<value_type> l)
-    noexcept(noexcept(*this = l))
+    noexcept(noexcept(insert(l.begin(), l.end())))
   {
     insert(l.begin(), l.end());
   }

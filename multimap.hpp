@@ -293,10 +293,10 @@ public:
   multimap() = default;
 
   multimap(multimap const& o)
-    noexcept(noexcept(*this = o))
+    noexcept(noexcept(insert(o.begin(), o.end())))
     requires(std::is_copy_constructible_v<value_type>)
   {
-    *this = o;
+    insert(o.begin(), o.end());
   }
 
   multimap(multimap&& o)

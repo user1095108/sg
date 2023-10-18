@@ -273,10 +273,10 @@ public:
   multiset() = default;
 
   multiset(multiset const& o)
-    noexcept(noexcept(*this = o))
+    noexcept(noexcept(insert(o.begin(), o.end())))
     requires(std::is_copy_constructible_v<value_type>)
   {
-    *this = o;
+    insert(o.begin(), o.end());
   }
 
   multiset(multiset&& o)
@@ -292,7 +292,7 @@ public:
   }
 
   multiset(std::initializer_list<value_type> l)
-    noexcept(noexcept(*this = l))
+    noexcept(noexcept(insert(l.begin(), l.end())))
   {
     insert(l.begin(), l.end());
   }
