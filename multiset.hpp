@@ -433,10 +433,10 @@ inline auto erase(multiset<K, C>& c, auto&& k)
 }
 
 template <typename K, class C>
-inline auto erase(multiset<K, C>& c, K k)
-  noexcept(noexcept(erase<0>(c, std::move(k))))
+inline auto erase(multiset<K, C>& c, K const& k)
+  noexcept(noexcept(erase<0>(c, k)))
 {
-  return erase<0>(c, std::move(k));
+  return erase<0>(c, k);
 }
 
 template <typename K, class C>

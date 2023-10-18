@@ -496,10 +496,10 @@ inline auto erase(multimap<K, V, C>& c, auto&& k)
 }
 
 template <typename K, typename V, class C>
-inline auto erase(multimap<K, V, C>& c, K k)
-  noexcept(noexcept(erase<0>(c, std::move(k))))
+inline auto erase(multimap<K, V, C>& c, K const& k)
+  noexcept(noexcept(erase<0>(c, k)))
 {
-  return erase<0>(c, std::move(k));
+  return erase<0>(c, k);
 }
 
 template <typename K, typename V, class C>
