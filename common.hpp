@@ -185,6 +185,7 @@ void insert(std::initializer_list<value_type> l)
 //
 template <int = 0>
 iterator lower_bound(auto&& k) noexcept
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<0>(equal_range(k));
 }
@@ -196,6 +197,7 @@ auto lower_bound(key_type k) noexcept
 
 template <int = 0>
 const_iterator lower_bound(auto&& k) const noexcept
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<0>(equal_range(k));
 }
@@ -208,6 +210,7 @@ auto lower_bound(key_type k) const noexcept
 //
 template <int = 0>
 iterator upper_bound(auto&& k) noexcept
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<1>(equal_range(k));
 }
@@ -219,6 +222,7 @@ auto upper_bound(key_type k) noexcept
 
 template <int = 0>
 const_iterator upper_bound(auto&& k) const noexcept
+  requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<1>(equal_range(k));
 }
