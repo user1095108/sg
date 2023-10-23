@@ -220,7 +220,11 @@ public:
 
   //
   template <int = 0>
-  bool count(auto const& k) const noexcept { return detail::find(root_, k); }
+  bool count(auto const& k) const noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
+  {
+    return detail::find(root_, k);
+  }
 
   auto count(key_type const k) const noexcept { return count<0>(k); }
 
@@ -236,6 +240,7 @@ public:
   //
   template <int = 0>
   auto equal_range(auto const& k) noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -246,6 +251,7 @@ public:
 
   template <int = 0>
   auto equal_range(auto const& k) const noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -261,7 +267,8 @@ public:
   template <int = 0>
   size_type erase(auto const& k)
     noexcept(noexcept(detail::erase(root_, k)))
-    requires(!std::convertible_to<decltype(k), const_iterator>)
+    requires(detail::Comparable<Compare, decltype(k), key_type> &&
+      !std::convertible_to<decltype(k), const_iterator>)
   {
     return bool(detail::erase(root_, k));
   }
@@ -281,6 +288,7 @@ public:
   template <int = 0>
   auto insert(auto&& k)
     noexcept(noexcept(node::emplace(root_, std::forward<decltype(k)>(k))))
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(k)>(k)));
 

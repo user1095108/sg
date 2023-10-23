@@ -250,6 +250,7 @@ public:
           typename node::empty_t())
       )
     )
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return std::get<1>(
         std::get<0>(
@@ -267,6 +268,7 @@ public:
 
   template <int = 0>
   auto& at(auto const& k) noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return detail::find(root_, k)->kv_;
   }
@@ -275,6 +277,7 @@ public:
 
   template <int = 0>
   auto const& at(auto const& k) const noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return detail::find(root_, k)->kv_;
   }
@@ -284,6 +287,7 @@ public:
   //
   template <int = 0>
   size_type count(auto const& k) const noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return bool(detail::find(root_, k));
   }
@@ -301,6 +305,7 @@ public:
         )
       )
     )
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [n, s](
       node::emplace(
@@ -325,6 +330,7 @@ public:
   //
   template <int = 0>
   auto equal_range(auto const& k) noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -335,6 +341,7 @@ public:
 
   template <int = 0>
   auto equal_range(auto const& k) const noexcept
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
@@ -350,7 +357,8 @@ public:
   template <int = 0>
   size_type erase(auto const& k)
     noexcept(noexcept(detail::erase(root_, k)))
-    requires(!std::convertible_to<decltype(k), const_iterator>)
+    requires(detail::Comparable<Compare, decltype(k), key_type> &&
+      !std::convertible_to<decltype(k), const_iterator>)
   {
     return bool(detail::erase(root_, k));
   }
@@ -376,6 +384,13 @@ public:
           std::get<1>(std::forward<decltype(v)>(v))
         )
       )
+    )
+    requires(
+      detail::Comparable<
+        Compare,
+        decltype(std::get<0>(std::forward<decltype(v)>(v))),
+        key_type
+      >
     )
   {
     auto const [n, s](
@@ -429,6 +444,7 @@ public:
         )
       )
     )
+    requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     auto const [n, s](
       node::emplace(
