@@ -63,9 +63,9 @@ iterator end() noexcept { return {&root_}; }
 const_iterator begin() const noexcept
 {
   return {
-    &root_,
-    root_ ? detail::first_node(root_) : nullptr
-  };
+      &root_,
+      root_ ? detail::first_node(root_) : nullptr
+    };
 }
 
 const_iterator end() const noexcept { return {&root_}; }
@@ -73,9 +73,9 @@ const_iterator end() const noexcept { return {&root_}; }
 const_iterator cbegin() const noexcept
 {
   return {
-    &root_,
-    root_ ? detail::first_node(root_) : nullptr
-  };
+      &root_,
+      root_ ? detail::first_node(root_) : nullptr
+    };
 }
 
 const_iterator cend() const noexcept { return {&root_}; }
@@ -89,8 +89,8 @@ reverse_iterator rbegin() noexcept
 reverse_iterator rend() noexcept
 {
   return reverse_iterator(
-    iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
-  );
+      iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
+    );
 }
 
 // const reverse iterators
@@ -102,8 +102,8 @@ const_reverse_iterator crbegin() const noexcept
 const_reverse_iterator crend() const noexcept
 {
   return const_reverse_iterator(
-    const_iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
-  );
+      const_iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
+    );
 }
 
 //
@@ -118,13 +118,13 @@ void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
 
 //
 template <int = 0>
-bool contains(auto&& k) const noexcept
+bool contains(auto const& k) const noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return detail::find(root_, k);
 }
 
-auto contains(key_type k) const noexcept { return contains<0>(std::move(k)); }
+auto contains(key_type const k) const noexcept { return contains<0>(k); }
 
 //
 iterator erase(const_iterator a, const_iterator const b)
@@ -157,22 +157,22 @@ iterator erase(std::initializer_list<const_iterator> l)
 
 //
 template <int = 0>
-iterator find(auto&& k) noexcept
+iterator find(auto const& k) noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return {&root_, detail::find(root_, k)};
 }
 
-auto find(key_type k) noexcept { return find<0>(std::move(k)); }
+auto find(key_type const k) noexcept { return find<0>(k); }
 
 template <int = 0>
-const_iterator find(auto&& k) const noexcept
+const_iterator find(auto const& k) const noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return {&root_, detail::find(root_, k)};
 }
 
-auto find(key_type k) const noexcept { return find<0>(std::move(k)); }
+auto find(key_type const k) const noexcept { return find<0>(k); }
 
 //
 void insert(std::initializer_list<value_type> l)
@@ -183,44 +183,44 @@ void insert(std::initializer_list<value_type> l)
 
 //
 template <int = 0>
-iterator lower_bound(auto&& k) noexcept
+iterator lower_bound(auto const& k) noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<0>(equal_range(k));
 }
 
-auto lower_bound(key_type k) noexcept { return lower_bound<0>(std::move(k)); }
+auto lower_bound(key_type const k) noexcept { return lower_bound<0>(k); }
 
 template <int = 0>
-const_iterator lower_bound(auto&& k) const noexcept
+const_iterator lower_bound(auto const& k) const noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<0>(equal_range(k));
 }
 
-auto lower_bound(key_type k) const noexcept
+auto lower_bound(key_type const k) const noexcept
 {
-  return lower_bound<0>(std::move(k));
+  return lower_bound<0>(k);
 }
 
 //
 template <int = 0>
-iterator upper_bound(auto&& k) noexcept
+iterator upper_bound(auto const& k) noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<1>(equal_range(k));
 }
 
-auto upper_bound(key_type k) noexcept { return upper_bound<0>(std::move(k)); }
+auto upper_bound(key_type const k) noexcept { return upper_bound<0>(k); }
 
 template <int = 0>
-const_iterator upper_bound(auto&& k) const noexcept
+const_iterator upper_bound(auto const& k) const noexcept
   requires(detail::Comparable<Compare, decltype(k), key_type>)
 {
   return std::get<1>(equal_range(k));
 }
 
-auto upper_bound(key_type k) const noexcept
+auto upper_bound(key_type const k) const noexcept
 {
-  return upper_bound<0>(std::move(k));
+  return upper_bound<0>(k);
 }
