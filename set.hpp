@@ -280,9 +280,9 @@ public:
   //
   template <int = 0>
   auto insert(auto&& k)
-    noexcept(noexcept(node::emplace(root_, k)))
+    noexcept(noexcept(node::emplace(root_, std::move(k))))
   {
-    auto const [n, s](node::emplace(root_, k));
+    auto const [n, s](node::emplace(root_, std::move(k)));
 
     return std::tuple(iterator(&root_, n), s);
   }
