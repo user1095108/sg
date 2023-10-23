@@ -369,9 +369,22 @@ public:
   //
   template <int = 0>
   auto insert(auto&& v)
-    noexcept(noexcept(node::emplace(root_, std::get<0>(v), std::get<1>(v))))
+    noexcept(noexcept(
+        node::emplace(
+          root_,
+          std::get<0>(std::forward<decltype(v)>(v)),
+          std::get<1>(std::forward<decltype(v)>(v))
+        )
+      )
+    )
   {
-    auto const [n, s](node::emplace(root_, std::get<0>(v), std::get<1>(v)));
+    auto const [n, s](
+      node::emplace(
+        root_,
+        std::get<0>(std::forward<decltype(v)>(v)),
+        std::get<1>(std::forward<decltype(v)>(v))
+      )
+    );
 
     return std::tuple(iterator(&root_, n), s);
   }
