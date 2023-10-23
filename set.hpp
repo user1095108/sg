@@ -220,12 +220,9 @@ public:
 
   //
   template <int = 0>
-  auto count(auto&& k) const noexcept
-  {
-    return bool(detail::find(root_, k));
-  }
+  bool count(auto const& k) const noexcept { return detail::find(root_, k); }
 
-  auto count(key_type k) const noexcept { return count<0>(std::move(k)); }
+  auto count(key_type const k) const noexcept { return count<0>(k); }
 
   //
   auto emplace(auto&& ...a)
@@ -238,43 +235,40 @@ public:
 
   //
   template <int = 0>
-  auto equal_range(auto&& k) noexcept
+  auto equal_range(auto const& k) noexcept
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
     return std::pair(iterator(&root_, nl), iterator(&root_, g));
   }
 
-  auto equal_range(key_type k) noexcept
-  {
-    return equal_range<0>(std::move(k));
-  }
+  auto equal_range(key_type const k) noexcept { return equal_range<0>(k); }
 
   template <int = 0>
-  auto equal_range(auto&& k) const noexcept
+  auto equal_range(auto const& k) const noexcept
   {
     auto const [nl, g](detail::equal_range(root_, k));
 
     return std::pair(const_iterator(&root_, nl), const_iterator(&root_, g));
   }
 
-  auto equal_range(key_type k) const noexcept
+  auto equal_range(key_type const k) const noexcept
   {
-    return equal_range<0>(std::move(k));
+    return equal_range<0>(k);
   }
 
   //
   template <int = 0>
-  size_type erase(auto&& k)
+  size_type erase(auto const& k)
     noexcept(noexcept(detail::erase(root_, k)))
     requires(!std::convertible_to<decltype(k), const_iterator>)
   {
     return bool(detail::erase(root_, k));
   }
 
-  auto erase(key_type k) noexcept(noexcept(erase<0>(std::move(k))))
+  auto erase(key_type const k) noexcept(noexcept(erase<0>(k)))
   {
-    return erase<0>(std::move(k));
+    return erase<0>(k);
   }
 
   iterator erase(const_iterator const i)
@@ -284,20 +278,19 @@ public:
   }
 
   //
-  auto insert(value_type const& v)
-    noexcept(noexcept(node::emplace(root_, v)))
+  template <int = 0>
+  auto insert(auto&& k)
+    noexcept(noexcept(node::emplace(root_, k)))
   {
-    auto const [n, s](node::emplace(root_, v));
+    auto const [n, s](node::emplace(root_, k));
 
     return std::tuple(iterator(&root_, n), s);
   }
 
-  auto insert(value_type&& v)
-    noexcept(noexcept(node::emplace(root_, std::move(v))))
+  auto insert(value_type k)
+    noexcept(noexcept(insert<0>(std::move(k))))
   {
-    auto const [n, s](node::emplace(root_, std::move(v)));
-
-    return std::tuple(iterator(&root_, n), s);
+    return insert<0>(std::move(k));
   }
 
   void insert(std::input_iterator auto const i, decltype(i) j)
@@ -316,14 +309,14 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 template <int = 0, typename K, class C>
-inline auto erase(set<K, C>& c, auto&& k)
+inline auto erase(set<K, C>& c, auto const& k)
   noexcept(noexcept(c.erase(std::forward<decltype(k)>(k))))
 {
   return c.erase(std::forward<decltype(k)>(k));
 }
 
 template <typename K, class C>
-inline auto erase(set<K, C>& c, K const& k)
+inline auto erase(set<K, C>& c, K const k)
   noexcept(noexcept(erase<0>(c, k)))
 {
   return erase<0>(c, k);
@@ -331,10 +324,7 @@ inline auto erase(set<K, C>& c, K const& k)
 
 template <typename K, class C>
 inline auto erase_if(set<K, C>& c, auto pred)
-  noexcept(
-    noexcept(pred(std::declval<K>())) &&
-    noexcept(c.erase(c.begin()))
-  )
+  noexcept(noexcept(pred(std::declval<K>()), c.erase(c.begin())))
 {
   typename std::remove_reference_t<decltype(c)>::size_type r{};
 
