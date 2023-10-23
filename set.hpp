@@ -187,10 +187,10 @@ public:
   set() = default;
 
   set(set const& o) 
-    noexcept(noexcept(insert(o.begin(), o.end())))
-    requires(std::is_copy_constructible_v<value_type>)
+    noexcept(noexcept(set(o.begin(), o.end())))
+    requires(std::is_copy_constructible_v<value_type>):
+    set(o.begin(), o.end())
   {
-    insert(o.begin(), o.end());
   }
 
   set(set&& o)

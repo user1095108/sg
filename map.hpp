@@ -211,10 +211,10 @@ public:
   map() = default;
 
   map(map const& o)
-    noexcept(noexcept(insert(o.begin(), o.end())))
-    requires(std::is_copy_constructible_v<value_type>)
+    noexcept(noexcept(map(o.begin(), o.end())))
+    requires(std::is_copy_constructible_v<value_type>):
+    map(o.begin(), o.end())
   {
-    insert(o.begin(), o.end());
   }
 
   map(map&& o)
