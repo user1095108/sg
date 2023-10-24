@@ -77,7 +77,7 @@ inline auto parent_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  auto&& key(n->key());
+  auto const& key(n->key());
 
   for (n = {};;)
   {
@@ -106,7 +106,7 @@ inline auto next_node(auto r0, decltype(r0) n) noexcept
   }
   else
   {
-    auto&& key(n->key());
+    auto const& key(n->key());
 
     for (n = {};;)
     {
@@ -136,7 +136,7 @@ inline auto prev_node(auto r0, decltype(r0) n) noexcept
   }
   else
   {
-    auto&& key(n->key());
+    auto const& key(n->key());
 
     for (n = {};;)
     {
@@ -171,7 +171,7 @@ inline size_type size(auto const n) noexcept
 }
 
 //
-inline auto equal_range(auto n, auto&& k) noexcept
+inline auto equal_range(auto n, auto const& k) noexcept
   requires(Comparable<decltype(n->cmp), decltype(k), decltype(n->key())>)
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
@@ -202,7 +202,7 @@ inline auto equal_range(auto n, auto&& k) noexcept
   return std::pair(n ? n : g, g);
 }
 
-inline auto find(auto n, auto& k) noexcept
+inline auto find(auto n, auto const& k) noexcept
   requires(Comparable<decltype(n->cmp), decltype(k), decltype(n->key())>)
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
