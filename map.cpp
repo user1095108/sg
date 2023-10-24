@@ -5,6 +5,7 @@
 #include "map.hpp"
 
 using namespace std::literals::string_literals;
+using namespace std::literals::string_view_literals;
 
 //////////////////////////////////////////////////////////////////////////////
 void dump(auto n)
@@ -91,9 +92,9 @@ int main()
 
   sg::map<std::string, std::unique_ptr<int>> ll;
   ll["lalala"] = std::make_unique<int>(11);
-  erase(ll, "lalala");
-  erase(ll, {"lala", 4});
-  erase(ll, {"lalala"});
+  erase(ll, "lalala"); // bad
+  erase(ll, "lalala"sv); // best
+  erase(ll, {"lalala"}); // convenience
 
   return 0;
 }
