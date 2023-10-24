@@ -324,6 +324,14 @@ inline auto erase(set<K, C>& c, auto const& k)
   return c.erase(k);
 }
 
+template <int = 0, typename K, class C>
+inline auto erase(set<K, C>& c, auto const& k)
+  noexcept(noexcept(c.erase(K(k))))
+  requires(!detail::Comparable<C, decltype(k), K>)
+{
+  return c.erase(K(k));
+}
+
 template <typename K, class C>
 inline auto erase(set<K, C>& c, K const k)
   noexcept(noexcept(erase<0>(c, k)))

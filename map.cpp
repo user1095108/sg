@@ -89,5 +89,11 @@ int main()
 
   std::cout << std::chrono::nanoseconds(timer_t::now() - t0).count() << std::endl;
 
+  sg::map<std::string, std::unique_ptr<int>> ll;
+  ll["lalala"] = std::make_unique<int>(11);
+  erase(ll, "lalala");
+  erase(ll, {"lala", 4});
+  erase(ll, {"lalala"});
+
   return 0;
 }
