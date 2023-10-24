@@ -145,9 +145,9 @@ public:
       }
 
       auto const f([l](auto&& f,
-        size_type const a, decltype(a) b) noexcept -> node*
+        std::size_t const a, decltype(a) b) noexcept -> node*
         {
-          auto const i((a + b) / 2);
+          auto const i(std::midpoint(a, b));
           auto const n(l[i]);
 
           switch (b - a)
