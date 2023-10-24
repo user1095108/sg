@@ -34,33 +34,20 @@ public:
   {
     using value_type = map::value_type;
 
-    struct empty_t{};
-
     static constinit inline Compare const cmp;
 
     node* l_{}, *r_{};
     value_type kv_;
-
-    explicit node(auto&& k, empty_t&&)
-      noexcept(noexcept(value_type(std::forward<decltype(k)>(k), Value()))):
-      kv_(std::forward<decltype(k)>(k), Value())
-    {
-    }
 
     explicit node(auto&& a, auto&& ...b)
       noexcept(noexcept(
           value_type(
             std::piecewise_construct_t{},
             std::forward_as_tuple(std::forward<decltype(a)>(a)),
-            std::forward_as_tuple(std::forward<decltype(b)>(b)...)
-          )
-        )
-      ):
-      kv_(
-        std::piecewise_construct_t{},
+            std::forward_as_tuple(std::forward<decltype(b)>(b)...)))):
+      kv_(std::piecewise_construct_t{},
         std::forward_as_tuple(std::forward<decltype(a)>(a)),
-        std::forward_as_tuple(std::forward<decltype(b)>(b)...)
-      )
+        std::forward_as_tuple(std::forward<decltype(b)>(b)...))
     {
     }
 
@@ -246,18 +233,11 @@ public:
   template <int = 0>
   auto& operator[](auto&& k)
     noexcept(noexcept(
-        node::emplace(root_, std::forward<decltype(k)>(k),
-          typename node::empty_t())
-      )
-    )
+      node::emplace(root_, std::forward<decltype(k)>(k))))
     requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
-    return std::get<1>(
-        std::get<0>(
-          node::emplace(root_, std::forward<decltype(k)>(k),
-            typename node::empty_t())
-        )->kv_
-      );
+    return std::get<1>(std::get<0>(
+      node::emplace(root_, std::forward<decltype(k)>(k)))->kv_);
   }
 
   auto& operator[](key_type k)
