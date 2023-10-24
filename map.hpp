@@ -230,9 +230,9 @@ public:
   }
 
   map(std::initializer_list<value_type> l)
-    noexcept(noexcept(insert(l.begin(), l.end())))
+    noexcept(noexcept(map(l.begin(), l.end()))):
+    map(l.begin(), l.end())
   {
-    insert(l.begin(), l.end());
   }
 
   ~map() noexcept(noexcept(delete root_)) { delete root_; }

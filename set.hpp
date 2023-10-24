@@ -206,9 +206,9 @@ public:
   }
 
   set(std::initializer_list<value_type> l)
-    noexcept(noexcept(insert(l.begin(), l.end())))
+    noexcept(noexcept(set(l.begin(), l.end()))):
+    set(l.begin(), l.end())
   {
-    insert(l.begin(), l.end());
   }
 
   ~set() noexcept(noexcept(delete root_)) { delete root_; }
