@@ -101,7 +101,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebalance(s), 0) : s;
+          return (3 * sl > S) || (3 * sr > S) ? n = n->rebalance(s), 0 : s;
         }
       );
 
@@ -125,16 +125,17 @@ public:
 
     auto rebalance(size_type const sz) noexcept
     {
-      auto const l(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
+      auto const a(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
+      auto b(a);
 
       {
-        auto f([l(l)](auto&& f, auto const n) mutable noexcept -> void
+        auto f([&](auto&& f, auto const n) mutable noexcept -> void
           {
             if (n)
             {
               f(f, detail::left_node(n));
 
-              *l++ = n;
+              *b++ = n;
 
               f(f, detail::right_node(n));
             }
@@ -144,30 +145,25 @@ public:
         f(f, this);
       }
 
-      auto const f([l](auto&& f,
-        std::size_t const a, decltype(a) b) noexcept -> node*
+      //
+      auto const f([](auto&& f, auto const a, decltype(a) b) noexcept -> node*
         {
-          auto const i(std::midpoint(a, b));
-          auto const n(l[i]);
+          auto const m(std::midpoint(a, b));
+          auto const n(*m);
 
-          switch (b - a)
+          if (b == a)
           {
-            case 0:
-              n->l_ = n->r_ = {};
+            n->l_ = n->r_ = {};
+          }
+          else if (b == a + 1)
+          {
+            auto const nb(n->r_ = *b);
 
-              break;
-
-            case 1:
-              {
-                auto const nb(n->r_ = l[b]);
-
-                nb->l_ = nb->r_ = n->l_ = {};
-
-                break;
-              }
-
-            default:
-              detail::assign(n->l_, n->r_)(f(f, a, i - 1), f(f, i + 1, b));
+            nb->l_ = nb->r_ = n->l_ = {};
+          }
+          else
+          {
+            detail::assign(n->l_, n->r_)(f(f, a, m - 1), f(f, m + 1, b));
           }
 
           return n;
@@ -175,7 +171,7 @@ public:
       );
 
       //
-      return f(f, {}, sz - 1);
+      return f(f, a, b - 1);
     }
   };
 
