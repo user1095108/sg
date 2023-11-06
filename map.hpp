@@ -159,21 +159,25 @@ public:
       //
       auto const f([](auto&& f, auto const a, decltype(a) b) noexcept -> node*
         {
-          auto const m(std::midpoint(a, b));
-          auto const n(*m);
+          node* n;
 
           if (b == a)
           {
+            n = *a;
             n->l_ = n->r_ = {};
           }
           else if (b == a + 1)
           {
+            n = *a;
             auto const nb(n->r_ = *b);
 
             nb->l_ = nb->r_ = n->l_ = {};
           }
           else
           {
+            auto const m(std::midpoint(a, b));
+            n = *m;
+
             detail::assign(n->l_, n->r_)(f(f, a, m - 1), f(f, m + 1, b));
           }
 
