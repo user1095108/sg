@@ -295,7 +295,7 @@ public:
       )
     );
 
-    return std::tuple(iterator(&root_, n), s);
+    return std::pair(iterator(&root_, n), s);
   }
 
   auto emplace(key_type k, auto&& ...a)
@@ -381,7 +381,7 @@ public:
       )
     );
 
-    return std::tuple(iterator(&root_, n), s);
+    return std::pair(iterator(&root_, n), s);
   }
 
   auto insert(value_type v)
@@ -446,7 +446,7 @@ public:
       }
     }
 
-    return std::tuple(iterator(&root_, n), s);
+    return std::pair(iterator(&root_, n), s);
   }
 
   auto insert_or_assign(key_type k, auto&& ...b)

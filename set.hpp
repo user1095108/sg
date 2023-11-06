@@ -234,7 +234,7 @@ public:
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(a)>(a)...));
 
-    return std::tuple(iterator(&root_, n), s);
+    return std::pair(iterator(&root_, n), s);
   }
 
   //
@@ -292,7 +292,7 @@ public:
   {
     auto const [n, s](node::emplace(root_, std::forward<decltype(k)>(k)));
 
-    return std::tuple(iterator(&root_, n), s);
+    return std::pair(iterator(&root_, n), s);
   }
 
   auto insert(value_type k)
