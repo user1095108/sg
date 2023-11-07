@@ -163,13 +163,11 @@ public:
 
           if (b == a)
           {
-            n = *a;
-            n->l_ = n->r_ = {};
+            n->l_ = (n = *a)->r_ = {};
           }
           else if (b == a + 1)
           {
-            n = *a;
-            auto const nb(n->r_ = *b);
+            auto const nb((n = *a)->r_ = *b);
 
             nb->l_ = nb->r_ = n->l_ = {};
           }
