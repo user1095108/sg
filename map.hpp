@@ -41,17 +41,17 @@ public:
 
     explicit node(auto&& k, auto&& ...a)
       noexcept(noexcept(
-          value_type(
-            std::piecewise_construct_t{},
-            std::forward_as_tuple(std::forward<decltype(k)>(k)),
-            std::forward_as_tuple(std::forward<decltype(a)>(a)...)))):
+        value_type(
+          std::piecewise_construct_t{},
+          std::forward_as_tuple(std::forward<decltype(k)>(k)),
+          std::forward_as_tuple(std::forward<decltype(a)>(a)...)))):
       kv_(std::piecewise_construct_t{},
         std::forward_as_tuple(std::forward<decltype(k)>(k)),
         std::forward_as_tuple(std::forward<decltype(a)>(a)...))
     {
     }
 
-    ~node() noexcept(std::is_nothrow_destructible_v<decltype(kv_)>)
+    ~node() noexcept(std::is_nothrow_destructible_v<value_type>)
     {
       delete l_; delete r_;
     }
