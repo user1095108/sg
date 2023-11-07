@@ -144,14 +144,10 @@ iterator erase(std::initializer_list<const_iterator> l)
 {
   iterator r;
 
-  // must be sequential
   std::for_each(
     l.begin(),
     l.end(),
-    [&](auto const i) noexcept(noexcept(erase(i)))
-    {
-      r = erase(i);
-    }
+    [&](auto const i) noexcept(noexcept(erase(i))) { r = erase(i); }
   );
 
   return r;
