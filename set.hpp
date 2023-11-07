@@ -65,7 +65,7 @@ public:
         {
           if (!n)
           {
-            s = (n = q = new node(std::forward<decltype(k)>(k)));
+            s = true; n = q = new node(std::forward<decltype(k)>(k));
 
             return 1;
           }
