@@ -152,7 +152,7 @@ public:
 
           if (b == a)
           {
-            n->l_ = (n = *a)->r_ = {};
+            n = *a; n->l_ = n->r_ = {};
           }
           else if (b == a + 1)
           {
