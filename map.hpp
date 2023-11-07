@@ -300,9 +300,7 @@ public:
 
   auto emplace(key_type k, auto&& ...a)
     noexcept(noexcept(
-        emplace<0>(std::move(k), std::forward<decltype(a)>(a)...)
-      )
-    )
+      emplace<0>(std::move(k), std::forward<decltype(a)>(a)...)))
   {
     return emplace<0>(std::move(k), std::forward<decltype(a)>(a)...);
   }
