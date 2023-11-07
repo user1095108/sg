@@ -117,7 +117,11 @@ static constexpr size_type max_size() noexcept
 
 void clear() noexcept(noexcept(delete root_)) { delete root_; root_ = {}; }
 bool empty() const noexcept { return !root_; }
-void swap(this_class& o) noexcept { std::swap(root_, o.root_); }
+
+void swap(this_class& o) noexcept
+{
+  detail::assign(root_, o.root_)(o.root_, root_);
+}
 
 //
 template <int = 0>
