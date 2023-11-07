@@ -51,7 +51,7 @@ public:
     {
     }
 
-    ~node() noexcept(std::is_nothrow_destructible_v<value_type>)
+    ~node() noexcept(std::is_nothrow_destructible_v<decltype(kv_)>)
     {
       delete l_; delete r_;
     }
