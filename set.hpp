@@ -56,8 +56,8 @@ public:
       noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      node* q;
       bool s{}; // success
+      node* q;
 
       auto const f([&](auto&& f, auto& n)
         noexcept(noexcept(new node(std::forward<decltype(k)>(k)))) ->
