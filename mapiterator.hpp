@@ -67,8 +67,19 @@ public:
     return *this;
   }
 
-  auto operator++(int) noexcept { auto const r(*this); ++*this; return r; }
-  auto operator--(int) noexcept { auto const r(*this); --*this; return r; }
+  auto operator++(int) noexcept
+  {
+    auto const n(n_); n_ = detail::next_node(*r_, n_); return {n, r_};
+  }
+
+  auto operator--(int) noexcept
+  {
+    auto const n(n_);
+
+    n_ = n_ ? detail::prev_node(*r_, n_) : detail::last_node(*r_);
+
+    return {n, r_};
+  }
 
   // member access
   auto operator->() const noexcept { return &n_->kv_; }
