@@ -12,13 +12,8 @@ namespace sg
 template <typename T>
 class mapiterator
 {
-  using inverse_const_t = std::conditional_t<
-    std::is_const_v<T>,
-    mapiterator<std::remove_const_t<T>>,
-    mapiterator<T const>
-  >;
-
-  friend inverse_const_t;
+  using iterator_t = mapiterator<std::remove_const_t<T>>;
+  friend mapiterator<T const>;
 
   T* n_;
   T* const* r_;
@@ -47,7 +42,7 @@ public:
   mapiterator(mapiterator const&) = default;
   mapiterator(mapiterator&&) = default;
 
-  mapiterator(inverse_const_t const& o) noexcept requires(std::is_const_v<T>):
+  mapiterator(iterator_t const& o) noexcept requires(std::is_const_v<T>):
     n_(o.n_),
     r_(o.r_)
   {
@@ -62,13 +57,13 @@ public:
   // increment, decrement
   auto& operator++() noexcept
   {
-    n_ = detail::next_node(*r_, n_);
-    return *this;
+    n_ = detail::next_node(*r_, n_); return *this;
   }
 
   auto& operator--() noexcept
   {
     n_ = n_ ? detail::prev_node(*r_, n_) : detail::last_node(*r_);
+
     return *this;
   }
 
