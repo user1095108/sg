@@ -67,12 +67,12 @@ public:
     return *this;
   }
 
-  auto operator++(int) noexcept
+  mapiterator operator++(int) noexcept
   {
     auto const n(n_); n_ = detail::next_node(*r_, n_); return {n, r_};
   }
 
-  auto operator--(int) noexcept
+  mapiterator operator--(int) noexcept
   {
     auto const n(n_);
 
