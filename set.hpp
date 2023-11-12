@@ -129,7 +129,7 @@ public:
       auto b(a);
 
       {
-        auto f([&](auto&& f, auto const n) noexcept -> void
+        auto const f([&](auto&& f, auto const n) noexcept -> void
           {
             if (n)
             {
