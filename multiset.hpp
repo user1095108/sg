@@ -52,7 +52,7 @@ public:
     auto& key() const noexcept { return v_.front(); }
 
     //
-    static auto emplace(auto& r, auto&& k)
+    static auto emplace(auto& r0, auto&& k)
       noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
@@ -102,29 +102,31 @@ public:
         }
       );
 
-      f(f, r);
+      f(f, r0);
 
       return q;
     }
 
-    static auto emplace(auto& r, auto&& ...a)
+    static auto emplace(auto& r0, auto&& ...a)
       noexcept(noexcept(
           node::emplace(
-            r,
+            r0,
             std::forward<decltype(a)>(a)...
           )
         )
       )
       requires(std::is_constructible_v<key_type, decltype(a)...>)
     {
-      return node::emplace(r, std::forward<decltype(a)>(a)...);
+      return node::emplace(r0, std::forward<decltype(a)>(a)...);
     }
 
-    static iterator erase(auto& r, const_iterator const i)
+    static iterator erase(auto& r0, const_iterator const i)
+      noexcept(noexcept(std::declval<node>().v_.erase(i.i()),
+        node::erase(r0, i.n(), i.p())))
     {
       if (auto const n(i.n()); 1 == n->v_.size())
       {
-        return {&r, std::get<0>(node::erase(r, n->key()))};
+        return {&r0, std::get<0>(node::erase(r0, n->key()))};
       }
       else if (auto const it(i.iterator()); std::next(it) == n->v_.end())
       {
@@ -132,15 +134,15 @@ public:
 
         n->v_.erase(it);
 
-        return {&r, nn};
+        return {&r0, nn};
       }
       else
       {
-        return {&r, n, n->v_.erase(it)};
+        return {&r0, n, n->v_.erase(it)};
       }
     }
 
-    static auto erase(auto& r0, auto&& k)
+    static auto erase(auto& r0, auto const& k)
     {
       using pointer = std::remove_cvref_t<decltype(r0)>;
       using node = std::remove_pointer_t<pointer>;
