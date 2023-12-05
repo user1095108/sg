@@ -92,7 +92,7 @@ public:
   auto& operator*() const noexcept { return n_->kv_; }
 
   //
-  auto n() const noexcept { return n_; }
+  explicit operator bool() const noexcept { return n_; }
 };
 
 }
