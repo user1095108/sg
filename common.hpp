@@ -35,24 +35,17 @@ friend bool operator==(this_class const& l, this_class const& r)
 }
 
 friend auto operator<=>(this_class const& l, this_class const& r)
-  noexcept(noexcept(
-      std::lexicographical_compare_three_way(
-        l.begin(), l.end(), r.begin(), r.end()
-      )
-    )
-  )
+  noexcept(noexcept(std::lexicographical_compare_three_way(
+    l.begin(), l.end(), r.begin(), r.end())))
 {
   return std::lexicographical_compare_three_way(
-      l.begin(), l.end(), r.begin(), r.end()
-    );
+    l.begin(), l.end(), r.begin(), r.end());
 }
 
 // iterators
 iterator begin() noexcept
 {
-  return root_ ?
-    iterator(&root_, detail::first_node(root_)) :
-    iterator();
+  return { &root_, root_ ? detail::first_node(root_) : nullptr };
 }
 
 iterator end() noexcept { return {&root_}; }
@@ -60,23 +53,13 @@ iterator end() noexcept { return {&root_}; }
 // const iterators
 const_iterator begin() const noexcept
 {
-  return {
-      &root_,
-      root_ ? detail::first_node(root_) : nullptr
-    };
+  return { &root_, root_ ? detail::first_node(root_) : nullptr };
 }
 
 const_iterator end() const noexcept { return {&root_}; }
 
-const_iterator cbegin() const noexcept
-{
-  return {
-      &root_,
-      root_ ? detail::first_node(root_) : nullptr
-    };
-}
-
-const_iterator cend() const noexcept { return {&root_}; }
+auto cbegin() const noexcept { return begin(); }
+auto cend() const noexcept { return end(); }
 
 // reverse iterators
 reverse_iterator rbegin() noexcept
@@ -92,17 +75,20 @@ reverse_iterator rend() noexcept
 }
 
 // const reverse iterators
-const_reverse_iterator crbegin() const noexcept
+const_reverse_iterator rbegin() const noexcept
 {
   return const_reverse_iterator(const_iterator(&root_));
 }
 
-const_reverse_iterator crend() const noexcept
+const_reverse_iterator rend() const noexcept
 {
   return const_reverse_iterator(
       const_iterator{&root_, root_ ? detail::first_node(root_) : nullptr}
     );
 }
+
+auto crbegin() const noexcept { return rbegin(); }
+auto crend() const noexcept { return rend(); }
 
 //
 auto root() const noexcept { return root_; }
