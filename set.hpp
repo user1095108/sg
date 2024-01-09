@@ -91,7 +91,7 @@ public:
 
             sl = detail::size(n->l_);
           }
-          else
+          else [[unlikely]]
           {
             q = n;
 
