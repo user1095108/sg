@@ -90,7 +90,7 @@ inline auto parent_node(auto r0, decltype(r0) n) noexcept
     {
       assign(n, r0)(r0, right_node(r0));
     }
-    else
+    else [[unlikely]]
     {
       return n;
     }
@@ -119,7 +119,7 @@ inline auto next_node(auto r0, decltype(r0) n) noexcept
       {
         r0 = right_node(r0);
       }
-      else
+      else [[unlikely]]
       {
         return n;
       }
@@ -149,7 +149,7 @@ inline auto prev_node(auto r0, decltype(r0) n) noexcept
       {
         assign(n, r0)(r0, right_node(r0)); // deepest parent less than us
       }
-      else
+      else [[unlikely]]
       {
         return n;
       }
@@ -189,7 +189,7 @@ inline auto equal_range(auto n, auto const& k) noexcept
     {
       n = right_node(n);
     }
-    else
+    else [[unlikely]]
     {
       if (auto const r(right_node(n)); r)
       {
@@ -218,7 +218,7 @@ inline auto find(auto n, auto const& k) noexcept
     {
       n = right_node(n);
     }
-    else
+    else [[unlikely]]
     {
       break;
     }
@@ -246,7 +246,7 @@ inline auto erase(auto& r0, auto const& k)
     {
       q = &n->r_;
     }
-    else
+    else [[unlikely]]
     {
       auto const nxt(next_node(r0, n));
 
