@@ -128,22 +128,24 @@ public:
       auto const a(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
       auto b(a);
 
+      struct S
       {
-        auto const f([&](auto&& f, auto const n) noexcept -> void
+        decltype(b)& b_;
+
+        void operator()(node* const n) const noexcept
+        {
+          if (n)
           {
-            if (n)
-            {
-              f(f, detail::left_node(n));
+            operator()(detail::left_node(n));
 
-              *b++ = n;
+            *b_++ = n;
 
-              f(f, detail::right_node(n));
-            }
+            operator()(detail::right_node(n));
           }
-        );
+        }
+      };
 
-        f(f, this);
-      }
+      S{b}(this);
 
       //
       auto const f([](auto&& f, auto const a, decltype(a) b) noexcept -> node*
