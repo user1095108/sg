@@ -136,14 +136,13 @@ public:
 
     auto rebalance(size_type const sz) noexcept
     {
-      auto const a(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
-      auto b(a);
+      auto const a{static_cast<node**>(SG_ALLOCA(sizeof(this) * sz))};
 
       struct S
       {
-        decltype(b)& b_;
+        std::remove_const_t<decltype(a)> b_;
 
-        void operator()(node* const n) const noexcept
+        void operator()(node* const n) noexcept
         {
           if (n)
           {
@@ -154,12 +153,8 @@ public:
             operator()(detail::right_node(n));
           }
         }
-      };
 
-      S{b}(this);
-
-      //
-      auto const f([](auto&& f, auto const a, decltype(a) b) noexcept -> node*
+        static node* f(decltype(a) a, decltype(a) b) noexcept
         {
           node* n;
 
@@ -178,15 +173,16 @@ public:
             auto const m(std::midpoint(a, b));
             n = *m;
 
-            detail::assign(n->l_, n->r_)(f(f, a, m - 1), f(f, m + 1, b));
+            detail::assign(n->l_, n->r_)(f(a, m - 1), f(m + 1, b));
           }
 
           return n;
         }
-      );
+      };
 
-      //
-      return f(f, a, b - 1);
+      S s{a}; s(this);
+
+      return S::f(a, s.b_ - 1);
     }
   };
 
