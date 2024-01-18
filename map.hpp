@@ -160,13 +160,13 @@ public:
 
           if (b == a)
           {
-            n = *a; n->l_ = n->r_ = {};
+            n = *a; detail::assign(n->l_, n->r_)(nullptr, nullptr);
           }
           else if (b == a + 1)
           {
             auto const nb((n = *a)->r_ = *b);
 
-            nb->l_ = nb->r_ = n->l_ = {};
+            detail::assign(nb->l_, nb->r_, n->l_)(nullptr, nullptr, nullptr);
           }
           else
           {
