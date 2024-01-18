@@ -134,7 +134,7 @@ public:
       return std::pair(q, s);
     }
 
-    static auto rebalance(node* const n, size_type const sz) noexcept
+    static auto rebalance(auto const n, size_type const sz) noexcept
     {
       auto const a{static_cast<node**>(SG_ALLOCA(sizeof(n) * sz))};
 
@@ -142,7 +142,7 @@ public:
       {
         std::remove_const_t<decltype(a)> b_;
 
-        void operator()(node* const n) noexcept
+        void operator()(decltype(n) n) noexcept
         {
           if (n)
           {
