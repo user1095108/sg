@@ -101,7 +101,7 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? n = n->rebalance(s), 0 : s;
+          return (3 * sl > S) || (3 * sr > S) ? n = rebalance(n, s), 0 : s;
         }
       );
 
@@ -123,9 +123,9 @@ public:
       return node::emplace(r, key_type(std::forward<decltype(a)>(a)...));
     }
 
-    auto rebalance(size_type const sz) noexcept
+    static auto rebalance(node* const n, size_type const sz) noexcept
     {
-      auto const a{static_cast<node**>(SG_ALLOCA(sizeof(this) * sz))};
+      auto const a{static_cast<node**>(SG_ALLOCA(sizeof(n) * sz))};
 
       struct S
       {
@@ -169,7 +169,7 @@ public:
         }
       };
 
-      S s{a}; s(this);
+      S s{a}; s(n);
 
       return S::f(a, s.b_ - 1);
     }
