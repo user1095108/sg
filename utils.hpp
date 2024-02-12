@@ -101,7 +101,7 @@ inline auto next_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (decltype(n) const rn(right_node(n)); rn)
+  if (auto const rn(right_node(n)); rn)
   {
     return first_node(rn);
   }
@@ -131,7 +131,7 @@ inline auto prev_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (decltype(n) const ln(left_node(n)); ln)
+  if (auto const ln(left_node(n)); ln)
   {
     return last_node(ln);
   }
@@ -259,7 +259,7 @@ inline auto erase(auto& r0, auto const& k)
           assign(*q, fnn->l_)(fnn, l);
 
           if (r != fnn)
-          {
+          { // avoid loop
             assign(fnp->l_, fnn->r_)(fnn->r_, r);
           }
         }
@@ -270,7 +270,7 @@ inline auto erase(auto& r0, auto const& k)
           assign(*q, lnn->r_)(lnn, r);
 
           if (l != lnn)
-          {
+          { // avoid loop
             assign(lnp->r_, lnn->l_)(lnn->l_, l);
           }
         }
@@ -280,7 +280,7 @@ inline auto erase(auto& r0, auto const& k)
         *q = l ? l : r;
       }
 
-      n->l_ = n->r_ = {};
+      assign(n->l_, n->r_)(nullptr, nullptr);
       delete n;
 
       return nxt;
