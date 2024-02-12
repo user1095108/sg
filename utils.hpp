@@ -46,14 +46,14 @@ inline auto left_node(auto const n) noexcept { return n->l_; }
 inline auto right_node(auto const n) noexcept { return n->r_; }
 
 inline auto first_node(auto n) noexcept
-{
+{ // first node of node subtree, can be node itself
   for (decltype(n) l; (l = left_node(n)); n = l);
 
   return n;
 }
 
 inline auto last_node(auto n) noexcept
-{
+{ // last node of node subtree, can be node itself
   for (decltype(n) r; (r = right_node(n)); n = r);
 
   return n;
