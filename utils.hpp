@@ -101,7 +101,7 @@ inline auto next_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (auto const rn(right_node(n)); rn)
+  if (decltype(n) const rn(right_node(n)); rn)
   {
     return first_node(rn);
   }
@@ -131,7 +131,7 @@ inline auto prev_node(auto r0, decltype(r0) n) noexcept
 {
   using node = std::remove_const_t<std::remove_pointer_t<decltype(n)>>;
 
-  if (auto const ln(left_node(n)); ln)
+  if (decltype(n) const ln(left_node(n)); ln)
   {
     return last_node(ln);
   }
