@@ -168,7 +168,8 @@ inline size_type height(auto const n) noexcept
 
 inline size_type size(auto const n) noexcept
 {
-  return n ? 1 + size(n->l_) + size(n->r_) : decltype(size(n)){};
+  return n ? size_type(1) + size(left_node(n)) + size(right_node(n)) :
+    size_type{};
 }
 
 //
@@ -250,7 +251,7 @@ inline auto erase(auto& r0, auto const& k)
     {
       auto const nxt(next_node(r0, n));
 
-      if (auto const l(n->l_), r(n->r_); l && r)
+      if (auto const l(left_node(n)), r(right_node(n)); l && r)
       {
         if (size(l) < size(r))
         {
@@ -260,7 +261,7 @@ inline auto erase(auto& r0, auto const& k)
 
           if (r != fnn)
           { // avoid loop
-            assign(fnp->l_, fnn->r_)(fnn->r_, r);
+            assign(fnp->l_, fnn->r_)(right_node(fnn), r);
           }
         }
         else
@@ -271,7 +272,7 @@ inline auto erase(auto& r0, auto const& k)
 
           if (l != lnn)
           { // avoid loop
-            assign(lnp->r_, lnn->l_)(lnn->l_, l);
+            assign(lnp->r_, lnn->l_)(left_node(lnn), l);
           }
         }
       }
