@@ -98,7 +98,8 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? (n = n->rebalance(s), 0) : s;
+          return (3 * sl > S) || (3 * sr > S) ?
+            (n = detail::rebalance(n, s), 0) : s;
         }
       );
 
@@ -209,61 +210,6 @@ public:
       }
 
       return std::pair(pointer{}, size_type{});
-    }
-
-    auto rebalance(size_type const sz) noexcept
-    {
-      auto const l(static_cast<node**>(SG_ALLOCA(sizeof(this) * sz)));
-
-      {
-        auto f([l(l)](auto&& f, auto const n) mutable noexcept -> void
-          {
-            if (n)
-            {
-              f(f, detail::left_node(n));
-
-              *l++ = n;
-
-              f(f, detail::right_node(n));
-            }
-          }
-        );
-
-        f(f, this);
-      }
-
-      auto const f([l](auto&& f,
-        std::size_t const a, decltype(a) b) noexcept -> node*
-        {
-          auto const i(std::midpoint(a, b));
-          auto const n(l[i]);
-
-          switch (b - a)
-          {
-            case 0:
-              n->l_ = n->r_ = {};
-
-              break;
-
-            case 1:
-              {
-                auto const nb(n->r_ = l[b]);
-
-                nb->l_ = nb->r_ = n->l_ = {};
-
-                break;
-              }
-
-            default:
-              detail::assign(n->l_, n->r_)(f(f, a, i - 1), f(f, i + 1, b));
-          }
-
-          return n;
-        }
-      );
-
-      //
-      return f(f, {}, sz - 1);
     }
   };
 

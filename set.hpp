@@ -101,7 +101,8 @@ public:
           //
           auto const s(1 + sl + sr), S(2 * s);
 
-          return (3 * sl > S) || (3 * sr > S) ? n = rebalance(n, s), 0 : s;
+          return (3 * sl > S) || (3 * sr > S) ?
+            n = detail::rebalance(n, s), 0 : s;
         }
       );
 
@@ -121,57 +122,6 @@ public:
       requires(std::is_constructible_v<key_type, decltype(a)...>)
     {
       return node::emplace(r, key_type(std::forward<decltype(a)>(a)...));
-    }
-
-    static auto rebalance(auto const n, size_type const sz) noexcept
-    {
-      auto const a{static_cast<node**>(SG_ALLOCA(sizeof(n) * sz))};
-
-      struct S
-      {
-        std::remove_const_t<decltype(a)> b_;
-
-        void operator()(decltype(n) n) noexcept
-        {
-          if (n)
-          {
-            operator()(detail::left_node(n));
-
-            *b_++ = n;
-
-            operator()(detail::right_node(n));
-          }
-        }
-
-        static node* f(decltype(a) a, decltype(a) b) noexcept
-        {
-          node* n;
-
-          if (b == a)
-          {
-            n = *a; detail::assign(n->l_, n->r_)(nullptr, nullptr);
-          }
-          else if (b == a + 1)
-          {
-            auto const nb((n = *a)->r_ = *b);
-
-            detail::assign(nb->l_, nb->r_, n->l_)(nullptr, nullptr, nullptr);
-          }
-          else
-          {
-            auto const m(std::midpoint(a, b));
-            n = *m;
-
-            detail::assign(n->l_, n->r_)(f(a, m - 1), f(m + 1, b));
-          }
-
-          return n;
-        }
-      };
-
-      S s{a}; s(n);
-
-      return S::f(a, s.b_ - 1);
     }
   };
 
