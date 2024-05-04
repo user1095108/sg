@@ -70,14 +70,11 @@ public:
         std::forward<decltype(a)>(a)...)))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      bool s{};
-
-      auto const q(detail::emplace(r, k, [&]()
+      auto const [q, s](detail::emplace(r, k, [&]()
           noexcept(noexcept(new node(
             std::forward<decltype(k)>(k),
             std::forward<decltype(a)>(a)...)))
           {
-            s = true;
             return new node(
                 std::forward<decltype(k)>(k),
                 std::forward<decltype(a)>(a)...

@@ -355,11 +355,13 @@ auto emplace(auto& n, auto const& k, auto const& create_node)
     decltype(create_node) create_node_;
 
     node_t* q_{};
+    bool s_{};
 
     size_type operator()(decltype(n) n) noexcept(noexcept(create_node_()))
     {
       if (!n)
       {
+        s_ = true;
         n = q_ = create_node_();
 
         return 1;
@@ -394,7 +396,10 @@ auto emplace(auto& n, auto const& k, auto const& create_node)
     }
   };
 
-  S s{k, create_node}; s(n); return s.q_;
+  //
+  S s{k, create_node}; s(n);
+
+  return std::pair(s.q_, s.s_);
 }
 
 }

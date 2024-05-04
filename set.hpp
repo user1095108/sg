@@ -56,16 +56,11 @@ public:
       noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      bool s{};
-
-      return std::pair(detail::emplace(r, k, [&]()
-            noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
-            {
-              s = true;
-              return new node(std::forward<decltype(k)>(k));
-            }
-          ),
-          s
+      return detail::emplace(r, k, [&]()
+          noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
+          {
+            return new node(std::forward<decltype(k)>(k));
+          }
         );
     }
 
