@@ -70,17 +70,30 @@ public:
         std::forward<decltype(a)>(a)...)))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      return detail::emplace(r, k, [&]()
+      bool s{};
+
+      auto const q(detail::emplace(r, k, [&]()
           noexcept(noexcept(new node(
             std::forward<decltype(k)>(k),
             std::forward<decltype(a)>(a)...)))
           {
+            s = true;
             return new node(
                 std::forward<decltype(k)>(k),
                 std::forward<decltype(a)>(a)...
               );
           }
+        )
+      );
+
+      if (!s)
+        q->v_.emplace_back(
+          std::piecewise_construct_t{},
+          std::forward_as_tuple(std::forward<decltype(k)>(k)),
+          std::forward_as_tuple(std::forward<decltype(a)>(a)...)
         );
+
+      return q;
     }
 
     static iterator erase(auto& r, const_iterator const i)

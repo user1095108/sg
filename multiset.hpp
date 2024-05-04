@@ -56,12 +56,20 @@ public:
       noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      return detail::emplace(r, k, [&]()
+      bool s{};
+
+      auto const q(detail::emplace(r, k, [&]()
           noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
           {
+            s = true;
             return new node(std::forward<decltype(k)>(k));
           }
-        );
+        )
+      );
+
+      if (!s) q->v_.emplace_back(std::forward<decltype(k)>(k));
+
+      return q;
     }
 
     static auto emplace(auto& r, auto&& ...a)
