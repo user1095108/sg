@@ -344,7 +344,7 @@ inline auto rebalance(auto const n, size_type const sz) noexcept
   return S::f(a, s.b_ - 1);
 }
 
-auto emplace(auto& n, auto& k, auto const& create_node)
+auto emplace(auto& n, auto const& k, auto const& create_node)
   noexcept(noexcept(create_node()))
 {
   using node_t = std::remove_pointer_t<std::remove_reference_t<decltype(n)>>;
