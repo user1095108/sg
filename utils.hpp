@@ -372,13 +372,13 @@ auto emplace(auto& n, auto& k, auto const& create_node)
       {
         if (sl = (*this)(n->l_); !sl) return {};
 
-        sr = detail::size(n->r_);
+        sr = size(n->r_);
       }
       else if (c > 0)
       {
         if (sr = (*this)(n->r_); !sr) return {};
 
-        sl = detail::size(n->l_);
+        sl = size(n->l_);
       }
       else [[unlikely]]
       {
@@ -394,8 +394,7 @@ auto emplace(auto& n, auto& k, auto const& create_node)
     }
   };
 
-  S s{k, create_node}; s(n);
-  return s.q_;
+  S s{k, create_node}; s(n); return s.q_;
 }
 
 }
