@@ -52,73 +52,23 @@ public:
     auto& key() const noexcept { return v_.front(); }
 
     //
-    static auto emplace(auto& r0, auto&& k)
+    static auto emplace(auto& r, auto&& k)
       noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      node* q;
-
-      auto const f([&](auto&& f, auto& n) -> size_type
-        {
-          if (!n)
+      return detail::emplace(r, k, [&]()
+          noexcept(noexcept(new node(std::forward<decltype(k)>(k))))
           {
-            n = q = new node(std::forward<decltype(k)>(k));
-
-            return 1;
+            return new node(std::forward<decltype(k)>(k));
           }
-
-          //
-          size_type sl, sr;
-
-          if (auto const c(cmp(k, n->key())); c < 0)
-          {
-            if (sl = f(f, n->l_); !sl)
-            {
-              return {};
-            }
-
-            sr = detail::size(n->r_);
-          }
-          else if (c > 0)
-          {
-            if (sr = f(f, n->r_); !sr)
-            {
-              return {};
-            }
-
-            sl = detail::size(n->l_);
-          }
-          else
-          {
-            (q = n)->v_.emplace_back(std::forward<decltype(k)>(k));
-
-            return {};
-          }
-
-          //
-          auto const s(1 + sl + sr), S(2 * s);
-
-          return (3 * sl > S) || (3 * sr > S) ?
-            (n = detail::rebalance(n, s), 0) : s;
-        }
-      );
-
-      f(f, r0);
-
-      return q;
+        );
     }
 
-    static auto emplace(auto& r0, auto&& ...a)
-      noexcept(noexcept(
-          node::emplace(
-            r0,
-            std::forward<decltype(a)>(a)...
-          )
-        )
-      )
+    static auto emplace(auto& r, auto&& ...a)
+      noexcept(noexcept(node::emplace(r, std::forward<decltype(a)>(a)...)))
       requires(std::is_constructible_v<key_type, decltype(a)...>)
     {
-      return node::emplace(r0, std::forward<decltype(a)>(a)...);
+      return node::emplace(r, std::forward<decltype(a)>(a)...);
     }
 
     static iterator erase(auto& r0, const_iterator const i)

@@ -66,79 +66,21 @@ public:
 
     //
     static auto emplace(auto& r, auto&& k, auto&& ...a)
-      noexcept(noexcept(
-          new node(
-            std::forward<decltype(k)>(k),
-            std::forward<decltype(a)>(a)...
-          )
-        )
-      )
+      noexcept(noexcept(new node(std::forward<decltype(k)>(k),
+        std::forward<decltype(a)>(a)...)))
       requires(detail::Comparable<Compare, decltype(k), key_type>)
     {
-      node* q;
-
-      auto const f([&](auto&& f, auto& n)
-        noexcept(noexcept(
-            new node(
-              std::forward<decltype(k)>(k),
-              std::forward<decltype(a)>(a)...
-            )
-          )
-        ) -> size_type
-        {
-          if (!n)
+      return detail::emplace(r, k, [&]()
+          noexcept(noexcept(new node(
+            std::forward<decltype(k)>(k),
+            std::forward<decltype(a)>(a)...)))
           {
-            n = q = new node(
+            return new node(
                 std::forward<decltype(k)>(k),
                 std::forward<decltype(a)>(a)...
               );
-
-            return 1;
           }
-
-          //
-          size_type sl, sr;
-
-          if (auto const c(cmp(k, n->key())); c < 0)
-          {
-            if (sl = f(f, n->l_); !sl)
-            {
-              return {};
-            }
-
-            sr = detail::size(n->r_);
-          }
-          else if (c > 0)
-          {
-            if (sr = f(f, n->r_); !sr)
-            {
-              return {};
-            }
-
-            sl = detail::size(n->l_);
-          }
-          else
-          {
-            (q = n)->v_.emplace_back(
-              std::piecewise_construct_t{},
-              std::forward_as_tuple(std::forward<decltype(k)>(k)),
-              std::forward_as_tuple(std::forward<decltype(a)>(a)...)
-            );
-
-            return {};
-          }
-
-          //
-          auto const s(1 + sl + sr), S(2 * s);
-
-          return (3 * sl > S) || (3 * sr > S) ?
-            (n = detail::rebalance(n, s), 0) : s;
-        }
-      );
-
-      f(f, r);
-
-      return q;
+        );
     }
 
     static iterator erase(auto& r, const_iterator const i)

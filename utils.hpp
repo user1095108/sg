@@ -344,6 +344,60 @@ inline auto rebalance(auto const n, size_type const sz) noexcept
   return S::f(a, s.b_ - 1);
 }
 
+auto emplace(auto& n, auto& k, auto const& create_node)
+  noexcept(noexcept(create_node()))
+{
+  using node_t = std::remove_pointer_t<std::remove_reference_t<decltype(n)>>;
+
+  struct S
+  {
+    decltype(k) k_;
+    decltype(create_node) create_node_;
+
+    node_t* q_{};
+
+    size_type operator()(decltype(n) n) noexcept(noexcept(create_node_()))
+    {
+      if (!n)
+      {
+        n = q_ = create_node_();
+
+        return 1;
+      }
+
+      //
+      size_type sl, sr;
+
+      if (auto const c(node_t::cmp(k_, n->key())); c < 0)
+      {
+        if (sl = (*this)(n->l_); !sl) return {};
+
+        sr = detail::size(n->r_);
+      }
+      else if (c > 0)
+      {
+        if (sr = (*this)(n->r_); !sr) return {};
+
+        sl = detail::size(n->l_);
+      }
+      else [[unlikely]]
+      {
+        q_ = n;
+
+        return {};
+      }
+
+      //
+      auto const s(1 + sl + sr), S(2 * s);
+
+      return (3 * sl > S) || (3 * sr > S) ? n = detail::rebalance(n, s),0 : s;
+    }
+  };
+
+  S s{k, create_node}; s(n);
+  return s.q_;
+}
+
 }
 
 #endif // SG_UTILS_HPP
