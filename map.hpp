@@ -40,11 +40,10 @@ public:
     value_type kv_;
 
     explicit node(auto&& k, auto&& ...a)
-      noexcept(noexcept(
-        value_type(
-          std::piecewise_construct_t{},
-          std::forward_as_tuple(std::forward<decltype(k)>(k)),
-          std::forward_as_tuple(std::forward<decltype(a)>(a)...)))):
+      noexcept(noexcept(value_type(
+        std::piecewise_construct_t{},
+        std::forward_as_tuple(std::forward<decltype(k)>(k)),
+        std::forward_as_tuple(std::forward<decltype(a)>(a)...)))):
       kv_(std::piecewise_construct_t{},
         std::forward_as_tuple(std::forward<decltype(k)>(k)),
         std::forward_as_tuple(std::forward<decltype(a)>(a)...))
@@ -122,8 +121,7 @@ public:
   //
   template <int = 0>
   auto& operator[](auto&& k)
-    noexcept(noexcept(
-      node::emplace(root_, std::forward<decltype(k)>(k))))
+    noexcept(noexcept(node::emplace(root_, std::forward<decltype(k)>(k))))
     requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     return std::get<1>(std::get<0>(
@@ -259,14 +257,9 @@ public:
   //
   template <int = 0>
   auto insert(auto&& v)
-    noexcept(noexcept(
-        node::emplace(
-          root_,
-          std::get<0>(std::forward<decltype(v)>(v)),
-          std::get<1>(std::forward<decltype(v)>(v))
-        )
-      )
-    )
+    noexcept(noexcept(node::emplace(root_,
+      std::get<0>(std::forward<decltype(v)>(v)),
+      std::get<1>(std::forward<decltype(v)>(v)))))
     requires(
       detail::Comparable<
         Compare,
@@ -275,13 +268,9 @@ public:
       >
     )
   {
-    auto const [n, s](
-      node::emplace(
-        root_,
-        std::get<0>(std::forward<decltype(v)>(v)),
-        std::get<1>(std::forward<decltype(v)>(v))
-      )
-    );
+    auto const [n, s](node::emplace(root_,
+      std::get<0>(std::forward<decltype(v)>(v)),
+      std::get<1>(std::forward<decltype(v)>(v))));
 
     return std::pair(iterator(&root_, n), s);
   }
