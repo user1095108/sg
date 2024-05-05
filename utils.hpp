@@ -362,11 +362,11 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
     {
     }
 
-    size_type operator()(decltype(r) n) noexcept(noexcept(create_node_()))
+    size_type operator()(decltype(r) r) noexcept(noexcept(create_node_()))
     {
-      if (!n)
+      if (!r)
       {
-        assign(q_, s_)(n = create_node_(), true);
+        assign(q_, s_)(r = create_node_(), true);
 
         return 1;
       }
@@ -374,21 +374,21 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
       //
       size_type sl, sr;
 
-      if (auto const c(node_t::cmp(k_, n->key())); c < 0)
+      if (auto const c(node_t::cmp(k_, r->key())); c < 0)
       {
-        if (sl = (*this)(n->l_); !sl) return {};
+        if (sl = (*this)(r->l_); !sl) return {};
 
-        sr = size(n->r_);
+        sr = size(r->r_);
       }
       else if (c > 0)
       {
-        if (sr = (*this)(n->r_); !sr) return {};
+        if (sr = (*this)(r->r_); !sr) return {};
 
-        sl = size(n->l_);
+        sl = size(r->l_);
       }
       else [[unlikely]]
       {
-        assign(q_, s_)(n, false);
+        assign(q_, s_)(r, false);
 
         return {};
       }
@@ -396,7 +396,7 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
       //
       auto const s(1 + sl + sr), S(2 * s);
 
-      return (3 * sl > S) || (3 * sr > S) ? n = detail::rebalance(n, s),0 : s;
+      return (3 * sl > S) || (3 * sr > S) ? r = detail::rebalance(r, s),0 : s;
     }
   };
 
