@@ -354,14 +354,14 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
     decltype(k) k_;
     decltype(create_node) create_node_;
 
-    node_t* q_{};
-    bool s_{};
+    node_t* q_;
+    bool s_;
 
     size_type operator()(decltype(r) n) noexcept(noexcept(create_node_()))
     {
       if (!n)
       {
-        s_ = true; n = q_ = create_node_();
+        assign(q_, s_)(n = create_node_(), true);
 
         return 1;
       }
@@ -383,7 +383,7 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
       }
       else [[unlikely]]
       {
-        q_ = n;
+        assign(q_, s_)(n, false);
 
         return {};
       }
@@ -396,7 +396,10 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
   };
 
   //
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
   S s{k, create_node}; s(r);
+#pragma GCC diagnostic pop
 
   return std::pair(s.q_, s.s_);
 }
