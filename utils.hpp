@@ -357,6 +357,11 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
     node_t* q_;
     bool s_;
 
+    explicit S(decltype(k_) k, decltype(create_node_) cn) noexcept:
+      k_(k), create_node_(cn)
+    {
+    }
+
     size_type operator()(decltype(r) n) noexcept(noexcept(create_node_()))
     {
       if (!n)
@@ -383,7 +388,7 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
       }
       else [[unlikely]]
       {
-        q_ = n;
+        assign(q_, s_)(n, false);
 
         return {};
       }
@@ -396,7 +401,7 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
   };
 
   //
-  S s{k, create_node, {}, {}}; s(r);
+  S s(k, create_node); s(r);
 
   return std::pair(s.q_, s.s_);
 }
