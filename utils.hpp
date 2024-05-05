@@ -344,10 +344,10 @@ inline auto rebalance(auto const n, size_type const sz) noexcept
   return S::f(a, s.b_ - 1);
 }
 
-inline auto emplace(auto& n, auto const& k, auto const& create_node)
+inline auto emplace(auto& r, auto const& k, auto const& create_node)
   noexcept(noexcept(create_node()))
 {
-  using node_t = std::remove_pointer_t<std::remove_reference_t<decltype(n)>>;
+  using node_t = std::remove_pointer_t<std::remove_reference_t<decltype(r)>>;
 
   struct S
   {
@@ -357,7 +357,7 @@ inline auto emplace(auto& n, auto const& k, auto const& create_node)
     node_t* q_{};
     bool s_{};
 
-    size_type operator()(decltype(n) n) noexcept(noexcept(create_node_()))
+    size_type operator()(decltype(r) n) noexcept(noexcept(create_node_()))
     {
       if (!n)
       {
@@ -396,7 +396,7 @@ inline auto emplace(auto& n, auto const& k, auto const& create_node)
   };
 
   //
-  S s{k, create_node}; s(n);
+  S s{k, create_node}; s(r);
 
   return std::pair(s.q_, s.s_);
 }
