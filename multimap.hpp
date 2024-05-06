@@ -234,7 +234,7 @@ public:
 
   //
   template <int = 0>
-  size_type count(auto&& k) const noexcept
+  size_type count(auto const& k) const noexcept
     requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     if (auto n(root_); n)
@@ -259,7 +259,7 @@ public:
     return {};
   }
 
-  auto count(key_type k) const noexcept { return count<0>(std::move(k)); }
+  auto count(key_type const k) const noexcept { return count<0>(k); }
 
   //
   template <int = 0>
