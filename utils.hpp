@@ -364,27 +364,18 @@ inline auto emplace(auto& r, auto const& k, auto const& create_node)
 
     size_type operator()(decltype(r) r) noexcept(noexcept(create_node_()))
     {
-      if (!r)
-      {
-        assign(q_, s_)(r = create_node_(), true);
-
-        return 1;
-      }
+      if (!r) { assign(q_, s_)(r = create_node_(), true); return 1; }
 
       //
       size_type sl, sr;
 
-      if (auto const c(node_t::cmp(k_, r->key())); c < 0)
+      if (auto const c(node_t::cmp(k_, r->key())); c < 0) [[likely]]
       {
-        if (!(sl = (*this)(r->l_))) return {};
-
-        sr = size(r->r_);
+        if ((sl = (*this)(r->l_))) sr = size(r->r_); else return {};
       }
-      else if (c > 0)
+      else if (c > 0) [[likely]]
       {
-        if (!(sr = (*this)(r->r_))) return {};
-
-        sl = size(r->l_);
+        if ((sr = (*this)(r->r_))) sl = size(r->l_); else return {};
       }
       else [[unlikely]]
       {
