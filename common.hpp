@@ -65,7 +65,7 @@ auto& operator=(this_class&& o)
   return *this;
 }
 
-auto& operator=(std::initializer_list<value_type> l)
+auto& operator=(std::initializer_list<value_type> const l)
   noexcept(noexcept(clear(), insert(l.begin(), l.end())))
 {
   clear(); insert(l.begin(), l.end());
@@ -122,7 +122,7 @@ iterator erase(const_iterator a, const_iterator const b)
   while (a != b) { a = erase(a); } return {&root_, a.n()};
 }
 
-iterator erase(std::initializer_list<const_iterator> l)
+iterator erase(std::initializer_list<const_iterator> const l)
   noexcept(noexcept(erase(l.begin())))
 {
   iterator r;
