@@ -156,7 +156,7 @@ const_iterator find(auto const& k) const noexcept
 auto find(key_type const k) const noexcept { return find<0>(k); }
 
 //
-void insert(std::initializer_list<value_type> l)
+void insert(std::initializer_list<value_type> const l)
   noexcept(noexcept(insert(l.begin(), l.end())))
 {
   insert(l.begin(), l.end());
