@@ -208,7 +208,7 @@ public:
   auto size() const noexcept
   {
     static constinit auto const f(
-      [](auto&& f, auto const n) noexcept -> size_type
+      [](auto&& f, auto const n) noexcept
       {
         return n ? n->v_.size() + f(f, n->l_) + f(f, n->r_) : 0;
       }
