@@ -135,7 +135,7 @@ public:
           else
           {
             auto const nxt(detail::next_node(r0, n));
-            size_type const s(n->v_.size());
+            auto const s(n->v_.size());
 
             if (auto const l(n->l_), r(n->r_); l && r)
             {
@@ -179,7 +179,7 @@ public:
         }
       }
 
-      return std::pair(pointer{}, size_type{});
+      return std::pair(pointer{}, decltype(r0->v_.size()){});
     }
   };
 
@@ -321,7 +321,7 @@ public:
 
   //
   template <int = 0>
-  size_type erase(auto&& k)
+  auto erase(auto&& k)
     noexcept(noexcept(node::erase(root_, k)))
     requires(!std::convertible_to<decltype(k), const_iterator>)
   {
