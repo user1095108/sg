@@ -220,7 +220,7 @@ public:
 # include "common.hpp"
 
   //
-  size_type size() const noexcept
+  auto size() const noexcept
   {
     static constinit auto const f(
       [](auto&& f, auto const n) noexcept -> size_type
@@ -234,7 +234,7 @@ public:
 
   //
   template <int = 0>
-  size_type count(auto const& k) const noexcept
+  auto count(auto const& k) const noexcept
     requires(detail::Comparable<Compare, decltype(k), key_type>)
   {
     if (auto n(root_); n)
@@ -256,7 +256,7 @@ public:
       }
     }
 
-    return {};
+    return decltype(root_->v_.size()){};
   }
 
   auto count(key_type const k) const noexcept { return count<0>(k); }
